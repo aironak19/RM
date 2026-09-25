@@ -1,0 +1,994 @@
+<!doctype html>
+<html lang="en" data-brand="cyan">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Retention Radar · Northstar Labs</title>
+<meta name="description" content="Retention Radar — predictive attrition and flight-risk analytics for Northstar Labs: explainable risk scores, a radar of engagement vs pay, an action queue and attrition cohorts. Concept prototype with illustrative data.">
+<meta name="theme-color" content="#0891B2">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%230891B2'/%3E%3Ccircle cx='24' cy='24' r='14' fill='none' stroke='%23fff' stroke-width='2.6' opacity='.55'/%3E%3Ccircle cx='24' cy='24' r='8' fill='none' stroke='%23fff' stroke-width='2.6' opacity='.8'/%3E%3Cpath d='M24 24 L35 13' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='24' r='2.4' fill='%23fff'/%3E%3Ccircle cx='31' cy='30' r='2.6' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/ns.css">
+<script src="../shared/ns.js"></script>
+<script src="../shared/ns-data.js"></script>
+<style>
+  .rr-side{position:sticky;top:calc(var(--topbar-h) + 20px);display:grid;grid-template-columns:minmax(0,1fr);gap:16px;min-width:0}
+  @media (max-width:1100px){.rr-side{position:static}}
+  .rbar{display:inline-flex;align-items:center;gap:8px;min-width:0}
+  .rbar .ns-progress{width:64px;height:6px;flex:none}
+  .rbar b{font-variant-numeric:tabular-nums;min-width:22px}
+  .drv-list{display:grid;gap:8px}
+  .drv{display:grid;grid-template-columns:minmax(0,1fr) 110px 40px;gap:10px;align-items:center;font-size:12.5px}
+  .drv .lb{display:flex;align-items:center;gap:7px;min-width:0;color:var(--ink-2)}
+  .drv .lb svg{width:13px;height:13px;color:var(--ink-4);flex:none}
+  .drv .bar{position:relative;height:8px;border-radius:99px;background:var(--surface-3);overflow:hidden}
+  .drv .bar i{position:absolute;left:0;top:0;bottom:0;border-radius:99px;background:var(--viz-critical);opacity:.85}
+  .drv.neg .bar i{background:var(--viz-good)}
+  .drv b{text-align:right;font-variant-numeric:tabular-nums}
+  .drv.neg b{color:var(--ok)}
+  .dchip{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 8px;border-radius:6px;font-size:11.5px;font-weight:500;background:var(--bad-bg);color:var(--bad);white-space:nowrap;max-width:100%}
+  .dchip svg{width:12px;height:12px;flex:none}
+  .dchip.neg{background:var(--ok-bg);color:var(--ok)}
+  .dchip.soft{background:var(--surface-3);color:var(--ink-2)}
+  .band-dot{display:inline-block;width:9px;height:9px;border-radius:50%;flex:none}
+  .rr-legend{display:flex;gap:16px;flex-wrap:wrap;align-items:center;font-size:12px;color:var(--ink-3);margin-top:8px}
+  .rr-legend span{display:inline-flex;align-items:center;gap:6px}
+  .risk-row{display:grid;grid-template-columns:minmax(0,1.4fr) 84px minmax(0,1fr) auto;gap:12px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2);font-size:12.5px}
+  .risk-row:last-child{border-bottom:0}
+  @media (max-width:720px){.risk-row{grid-template-columns:minmax(0,1fr) auto auto}.risk-row .hide-row{display:none}.risk-row .rbar .ns-progress{display:none}}
+  .hi-list{display:grid}
+  .hi-item{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line-2)}
+  .hi-item:last-child{border-bottom:0}
+  .hi-item .chips{display:flex;gap:5px;flex-wrap:wrap;margin-top:6px}
+  .score-pill{display:inline-grid;place-items:center;width:40px;height:40px;border-radius:12px;font-weight:700;font-size:14px;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+  .score-pill.High{background:var(--bad-bg);color:var(--bad)}
+  .score-pill.Medium{background:var(--warn-bg);color:var(--warn)}
+  .score-pill.Low{background:var(--ok-bg);color:var(--ok)}
+  .comp-pos{position:relative;height:10px;border-radius:99px;background:linear-gradient(90deg,var(--bad-bg),var(--surface-3) 35%,var(--surface-3) 65%,var(--ok-bg));margin:26px 0 8px}
+  .comp-pos .mid{position:absolute;left:50%;top:-4px;bottom:-4px;width:2px;background:var(--ink-4)}
+  .comp-pos .me{position:absolute;top:50%;width:16px;height:16px;border-radius:50%;background:var(--brand);border:3px solid var(--surface);box-shadow:var(--shadow);transform:translate(-50%,-50%)}
+  .comp-pos .me::after{content:attr(data-v);position:absolute;top:-26px;left:50%;transform:translateX(-50%);font-size:11.5px;font-weight:700;color:var(--ink);white-space:nowrap}
+  .comp-scale{display:flex;justify-content:space-between;font-size:11px;color:var(--ink-4)}
+  .filters{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:14px}
+  .filters .ns-select{width:100%}
+  .kcard-top{display:flex;align-items:center;gap:8px;min-width:0}
+  .kcard-top .nm{font-weight:600;font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kcard-top .tm{font-size:11px;color:var(--ink-3);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .kcard .due{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;color:var(--ink-3)}
+  .kcard .due svg{width:12px;height:12px}
+  .kcard .due.over{color:var(--bad);font-weight:600}
+  .kcard .due.saved{color:var(--ok);font-weight:600}
+  .kcard .ns-avatar.xs{--sz:22px;font-size:9px}
+  .ns-kanban{grid-auto-columns:minmax(280px,1fr)}
+  .bt-table{width:100%;border-collapse:collapse;font-size:13px}
+  .bt-table th,.bt-table td{padding:9px 10px;border-bottom:1px solid var(--line-2);text-align:right;font-variant-numeric:tabular-nums}
+  .bt-table th:first-child,.bt-table td:first-child{text-align:left}
+  .bt-table thead th{font-size:11px;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);font-weight:700}
+  .bt-table tfoot td{font-weight:700;border-bottom:0}
+  .factor{display:grid;grid-template-columns:34px minmax(0,1fr) auto;gap:12px;align-items:start;padding:12px 0;border-bottom:1px solid var(--line-2)}
+  .factor:last-child{border-bottom:0}
+  .factor .w{font-variant-numeric:tabular-nums;font-weight:700;font-size:13px;padding:3px 9px;border-radius:8px;background:var(--bad-bg);color:var(--bad);white-space:nowrap}
+  .factor .w.neg{background:var(--ok-bg);color:var(--ok)}
+  .factor .rule{font-size:11.5px;color:var(--ink-4);margin-top:3px;font-family:var(--font-mono)}
+  .sim{display:grid;grid-template-columns:minmax(0,1fr) 260px;gap:20px;align-items:start}
+  @media (max-width:900px){.sim{grid-template-columns:minmax(0,1fr)}}
+  .sim-out{display:grid;justify-items:center;gap:8px;padding:18px;border-radius:14px;background:var(--surface-2);border:1px solid var(--line-2);text-align:center}
+  .sim-delta{font-size:13px;font-weight:600}
+  .theme-chip{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 10px;border-radius:8px;font-size:12.5px;background:var(--surface-3);color:var(--ink-2);border:1px solid var(--line)}
+  .theme-chip b{font-size:11px;background:var(--surface);border:1px solid var(--line);padding:0 6px;border-radius:99px;color:var(--ink-3)}
+  .hero-kpis{display:flex;gap:26px;flex-wrap:wrap;margin-top:18px}
+  .hero-kpis b{display:block;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1}
+  .hero-kpis span{font-size:11.5px;color:rgba(255,255,255,.75);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
+  .act-hist{display:grid;gap:8px}
+  .act-hist .it{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;font-size:12.5px;padding:8px 10px;border-radius:10px;background:var(--surface-2)}
+  .act-hist .ns-avatar.xs{--sz:22px;font-size:9px}
+  .team-pulse{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .team-pulse > div{padding:10px 12px;border-radius:12px;background:var(--surface-2);font-size:12px;color:var(--ink-3)}
+  .team-pulse b{display:block;font-size:20px;color:var(--ink);letter-spacing:-.02em}
+  .callout{display:flex;gap:14px;align-items:flex-start;padding:14px 16px;border-radius:14px;background:var(--bad-bg);border:1px solid color-mix(in srgb,var(--bad) 25%,transparent)}
+  .callout .ns-avatar.lg{flex:none}
+  @media (max-width:640px){.callout{flex-wrap:wrap}.callout > .grid{grid-auto-flow:column;width:100%;grid-template-columns:1fr 1fr}}
+  .exit-name{font-weight:600}
+  .savings-note{font-size:11.5px;color:var(--ink-4)}
+  .cadence{display:inline-flex;align-items:center;gap:6px;font-size:12.5px}
+  .cadence i{width:8px;height:8px;border-radius:50%;background:var(--ok)}
+  .cadence.warn i{background:var(--warn)}.cadence.bad i{background:var(--bad)}
+  .mini-stat{display:grid;gap:2px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+  .mini-stat span{font-size:11.5px;color:var(--ink-3)}
+  .mini-stat b{font-size:18px;letter-spacing:-.02em}
+  .ns-drawer .ns-card{box-shadow:none}
+  .kcard{gap:9px}
+  .kcard.is-over{border-color:color-mix(in srgb,var(--bad) 35%,var(--line));box-shadow:inset 3px 0 0 var(--bad),var(--shadow-xs)}
+  .kcard .knote{font-size:12px;line-height:1.45;color:var(--ink-3);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .kcard .meta .ns-btn{height:24px;width:24px;padding:0;justify-content:center}
+  .kscore{display:inline-grid;place-items:center;min-width:30px;height:24px;padding:0 6px;border-radius:8px;font-weight:700;font-size:12px;font-variant-numeric:tabular-nums;flex:none}
+  .kscore.High{background:var(--bad-bg);color:var(--bad)}.kscore.Medium{background:var(--warn-bg);color:var(--warn)}.kscore.Low{background:var(--ok-bg);color:var(--ok)}
+  .kempty{display:grid;place-items:center;text-align:center;gap:6px;min-height:120px;border:1.5px dashed var(--line);border-radius:12px;font-size:12px;color:var(--ink-4);padding:14px}
+  .kempty svg{width:18px;height:18px}
+  .kcol-foot{display:flex;justify-content:center}
+  .ns-kanban-col{align-content:start}
+  .big-num{font-family:var(--font-display);font-size:40px;font-weight:800;letter-spacing:-.03em;line-height:1}
+  .big-num small{font-size:14px;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:4px}
+  .theme-chip{cursor:pointer;transition:background var(--dur),border-color var(--dur)}
+  .theme-chip:hover{border-color:var(--brand-line)}
+  .theme-chip[aria-pressed="true"]{background:var(--brand-soft);border-color:var(--brand-line);color:var(--brand-text)}
+  .sim-ctl{display:grid;gap:6px}
+  .sim-ctl .ns-label{display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+  .sim-ctl .ns-label b{font-variant-numeric:tabular-nums;color:var(--ink);font-size:14px}
+  .sim-ctl .ns-label s{color:var(--ink-4);font-weight:500;font-size:12px;margin-right:6px}
+  .sim-out .ns-btn{width:100%;justify-content:center}
+  .sim-out .cost{font-size:12px;color:var(--ink-3);line-height:1.5}
+  .sc-row{display:grid;grid-template-columns:auto minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:12.5px}
+  .sc-row:last-child{border-bottom:0}
+  .bt-table td.hit{color:var(--bad);font-weight:700}
+  .bt-wrap{overflow-x:auto;margin:0 -4px;padding:0 4px}
+  .exit-quote{padding:12px 14px;border-radius:12px;background:var(--surface-2);border-left:3px solid var(--brand);font-size:13px;line-height:1.55;color:var(--ink-2)}
+  .hi-top{display:flex;align-items:flex-start;justify-content:space-between;gap:8px;min-width:0}
+  .hi-top .ns-person{flex:1;min-width:0;overflow:hidden}
+  .hi-item{grid-template-columns:auto minmax(0,1fr)}
+  .drv{grid-template-columns:minmax(0,1fr) 84px 34px}
+  .drv .lb .truncate{white-space:normal;overflow:visible;line-height:1.3}
+  @media (min-width:900px){.ns-stats.six{grid-template-columns:repeat(3,minmax(0,1fr))}}
+  @media (max-width:560px){.bt-table th,.bt-table td{padding:8px 5px;font-size:12px}.bt-table thead th{font-size:10px;letter-spacing:.04em}}
+  @media (max-width:720px){.ns-grid > .span-2{grid-column:1/-1}}
+  .rr-dense .dchip{max-width:none}
+  @media (max-width:1560px){.rr-dense .hide-md{display:none}}
+  .rr-dense .ns-table th,.rr-dense .ns-table td{padding-left:10px;padding-right:10px}
+  .mstat-row{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  @media (max-width:560px){.mstat-row{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}.sc-row{grid-template-columns:auto minmax(0,1fr) auto}.sc-row .hide-row{display:none}}
+</style>
+</head>
+<body>
+<script>
+(function () {
+  'use strict';
+  const D = NSData, U = NS.util, F = NS.fmt, raw = NS.raw, ic = NS.ic; const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const store = NS.store('retention-radar');
+  // The shared model adds +9 for the tenure window but labels the driver 7; align the displayed driver with the points actually applied.
+  D.people.forEach((p) => p.riskDrivers.forEach((d) => { if (d.k === 'tenure') d.w = 9; }));
+  const TODAY = new Date('2026-09-24T10:00:00');
+  const iso = (d) => d.toISOString().slice(0, 10);
+  const addDays = (d, n) => { const x = new Date(typeof d === 'string' ? d + 'T10:00:00' : d); x.setDate(x.getDate() + n); return x; };
+  const daysBetween = (a, b) => Math.round((new Date(b) - new Date(a)) / 86400000);
+
+  /* ------------------------------------------------------------------ */
+  /* 1. Domain                                                           */
+  /* ------------------------------------------------------------------ */
+  const BAND = { High: { cls: 'bad', color: 'var(--viz-critical)', min: 65 }, Medium: { cls: 'warn', color: 'var(--viz-warn)', min: 40 }, Low: { cls: 'ok', color: 'var(--viz-good)', min: 0 } };
+  const BANDS = ['High', 'Medium', 'Low'];
+  const bandOf = (r) => (r >= 65 ? 'High' : r >= 40 ? 'Medium' : 'Low');
+  const TYPES = ['Stay interview', 'Compensation review', 'Growth conversation', 'Manager coaching', 'Workload reset', 'Recognition', 'Internal mobility'];
+  const TYPE_ICON = { 'Stay interview': 'message-square', 'Compensation review': 'banknote', 'Growth conversation': 'trending-up', 'Manager coaching': 'users', 'Workload reset': 'sliders', 'Recognition': 'award', 'Internal mobility': 'route' };
+  const FACTOR = {
+    pay: { icon: 'banknote', action: 'Compensation review', why: 'Pay sits under the band midpoint — the single most common exit reason at Northstar.' },
+    growth: { icon: 'trending-up', action: 'Growth conversation', alt: 'Internal mobility', why: 'Long time in level; make the path to the next level explicit or open a rotation.' },
+    engagement: { icon: 'heart-pulse', action: 'Stay interview', why: 'Engagement is soft — ask what would make them stay before someone else asks what would make them leave.' },
+    manager: { icon: 'users', action: 'Manager coaching', why: 'Team-level manager signal is weak; coaching the manager lifts the whole team.' },
+    change: { icon: 'git-branch', action: 'Stay interview', why: 'A new manager resets trust; a structured conversation shortens the dip.' },
+    tenure: { icon: 'hourglass', action: 'Recognition', why: 'The 18–42 month window is where Northstar historically loses people who feel unseen.' },
+    market: { icon: 'globe', action: 'Compensation review', why: 'In-demand skills get recruited — check market position before an offer arrives.' },
+    pulse: { icon: 'activity', action: 'Stay interview', why: 'A sharp pulse drop usually has a specific cause; find it.' },
+    protect: { icon: 'shield-check', action: null, why: 'Protective factor — reduces the score.' },
+  };
+  // Model weights as implemented in the shared risk model (ns-data). Tenure adds +9 to the score although its driver label carries 7 — we show the effective +9.
+  const MODEL = [
+    { k: 'pay', w: 18, alt: 12, rule: 'compa < 0.90 → +18 · 0.90–0.95 and rating ≥ 4 → +12' },
+    { k: 'engagement', w: 20, alt: 9, rule: 'engagement < 64 → +20 · 64–71 → +9' },
+    { k: 'growth', w: 15, rule: 'IC at P3 or below and > 3 yrs in level → +15' },
+    { k: 'manager', w: 10, rule: 'manager-effectiveness signal < 0.65 → +10' },
+    { k: 'pulse', w: 10, rule: 'pulse fell 8+ pts over the last quarter → +10' },
+    { k: 'tenure', w: 9, rule: 'tenure between 18 and 42 months → +9' },
+    { k: 'change', w: 8, rule: 'manager changed in the last 6 months → +8' },
+    { k: 'market', w: 6, rule: 'holds an in-demand skill set → +6' },
+    { k: 'protect', w: -8, alt: -12, rule: 'rating ≥ 4 and compa ≥ 1.05 → −8 · promoted in the last 12 months → −12' },
+  ];
+  const REASONS = [['Compensation', 21, 'var(--viz-1)'], ['Growth', 17, 'var(--viz-2)'], ['Better offer', 9, 'var(--viz-3)'], ['Manager', 10, 'var(--viz-4)'], ['Burnout', 8, 'var(--viz-5)'], ['Relocation', 7, 'var(--viz-6)'], ['Other', 3, 'var(--viz-7)']];
+  const THEMES = [['Pay below market', 24], ['No visible path to the next level', 19], ['Faster promotion elsewhere', 14], ['Manager turnover', 11], ['On-call and after-hours load', 9], ['Wanted fully remote', 8], ['Equity refresh missing', 7], ['Relocation for family', 7], ['Team re-org fatigue', 6], ['Recognition felt uneven', 5]];
+  const HIGH_HIST = [46, 44, 41, 43, 39, 37, 38, 35, 36, 33, 34]; // trailing 11 months; the 12th point is live
+  const REPLACEMENT_FACTOR = 0.75; // replacement cost assumption: 0.75 × annual salary (recruiting, ramp, lost output)
+  const PULSE_LABELS = D.series.last12.slice(-6);
+  const LEVEL_BANDS = [['early', 'Early career (P0–P2)', (p) => p.track === 'IC' && D.levelMap[p.level].order <= 2], ['senior', 'Senior (P3–P4)', (p) => p.track === 'IC' && D.levelMap[p.level].order > 2 && D.levelMap[p.level].order <= 4], ['staff', 'Staff+ (P4.5+)', (p) => p.track === 'IC' && D.levelMap[p.level].order > 4], ['mgr', 'Managers (M)', (p) => p.track === 'M'], ['exec', 'Executives (E)', (p) => p.track === 'E']];
+  const TENURE_BANDS = [['lt1', '< 1 yr', (p) => p.tenure < 1], ['1-3', '1–3 yrs', (p) => p.tenure >= 1 && p.tenure < 3], ['3-6', '3–6 yrs', (p) => p.tenure >= 3 && p.tenure < 6], ['6+', '6+ yrs', (p) => p.tenure >= 6]];
+  const tenureBand = (t) => (t < 1 ? '< 1 yr' : t < 3 ? '1–3 yrs' : t < 6 ? '3–6 yrs' : '6+ yrs');
+
+  /* scope per persona */
+  const HRBP = 'NS-1902', MGR = 'NS-1180', PRIYA = 'NS-1207', REWARDS = 'NS-1930', LAURA = 'NS-1901';
+  const scopeOf = (persona) => (persona.id === 'manager' ? D.reports(persona.personId) : persona.id === 'exec' ? D.dept('Engineering') : D.people);
+  const scopeName = (persona) => (persona.id === 'manager' ? 'Identity & Access' : persona.id === 'exec' ? 'Engineering' : 'Northstar Labs');
+  const inScope = (persona, pid) => scopeOf(persona).some((p) => p.id === pid);
+  const meFor = (persona) => D.byId(persona.personId);
+
+  /* ------------------------------------------------------------------ */
+  /* 2. Scoring — the documented model, re-implemented for what-if       */
+  /* ------------------------------------------------------------------ */
+  const featuresOf = (p) => ({ compa: p.compa, engagement: p.engagement, rating: p.rating || 0, timeInLevel: p.timeInLevel, ic: p.track === 'IC', order: D.levelMap[p.level].order, tenure: p.tenure, lowManager: p.riskDrivers.some((d) => d.k === 'manager'), managerChanged: p.managerChanged, hot: p.riskDrivers.some((d) => d.k === 'market'), pulseDrop: p.pulse[5] < p.pulse[2] - 8, promoted: !!(p.lastPromo && p.timeInLevel < 1) });
+  const contributions = (f) => {
+    const c = [];
+    if (f.compa < 0.9) c.push({ k: 'pay', w: 18, label: 'Paid below 90% of band midpoint' }); else if (f.compa < 0.95 && f.rating >= 4) c.push({ k: 'pay', w: 12, label: 'High performer under midpoint' });
+    if (f.timeInLevel > 3 && f.ic && f.order <= 3) c.push({ k: 'growth', w: 15, label: `${f.timeInLevel.toFixed(1)} yrs since last promotion` });
+    if (f.engagement < 64) c.push({ k: 'engagement', w: 20, label: `Engagement ${Math.round(f.engagement)} (below 64)` }); else if (f.engagement < 72) c.push({ k: 'engagement', w: 9, label: `Engagement ${Math.round(f.engagement)} (soft)` });
+    if (f.lowManager) c.push({ k: 'manager', w: 10, label: 'Low manager-effectiveness signal' });
+    if (f.managerChanged) c.push({ k: 'change', w: 8, label: 'Manager changed in last 6 months' });
+    if (f.tenure > 1.5 && f.tenure < 3.5) c.push({ k: 'tenure', w: 9, label: 'Tenure in the 18–42 month window' });
+    if (f.hot) c.push({ k: 'market', w: 6, label: 'In-demand skill set (hot market)' });
+    if (f.pulseDrop) c.push({ k: 'pulse', w: 10, label: 'Pulse dropped 8+ pts in 3 months' });
+    if (f.rating >= 4 && f.compa >= 1.05) c.push({ k: 'protect', w: -8, label: 'Recognised and paid above mid' });
+    if (f.promoted) c.push({ k: 'protect', w: -12, label: 'Promoted in the last 12 months' });
+    return c.sort((a, b) => b.w - a.w);
+  };
+  const baselineOf = (p) => p.risk - U.sum(contributions(featuresOf(p)), 'w');
+  const scoreWith = (p, f) => { const c = contributions(f); return { risk: Math.round(U.clamp(baselineOf(p) + U.sum(c, 'w'), 3, 97)), contributions: c }; };
+
+  /* ------------------------------------------------------------------ */
+  /* 3. Seeded state — exits, saves, actions (persisted)                 */
+  /* ------------------------------------------------------------------ */
+  const NAME_POOLS = {
+    IN: [['Aarav', 'Ishita', 'Rhea', 'Kabir', 'Mihir', 'Saanvi', 'Devika', 'Arnav', 'Zara', 'Advait', 'Ira', 'Reyansh', 'Anika', 'Vihaan', 'Myra', 'Aryan'], ['Bhatia', 'Trivedi', 'Chandra', 'Kaur', 'Mehra', 'Rastogi', 'Sinha', 'Goswami', 'Kohli', 'Bajaj', 'Puri', 'Nambiar', 'Raghavan', 'Anand', 'Lal', 'Ghosh']],
+    US: [['Avery', 'Peyton', 'Harper', 'Elliot', 'Quinn', 'Sawyer', 'Reese', 'Rowan', 'Skylar', 'Emerson', 'Blake', 'Dakota', 'Morgan', 'Casey', 'Jordan', 'Riley'], ['Whitfield', 'Castillo', 'Brennan', 'Delgado', 'Fitzgerald', 'Hayes', 'Kimura', 'Lindgren', 'Maddox', 'Navarro', 'Osborne', 'Pruitt', 'Sandoval', 'Thornton', 'Vance', 'Winslow']],
+    EU: [['Mathilde', 'Elias', 'Freja', 'Jasper', 'Livia', 'Anouk', 'Ruben', 'Matteo', 'Solveig', 'Teodor', 'Ilse', 'Benedikt', 'Cosima', 'Floris', 'Aurelia', 'Kasimir'], ['Aalbers', 'Brandt', 'Corradi', 'Dahl', 'Eriksen', 'Fontana', 'Gerlach', 'Holm', 'Janssens', 'Kessler', 'Lombardi', 'Mertens', 'Nyström', 'Ostrowski', 'Paulsen', 'Renner']],
+    AP: [['Hazel', 'Kenta', 'Mei', 'Rui', 'Ji-woo', 'Aiko', 'Darius', 'Farah', 'Lin', 'Tobias', 'Nadira', 'Yong', 'Keira', 'Haruto', 'Aisha', 'Callum'], ['Aoki', 'Bautista', 'Cheong', 'Dang', 'Fong', 'Halim', 'Ishikawa', 'Kwan', 'Leung', 'Moriyama', 'Ngata', 'Oh', 'Pang', 'Salleh', 'Tsai', 'Yap']],
+  };
+  const poolFor = (loc) => (loc.country === 'India' ? 'IN' : loc.region === 'NA' ? 'US' : loc.region === 'EU' ? 'EU' : 'AP');
+  const DEPT_W = [['Engineering', 0.5], ['Sales', 0.16], ['Customer Success', 0.11], ['Product', 0.05], ['Marketing', 0.05], ['Design', 0.03], ['Finance', 0.03], ['People', 0.03], ['IT & Workplace', 0.03], ['Legal & Compliance', 0.01]];
+  const buildExits = () => {
+    const r = NS.rng(8811), used = new Set(D.people.map((p) => p.name));
+    const pickW = (arr) => { let u = r() * U.sum(arr, (x) => x[1]); for (const x of arr) { u -= x[1]; if (u <= 0) return x[0]; } return arr[arr.length - 1][0]; };
+    const reasonsBag = REASONS.flatMap(([n, c]) => Array(c).fill(n)); // 75 voluntary
+    for (let i = reasonsBag.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [reasonsBag[i], reasonsBag[j]] = [reasonsBag[j], reasonsBag[i]]; }
+    const monthStarts = D.series.last12.map((_, i) => { const d = new Date('2025-10-01T10:00:00'); d.setMonth(d.getMonth() + i); return d; });
+    const invol = new Set([4, 15, 27, 38, 49, 60, 71, 80]); // 8 involuntary / contract-end exits spread across the year
+    const out = []; let n = 0, vi = 0;
+    D.series.exits.forEach((cnt, mi) => {
+      for (let k = 0; k < cnt; k++, n++) {
+        const dept = pickW(DEPT_W); const teams = D.teams.filter((t) => t.dept === dept); const team = teams[Math.floor(r() * teams.length)];
+        const mates = D.team(team.name); const mate = mates[Math.floor(r() * mates.length)] || D.byId(team.managerId); const loc = D.locMap[mate.location];
+        const u = r(); const level = dept === 'Engineering' ? (u < 0.16 ? 'P1' : u < 0.55 ? 'P2' : u < 0.88 ? 'P3' : u < 0.96 ? 'P4' : 'M2') : (u < 0.3 ? 'P1' : u < 0.7 ? 'P2' : u < 0.92 ? 'P3' : 'M2');
+        const tu = r(); const tenure = U.round(tu < 0.22 ? 0.3 + r() * 0.7 : tu < 0.64 ? 1 + r() * 2 : tu < 0.88 ? 3 + r() * 3 : 6 + r() * 4, 1);
+        const rating = r() < 0.39 ? (r() < 0.25 ? 5 : 4) : (r() < 0.75 ? 3 : 2);
+        const pool = NAME_POOLS[poolFor(loc)]; let name; for (let t = 0; t < 30; t++) { name = `${pool[0][Math.floor(r() * pool[0].length)]} ${pool[1][Math.floor(r() * pool[1].length)]}`; if (!used.has(name)) break; } used.add(name);
+        const voluntary = !invol.has(n); const reason = voluntary ? reasonsBag[vi++] : 'Involuntary / contract end';
+        const compa = U.round(0.84 + r() * 0.3, 2); const salary = Math.round((D.levelMap[level].mid * loc.tier * (dept === 'Engineering' ? 1 : 0.8) * compa) / 100) * 100;
+        const pb = r(); const predicted = !voluntary ? (pb < 0.3 ? 'Medium' : 'Low') : pb < 0.813 ? 'High' : pb < 0.947 ? 'Medium' : 'Low';
+        const date = iso(addDays(monthStarts[mi], Math.floor(r() * 27)));
+        out.push({ id: 'X-' + String(n + 1).padStart(3, '0'), name, dept, org: team.org, team: team.name, level, location: loc.id, city: loc.city, region: loc.region, tenure, rating, regretted: rating >= 4, voluntary, reason, salary, predicted, date, month: mi, managerId: team.managerId });
+      }
+    });
+    return out;
+  };
+  const EXITS = buildExits();
+
+  const buildState = () => {
+    const r = NS.rng(4477);
+    const st = { v: 3, actions: [], saves: [], overrides: {}, activity: [] };
+    let seq = 100; const aid = () => 'A-' + (seq++);
+    const ownerFor = (p, type) => (type === 'Compensation review' ? (r() < 0.5 ? HRBP : REWARDS) : type === 'Manager coaching' ? (r() < 0.6 ? HRBP : LAURA) : p.managerId || HRBP);
+    const typeFor = (p) => { const top = p.riskDrivers.find((d) => d.w > 0); const f = top ? FACTOR[top.k] : null; return f && f.action ? (f.alt && r() < 0.4 ? f.alt : f.action) : 'Stay interview'; };
+    const noteFor = (p, type) => ({ 'Stay interview': `30-minute stay conversation with ${p.first}: what keeps them, what would pull them away, what one change matters most.`, 'Compensation review': `Off-cycle review — ${p.first} sits at compa ${p.compa.toFixed(2)}; check market position for ${D.levelMap[p.level].short} in ${p.city}.`, 'Growth conversation': `Map the path to the next level with ${p.first}; agree two stretch responsibilities for the next quarter.`, 'Manager coaching': `Coach ${(D.byId(p.managerId) || {}).first || 'the manager'} on 1:1 cadence and recognition habits; re-check team pulse in 6 weeks.`, 'Workload reset': `Rebalance on-call and review load for ${p.first}; protect two focus days a week for one quarter.`, 'Recognition': `Nominate ${p.first} for the quarterly impact award and share the write-up with the leadership channel.`, 'Internal mobility': `Explore a rotation for ${p.first} — two adjacent teams have open scope that matches their skills.` }[type]);
+    // open actions for 20 of the 32 High-risk people (Priya deliberately has none — she is the manager demo case)
+    const highs = D.people.filter((p) => p.riskBand === 'High' && p.id !== PRIYA).slice();
+    for (let i = highs.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [highs[i], highs[j]] = [highs[j], highs[i]]; }
+    highs.slice(0, 20).forEach((p, i) => { const type = typeFor(p); const created = iso(addDays(TODAY, -Math.floor(5 + r() * 35))); const due = i < 3 ? iso(addDays(TODAY, -(2 + i * 3))) : iso(addDays(TODAY, Math.floor(2 + r() * 24))); st.actions.push({ id: aid(), pid: p.id, type, owner: ownerFor(p, type), status: i % 2 === 0 ? 'doing' : 'todo', created, due, note: noteFor(p, type) }); });
+    // a few Medium-risk people already have actions in flight
+    D.people.filter((p) => p.riskBand === 'Medium' && p.risk >= 56).slice(0, 8).forEach((p, i) => { const type = typeFor(p); st.actions.push({ id: aid(), pid: p.id, type, owner: ownerFor(p, type), status: i % 3 === 0 ? 'todo' : 'doing', created: iso(addDays(TODAY, -Math.floor(3 + r() * 20))), due: iso(addDays(TODAY, Math.floor(3 + r() * 20))), note: noteFor(p, type) }); });
+    // 31 saves this year: flagged High, acted on, now Medium/Low
+    const saveTypes = [].concat(Array(9).fill('Compensation review'), Array(7).fill('Stay interview'), Array(6).fill('Growth conversation'), Array(3).fill('Manager coaching'), Array(3).fill('Internal mobility'), Array(2).fill('Workload reset'), ['Recognition']);
+    const pool = D.people.filter((p) => p.riskBand !== 'High' && p.risk >= 26 && p.risk < 60 && p.status === 'Active' && p.id !== PRIYA && !st.actions.some((a) => a.pid === p.id));
+    for (let i = pool.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [pool[i], pool[j]] = [pool[j], pool[i]]; }
+    pool.slice(0, 31).forEach((p, i) => { const type = saveTypes[i]; const days = Math.round({ 'Compensation review': 34, 'Stay interview': 41, 'Growth conversation': 52, 'Manager coaching': 68, 'Internal mobility': 74, 'Workload reset': 47, 'Recognition': 38 }[type] * (0.7 + r() * 0.6)); const saved = iso(addDays(new Date('2026-01-20T10:00:00'), Math.floor(r() * 232))); const created = iso(addDays(saved, -days)); const prev = 66 + Math.floor(r() * 17); const id = aid(); st.actions.push({ id, pid: p.id, type, owner: ownerFor(p, type), status: 'done', created, due: iso(addDays(created, 21)), completed: saved, note: noteFor(p, type), saved: true }); st.saves.push({ pid: p.id, prevRisk: prev, newRisk: p.risk, date: saved, type, days, actionId: id }); });
+    // 6 completed actions that did not (yet) move the needle
+    pool.slice(31, 37).forEach((p, i) => { const type = TYPES[(i * 3) % TYPES.length]; const created = iso(addDays(TODAY, -Math.floor(30 + r() * 60))); st.actions.push({ id: aid(), pid: p.id, type, owner: ownerFor(p, type), status: 'done', created, due: iso(addDays(created, 21)), completed: iso(new Date(Math.min(+addDays(created, 14 + Math.floor(r() * 30)), +addDays(TODAY, -1 - i)))), note: noteFor(p, type) }); });
+    return st;
+  };
+  let S = store.get('state');
+  if (!S || S.v !== 3) { S = buildState(); }
+  const save = U.debounce(() => store.set('state', S), 250);
+  const log = (msg) => { S.activity.unshift({ t: new Date().toISOString(), msg }); S.activity = S.activity.slice(0, 40); save(); };
+
+  /* effective risk (saves recorded in this session override the seeded score) */
+  const riskOf = (p) => (S.overrides[p.id] ? S.overrides[p.id].risk : p.risk);
+  const bandOfP = (p) => bandOf(riskOf(p));
+  const actionsFor = (pid) => S.actions.filter((a) => a.pid === pid).sort((a, b) => (b.created > a.created ? 1 : -1));
+  const openActionsFor = (pid) => actionsFor(pid).filter((a) => a.status !== 'done');
+  const lastActionFor = (pid) => actionsFor(pid)[0];
+  const isOverdue = (a) => a.status !== 'done' && a.due < iso(TODAY);
+  const saveFor = (pid) => S.saves.find((s) => s.pid === pid);
+  const replacementCost = (p) => Math.round(p.salary * REPLACEMENT_FACTOR);
+  const savesIn = (people) => { const ids = new Set(people.map((p) => p.id)); return S.saves.filter((s) => ids.has(s.pid)); };
+  const costAvoided = (people) => U.sum(savesIn(people), (s) => replacementCost(D.byId(s.pid)));
+  const exitsIn = (persona) => (persona.id === 'exec' ? EXITS.filter((x) => x.dept === 'Engineering') : persona.id === 'manager' ? [] : EXITS);
+  const recommended = (p) => { const seen = new Set(), out = []; p.riskDrivers.filter((d) => d.w > 0).forEach((d) => { const f = FACTOR[d.k]; [f.action, f.alt].filter(Boolean).forEach((t) => { if (!seen.has(t)) { seen.add(t); out.push({ type: t, why: f.why, driver: d.label }); } }); }); if (!out.length) out.push({ type: 'Recognition', why: 'No active risk drivers — keep the good things visible.', driver: 'Protective profile' }); return out.slice(0, 4); };
+  const bandCounts = (people) => { const c = { High: 0, Medium: 0, Low: 0 }; people.forEach((p) => c[bandOfP(p)]++); return c; };
+  const highNoAction = (people) => people.filter((p) => bandOfP(p) === 'High' && !openActionsFor(p.id).length);
+
+  /* ------------------------------------------------------------------ */
+  /* 4. Shared UI pieces                                                 */
+  /* ------------------------------------------------------------------ */
+  const bandBadge = (band, o = {}) => `<span class="ns-badge ${BAND[band].cls} ${o.cls || ''}"><i class="dot"></i>${band}</span>`;
+  const scoreBar = (p) => { const r = riskOf(p), b = bandOf(r); return `<span class="rbar"><span class="ns-progress ${BAND[b].cls}"><i style="width:${r}%"></i></span><b>${r}</b></span>`; };
+  const driverChip = (d, o = {}) => `<span class="dchip ${d.w < 0 ? 'neg' : ''} ${o.cls || ''}" data-tip="${NS.esc(d.label)}">${ic(FACTOR[d.k].icon)}${o.short ? NS.esc(shortDriver(d)) : NS.esc(d.label)}</span>`;
+  const shortDriver = (d) => ({ pay: 'Pay', growth: 'Growth', engagement: 'Engagement', manager: 'Manager', change: 'Re-org', tenure: 'Tenure', market: 'Market', pulse: 'Pulse drop', protect: 'Protective' }[d.k]);
+  const driverBars = (drivers) => (drivers.length ? `<div class="drv-list">${drivers.map((d) => `<div class="drv ${d.w < 0 ? 'neg' : ''}"><span class="lb">${ic(FACTOR[d.k].icon)}<span class="truncate">${NS.esc(d.label)}</span></span><span class="bar"><i style="width:${Math.min(100, (Math.abs(d.w) / 20) * 100)}%"></i></span><b>${d.w > 0 ? '+' : '−'}${Math.abs(d.w)}</b></div>`).join('')}</div>` : '<div class="sm muted">No active drivers — the score is the population baseline.</div>');
+  const personLink = (p, sub) => `<a href="${NS.link('/people/' + p.id)}" class="ns-person" style="text-decoration:none;color:inherit">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb">${NS.esc(sub || p.title)}</div></div></a>`;
+  const typeBadge = (t, cls = 'brand') => `<span class="ns-badge ${cls} sq">${ic(TYPE_ICON[t], { size: 12 })}${t}</span>`;
+  const cadence = (p) => { const c = p.oneOnOnes; const cls = c === 'weekly' ? '' : c === 'biweekly' ? '' : c === 'monthly' ? 'warn' : 'bad'; return `<span class="cadence ${cls}"><i></i>${c === 'rare' ? 'Rare 1:1s' : c.charAt(0).toUpperCase() + c.slice(1) + ' 1:1s'}</span>`; };
+  const compPos = (p) => { const pct = U.clamp(((p.compa - 0.7) / 0.6) * 100, 2, 98); return `<div class="comp-pos"><span class="mid"></span><span class="me" style="left:${pct}%" data-v="${p.compa.toFixed(2)} · ${F.money(p.salary, { compact: true })}"></span></div><div class="comp-scale"><span>0.70</span><span>Band mid ${F.money(p.band.mid, { compact: true })}</span><span>1.30</span></div>`; };
+  const statusBadge = (a) => (a.status === 'done' ? (a.saved ? NS.badge('Saved', 'ok', true) : NS.badge('Done', 'neutral')) : isOverdue(a) ? NS.badge('Overdue', 'bad', true) : a.status === 'doing' ? NS.badge('In progress', 'info', true) : NS.badge('To do', 'neutral'));
+  const downloadCsv = (name, rows) => { const csv = rows.map((r) => r.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 500); NS.toast('Export ready', { desc: name, type: 'info' }); };
+  const ownerOptions = (p) => { const ids = U.uniq([p.managerId, HRBP, REWARDS, LAURA, NS.persona.personId].filter(Boolean)); return ids.map((id) => D.byId(id)).filter(Boolean); };
+
+  /* Log an action — modal, creates a queue card */
+  const logAction = (pid, preset, after) => {
+    const p = D.byId(pid); if (!p) return;
+    const recs = recommended(p);
+    const type = preset || recs[0].type;
+    NS.modal({ title: 'Log a retention action', sub: `${p.name} · ${p.title} · risk ${riskOf(p)} (${bandOfP(p)})`, size: 'lg',
+      body: `<div class="grid gap-4"><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Action type</span><select class="ns-select" id="atype">${TYPES.map((t) => `<option ${t === type ? 'selected' : ''}>${t}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Owner</span><select class="ns-select" id="aowner">${ownerOptions(p).map((o) => `<option value="${o.id}" ${o.id === (type === 'Compensation review' ? HRBP : p.managerId) ? 'selected' : ''}>${NS.esc(o.name)} · ${NS.esc(o.id === p.managerId ? 'Manager' : o.title)}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Due</span><input class="ns-input" type="date" id="adue" value="${iso(addDays(TODAY, 14))}"></label><label class="ns-field"><span class="ns-label">Status</span><select class="ns-select" id="astatus"><option value="todo">To do</option><option value="doing">In progress</option></select></label></div><label class="ns-field"><span class="ns-label">Plan <span class="opt">what will happen, by when</span></span><textarea class="ns-textarea" id="anote" placeholder="Be specific — the queue is reviewed weekly.">${NS.esc(recs.find((r) => r.type === type) ? `${recs.find((r) => r.type === type).why} Driver: ${recs.find((r) => r.type === type).driver}.` : '')}</textarea></label><div class="ns-alert brand">${ic('sparkles')}<div><b>Why this action</b><p id="awhy">${NS.esc(recs.find((r) => r.type === type) ? recs.find((r) => r.type === type).why : 'Pick the action that addresses the strongest driver first.')}</p></div></div></div>`,
+      actions: [{ label: 'Cancel' }, { label: 'Add to queue', cls: 'primary', onClick: (m) => { const a = { id: 'A-' + Date.now(), pid, type: m.el.querySelector('#atype').value, owner: m.el.querySelector('#aowner').value, status: m.el.querySelector('#astatus').value, created: iso(TODAY), due: m.el.querySelector('#adue').value || iso(addDays(TODAY, 14)), note: m.el.querySelector('#anote').value.trim() }; S.actions.unshift(a); log(`Logged “${a.type}” for ${p.name}`); NS.toast('Action added to the queue', { desc: `${a.type} · ${p.first} · due ${F.date(a.due, 'short')}`, action: { label: 'Open queue', onClick: () => NS.go('/actions') } }); NS.refresh(); after && after(a); } }],
+      mounted: (body) => { const sel = body.querySelector('#atype'), why = body.querySelector('#awhy'), note = body.querySelector('#anote'); sel.onchange = () => { const r = recs.find((x) => x.type === sel.value); why.textContent = r ? r.why : 'Not driven by a flagged factor — still worth doing if you know something the model does not.'; if (r && !note.value.trim()) note.value = `${r.why} Driver: ${r.driver}.`; }; } });
+  };
+  /* Mark as saved */
+  const markSaved = async (pid, after) => {
+    const p = D.byId(pid); const cur = riskOf(p); if (bandOf(cur) === 'Low') { NS.toast(`${p.first} is already Low risk`, { type: 'info' }); return; }
+    const ok = await NS.confirm({ title: `Mark ${p.first} as saved?`, body: `Records a save against the open action, re-scores ${p.first} as the model would after the driver is resolved, and counts ${F.money(replacementCost(p), { compact: true })} of avoided replacement cost (${REPLACEMENT_FACTOR}× salary). You can reset demo data at any time.`, confirmLabel: 'Mark as saved' });
+    if (!ok) return;
+    const newRisk = Math.max(12, Math.round(cur - 34 - (cur > 75 ? 6 : 0)));
+    S.overrides[pid] = { risk: newRisk, at: iso(TODAY) };
+    const open = openActionsFor(pid); const act = open[0]; let days = 21;
+    open.forEach((a) => { a.status = 'done'; a.completed = iso(TODAY); a.saved = true; });
+    if (act) days = Math.max(1, daysBetween(act.created, iso(TODAY)));
+    S.saves.push({ pid, prevRisk: cur, newRisk, date: iso(TODAY), type: act ? act.type : 'Stay interview', days, actionId: act ? act.id : null });
+    log(`Marked ${p.name} as saved (${cur} → ${newRisk})`);
+    NS.toast(`${p.first} marked as saved`, { desc: `Risk ${cur} → ${newRisk} · ${F.money(replacementCost(p), { compact: true })} replacement cost avoided`, type: 'ok' });
+    save(); NS.refresh(); after && after();
+  };
+
+  /* Risk profile drawer */
+  const openProfile = (pid) => {
+    const p = D.byId(pid); if (!p) return;
+    const r = riskOf(p), b = bandOf(r), mgr = D.byId(p.managerId), sv = saveFor(pid), acts = actionsFor(pid), recs = recommended(p);
+    NS.drawer({ size: 'lg', eyebrow: 'Risk profile', title: `<span class="flex items-center gap-3">${NS.avatar(p, { size: 'lg' })}<span><span style="display:block">${NS.esc(p.name)}</span><span class="sm muted" style="font-weight:400">${NS.esc(p.title)} · ${NS.esc(p.team)}</span></span></span>`,
+      body: `<div class="grid gap-4">
+        <div class="ns-card"><div class="ns-card-body flex gap-5 items-center wrap">${NS.ring({ value: r / 100, size: 112, thickness: 11, label: String(r), sub: 'risk score', color: BAND[b].color })}<div class="grow min-w-0"><div class="flex items-center gap-2 wrap">${bandBadge(b)}${sv ? NS.badge(`Saved ${F.date(sv.date, 'short')} · was ${sv.prevRisk}`, 'ok') : ''}${p.regrettable ? NS.badge('Regrettable if lost', 'brand') : ''}${p.status !== 'Active' ? NS.badge(p.status, 'warn') : ''}</div><div class="grid gap-1 mt-3 sm"><div class="flex justify-between gap-3"><span class="muted">Engagement</span><b class="tnum">${p.engagement}</b></div><div class="flex justify-between gap-3"><span class="muted">Compa-ratio</span><b class="tnum">${p.compa.toFixed(2)}</b></div><div class="flex justify-between gap-3"><span class="muted">Tenure · in level</span><b class="tnum">${F.tenure(p.tenure)} · ${p.timeInLevel} yrs</b></div><div class="flex justify-between gap-3"><span class="muted">Last rating</span><b>${p.rating ? D.ratingScale[p.rating - 1].label : 'Not yet rated'}</b></div><div class="flex justify-between gap-3"><span class="muted">Replacement cost</span><b class="tnum">${F.money(replacementCost(p), { compact: true })}</b></div></div></div></div></div>
+        ${NS.card({ title: 'Why this score', sub: `Baseline ${Math.round(baselineOf(p))} + drivers · positive drivers push up, protective ones pull down`, body: driverBars(p.riskDrivers) })}
+        <div class="ns-grid c2">
+          ${NS.card({ title: 'Pulse · last 6 months', body: '<div id="dwPulse"></div>' })}
+          ${NS.card({ title: 'Pay position', sub: `${D.levelLabel(p.level)} · ${p.city}`, body: compPos(p) })}
+        </div>
+        ${NS.card({ title: 'Manager & cadence', body: `<div class="flex items-center gap-3 wrap">${mgr ? `${NS.avatar(mgr, { size: 'sm' })}<div class="min-w-0"><b class="sm">${NS.esc(mgr.name)}</b><div class="xs muted">${NS.esc(mgr.title)}</div></div>` : '<span class="sm muted">No manager on record</span>'}<div class="grow"></div>${cadence(p)}${p.managerChanged ? NS.badge('Manager changed recently', 'warn') : ''}</div>` })}
+        ${NS.card({ title: 'Recommended actions', sub: 'Mapped from the strongest drivers', body: `<div class="grid gap-2">${recs.map((x) => `<div class="flex items-center gap-3"><span class="ns-icon-box sm">${ic(TYPE_ICON[x.type])}</span><div class="grow min-w-0"><b class="sm">${x.type}</b><div class="xs muted">${NS.esc(x.why)}</div></div><button class="ns-btn xs soft flex-none" data-log="${x.type}">Log</button></div>`).join('')}</div>` })}
+        ${NS.card({ title: 'Action history', sub: acts.length ? `${acts.length} action${acts.length === 1 ? '' : 's'}` : 'Nothing logged yet', body: acts.length ? `<div class="act-hist">${acts.map((a) => { const o = D.byId(a.owner); return `<div class="it">${o ? NS.avatar(o, { size: 'xs', tip: true }) : ''}<div class="min-w-0"><b>${a.type}</b> <span class="muted">· ${o ? NS.esc(o.first) : '—'} · ${a.status === 'done' ? 'completed ' + F.date(a.completed, 'short') : 'due ' + F.date(a.due, 'short')}</span><div class="xs muted truncate">${NS.esc(a.note || '')}</div></div>${statusBadge(a)}</div>`; }).join('')}</div>` : `<div class="sm muted">${b === 'High' ? 'A High-risk person with no action is the gap this product exists to close.' : 'No retention actions have been needed so far.'}</div>` })}
+      </div>`,
+      foot: `<a class="ns-btn ghost" href="${NS.link('/people/' + p.id)}" data-close>${ic('user')}Full profile</a><div class="grow"></div>${b !== 'Low' ? `<button class="ns-btn secondary" data-saved>${ic('check-circle')}Mark as saved</button>` : ''}<button class="ns-btn primary" data-log>${ic('plus')}Log an action</button>`,
+      mounted: (body, api) => {
+        const el = body.querySelector('#dwPulse'); if (el) NS.chart.line(el, { labels: PULSE_LABELS, series: [{ name: p.first, values: p.pulse, color: BAND[b].color }, { name: 'Team avg', values: teamPulse(D.reports(p.managerId).length ? D.reports(p.managerId) : [p]), color: 'var(--ink-4)', dashed: true }], yMin: 0, yMax: 100, height: 150, legend: 'bottom' });
+        const reopen = () => { api.close(); setTimeout(() => openProfile(pid), 80); };
+        api.el.querySelectorAll('[data-log]').forEach((btn) => btn.onclick = () => logAction(pid, btn.dataset.log || null, reopen));
+        const sv = api.el.querySelector('[data-saved]'); if (sv) sv.onclick = () => markSaved(pid, reopen);
+      } });
+  };
+  const teamPulse = (people) => U.range(6).map((i) => Math.round(U.avg(people, (p) => p.pulse[i])));
+
+  /* AI narrative — data-aware "what changed this month" */
+  const narrative = (persona) => {
+    const scope = scopeOf(persona), name = scopeName(persona), c = bandCounts(scope), highs = scope.filter((p) => bandOfP(p) === 'High');
+    const prev = persona.id === 'manager' ? 0 : persona.id === 'exec' ? 23 : HIGH_HIST[HIGH_HIST.length - 1];
+    const entrants = highs.filter((p) => p.riskDrivers.some((d) => d.k === 'pulse')).sort((a, b) => riskOf(b) - riskOf(a)).slice(0, 2);
+    const fc = U.countBy(scope.filter((p) => bandOfP(p) !== 'Low').flatMap((p) => p.riskDrivers.filter((d) => d.w > 0).map((d) => d.k)), (k) => k);
+    const topK = Object.keys(fc).sort((a, b) => fc[b] - fc[a])[0];
+    const teams = U.countBy(highs, 'team'); const topTeams = Object.keys(teams).sort((a, b) => teams[b] - teams[a]).slice(0, 2);
+    const monthSaves = savesIn(scope).filter((s) => s.date >= '2026-09-01');
+    const gap = highNoAction(scope).length;
+    if (persona.id === 'manager') { const pr = D.byId(PRIYA); return `Priya Raman moved to High risk (${riskOf(pr)}) this month. Her engagement is healthy at ${pr.engagement}, so this is not a motivation problem — it is a pay problem: her compa-ratio is ${pr.compa.toFixed(2)}, below 90% of the band midpoint, after a rating of ${D.ratingScale[pr.rating - 1].label} and 2.6 years in level. The tenure window and a hot skill set (Kubernetes, OAuth) add to it. The rest of the team sits Low with pulses between ${Math.min(...D.reports(MGR).filter((p) => p.id !== PRIYA).map((p) => p.pulse[5]))} and ${Math.max(...D.reports(MGR).map((p) => p.pulse[5]))}. Recommended this week: log a compensation review with Meera and hold a stay conversation before the FY26 increments window opens.`; }
+    return `High-risk headcount in ${name} is ${c.High}, ${prev ? (c.High < prev ? `down ${prev - c.High}` : c.High > prev ? `up ${c.High - prev}` : 'flat') + ' versus last month' : ''}. ${entrants.length ? `${entrants.map((p) => `${p.name} (${p.team})`).join(' and ')} entered the band on a pulse drop rather than a pay signal, which usually means something specific happened in the team.` : ''} The dominant driver across Medium and High remains ${FACTOR[topK] ? { pay: 'pay position', engagement: 'soft engagement', tenure: 'the 18–42 month tenure window', manager: 'manager effectiveness', market: 'external demand', change: 'recent re-orgs', pulse: 'pulse drops', growth: 'time in level' }[topK] : 'engagement'} (${fc[topK] || 0} people). ${topTeams.length ? `Concentration is highest in ${topTeams.join(' and ')}.` : ''} ${monthSaves.length ? `${monthSaves.length} save${monthSaves.length === 1 ? '' : 's'} closed this month.` : ''} ${gap ? `${gap} High-risk ${gap === 1 ? 'person has' : 'people have'} no action yet — that is the queue to clear first.` : 'Every High-risk person has an action in flight.'}`;
+  };
+  const aiCard = (persona) => `<div class="ns-ai"><div><div class="ns-ai-head flex items-center gap-2 wrap"><span class="flex items-center gap-2 nowrap">${ic('sparkles')} What changed this month</span><span class="ns-badge">Generated</span></div><p class="sm ink2 mt-2" data-narrative>${NS.esc(narrative(persona))}</p><div class="flex items-center justify-between gap-2 mt-3"><span class="xs faint">From tonight’s scores and the action log</span><button class="ns-btn xs ghost" data-regen>${ic('refresh')}Regenerate</button></div></div></div>`;
+  const mountAi = (root, persona) => { const b = root.querySelector('[data-regen]'); if (b) b.onclick = async () => { const p = root.querySelector('[data-narrative]'); b.disabled = true; p.textContent = ''; await NS.aiTyping(p, narrative(persona), { delay: 300 }); b.disabled = false; }; };
+
+  const R = {};
+  window.__RR = { D, U, F, html, S, save, log, store, TODAY, iso, addDays, daysBetween, BAND, BANDS, bandOf, TYPES, TYPE_ICON, FACTOR, MODEL, REASONS, THEMES, HIGH_HIST, REPLACEMENT_FACTOR, PULSE_LABELS, LEVEL_BANDS, TENURE_BANDS, tenureBand, HRBP, MGR, PRIYA, REWARDS, scopeOf, scopeName, inScope, meFor, featuresOf, contributions, baselineOf, scoreWith, EXITS, riskOf, bandOfP, actionsFor, openActionsFor, lastActionFor, isOverdue, saveFor, replacementCost, savesIn, costAvoided, exitsIn, recommended, bandCounts, highNoAction, bandBadge, scoreBar, driverChip, shortDriver, driverBars, personLink, typeBadge, cadence, compPos, statusBadge, downloadCsv, logAction, markSaved, openProfile, teamPulse, narrative, aiCard, mountAi, R };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__RR, D = NSData, U = NS.util, F = NS.fmt, ic = NS.ic; const html = P.html;
+  const { S, save, log, TODAY, iso, BAND, BANDS, bandOf, FACTOR, HIGH_HIST, REPLACEMENT_FACTOR, PULSE_LABELS, PRIYA, MGR, HRBP, scopeOf, scopeName, meFor, EXITS, riskOf, bandOfP, openActionsFor, isOverdue, replacementCost, savesIn, costAvoided, exitsIn, recommended, bandCounts, highNoAction, bandBadge, scoreBar, driverChip, personLink, typeBadge, cadence, statusBadge, downloadCsv, logAction, openProfile, teamPulse, aiCard, mountAi, R } = P;
+
+  /* headline metrics for a scope */
+  const metrics = (persona) => {
+    const scope = scopeOf(persona), ex = exitsIn(persona), vol = ex.filter((x) => x.voluntary);
+    const c = bandCounts(scope), saves = savesIn(scope);
+    const ttm = persona.id === 'manager' ? 0 : U.round((vol.length / scope.length) * 100, 1);
+    return { scope, ex, vol, c, saves, ttm, regretted: vol.length ? Math.round((vol.filter((x) => x.regretted).length / vol.length) * 100) : 0, avoided: costAvoided(scope), eng: Math.round(U.avg(scope, 'engagement')), gap: highNoAction(scope).length, overdue: S.actions.filter((a) => isOverdue(a) && scope.some((p) => p.id === a.pid)).length };
+  };
+  P.metrics = metrics;
+
+  const queuePreview = (persona, m) => {
+    const scope = m.scope;
+    const items = [...highNoAction(scope).sort((a, b) => riskOf(b) - riskOf(a)).slice(0, 4).map((p) => ({ p, kind: 'gap' })), ...S.actions.filter((a) => isOverdue(a) && scope.some((p) => p.id === a.pid)).slice(0, 3).map((a) => ({ p: D.byId(a.pid), a, kind: 'overdue' }))];
+    return NS.card({ title: 'Action queue', sub: `${m.gap} High risk without an action · ${m.overdue} overdue`, actions: `<a class="ns-btn xs ghost" href="${NS.link('/actions')}">Open</a>`, bodyCls: 'flush', body: items.length ? `<div style="padding:4px 20px">${items.map(({ p, a, kind }) => `<div class="ns-row"><button class="ns-person" style="text-align:left;min-width:0" data-open="${p.id}">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb">${kind === 'gap' ? `Risk ${riskOf(p)} · ${p.riskDrivers[0] ? NS.esc(p.riskDrivers[0].label) : 'no single driver'}` : `${a.type} · ${Math.abs(P.daysBetween(a.due, iso(TODAY)))} days overdue`}</div></div></button><div class="grow"></div>${kind === 'gap' ? `<button class="ns-btn xs primary" data-log="${p.id}">Log</button>` : NS.badge('Overdue', 'bad', true)}</div>`).join('')}</div>` : NS.empty({ icon: 'check-circle', title: 'Queue is clear', body: 'Every High-risk person has an action and nothing is overdue.' }) });
+  };
+
+  const homeExec = (c) => {
+    const persona = c.persona, me = meFor(persona), m = metrics(persona), scope = m.scope;
+    const lastQ = D.series.attrition[D.series.attrition.length - 1], yearAgo = D.series.attrition[D.series.attrition.length - 5];
+    const prevHigh = persona.id === 'exec' ? 23 : HIGH_HIST[HIGH_HIST.length - 1];
+    const underSince = D.series.attrition.filter((v) => v < 10).length;
+    const board = persona.id === 'cpo', eng = persona.id === 'exec';
+    const heroTitle = board ? `Voluntary attrition is ${m.ttm}% — under the 10% ceiling for the ${underSince}th consecutive quarter` : eng ? `Engineering attrition is ${m.ttm}% — ${m.c.High} engineers are High risk right now` : `Voluntary attrition is ${m.ttm}% against a 10% ceiling — ${m.gap} High-risk people still need an action`;
+    const heroText = board ? `Since Retention Radar launched in Q3 ’22, voluntary attrition has fallen from 17.6% to ${lastQ}%. This year the team recorded <b>${m.saves.length} saves</b> — people flagged High who received an action and dropped out of the band — avoiding an estimated <b>${F.money(m.avoided, { compact: true })}</b> in replacement cost at ${REPLACEMENT_FACTOR}× salary.` : eng ? `${F.int(scope.length)} people in Engineering. <b>${m.c.High}</b> are High risk and <b>${m.c.Medium}</b> Medium; <b>${m.saves.length}</b> engineers were saved this year (${F.money(m.avoided, { compact: true })} replacement cost avoided). Regretted exits are ${m.regretted}% of voluntary leavers — the number to watch.` : `${F.int(scope.length)} people scored this morning. <b>${m.c.High}</b> High risk (${prevHigh > m.c.High ? prevHigh - m.c.High + ' fewer' : m.c.High - prevHigh + ' more'} than last month), <b>${m.saves.length}</b> saves year to date worth about <b>${F.money(m.avoided, { compact: true })}</b> in avoided replacement cost. ${m.overdue ? `${m.overdue} actions are overdue.` : 'No actions are overdue.'}`;
+    return html`
+      <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('radar', { size: 12 })} ${scopeName(persona)} · ${F.int(scope.length)} people scored</span><span class="ns-badge">${ic('refresh', { size: 12 })} Model v2.0 · scored nightly</span></div>
+        <h1 style="font-size:26px;max-width:30ch">${heroTitle}</h1>
+        <p>${heroText}</p>
+        <div class="hero-kpis"><div><b>${m.ttm}%</b><span>TTM voluntary attrition</span></div><div><b>${m.c.High}</b><span>High risk now</span></div><div><b>${m.saves.length}</b><span>Saves YTD</span></div><div><b>${F.money(m.avoided, { compact: true })}</b><span>Cost avoided</span></div></div>
+        <div class="flex gap-2 wrap mt-4"><a class="ns-btn primary" href="${NS.link('/radar', { band: 'High' })}">Open the radar ${ic('arrow-right')}</a>${persona.id === 'exec' ? `<a class="ns-btn ghost" href="${NS.link('/cohorts')}">Attrition analytics</a>` : `<a class="ns-btn ghost" href="${NS.link('/actions')}">Action queue${m.gap ? ` · ${m.gap} to assign` : ''}</a>`}${board ? `<button class="ns-btn ghost" data-board>${ic('download')}Board pack (CSV)</button>` : ''}</div>
+        <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.16)" stroke-width="2"><circle cx="300" cy="150" r="130"/><circle cx="300" cy="150" r="92"/><circle cx="300" cy="150" r="54"/><circle cx="300" cy="150" r="18"/></g><path d="M300 150 L392 74" stroke="rgba(255,255,255,.55)" stroke-width="3" stroke-linecap="round"/><path d="M300 150 L392 74 A120 120 0 0 1 418 118 Z" fill="rgba(255,255,255,.12)"/><circle cx="352" cy="205" r="6" fill="#fff" opacity=".9"/><circle cx="246" cy="98" r="5" fill="#fff" opacity=".6"/><circle cx="330" cy="120" r="4" fill="#fff" opacity=".5"/></svg>
+      </div>
+      <div class="ns-stats six mt-4">
+        ${NS.stat({ label: 'TTM voluntary attrition', value: m.ttm, unit: '%', delta: NS.delta(U.round(lastQ - yearAgo, 1), { suf: ' pts', invert: true }), sub: `${m.vol.length} voluntary exits · ceiling 10%`, spark: D.series.attrition.slice(-8) })}
+        ${NS.stat({ label: 'Regretted share of exits', value: m.regretted, unit: '%', icon: 'user-x', sub: `${m.vol.filter((x) => x.regretted).length} of ${m.vol.length} rated Exceeds or above` })}
+        ${NS.stat({ label: 'High risk now', value: m.c.High, delta: NS.delta(m.c.High - prevHigh, { suf: '', d: 0, invert: true }), sub: `${m.c.Medium} Medium · ${m.c.Low} Low`, spark: persona.id === 'exec' ? [31, 29, 28, 27, 26, 25, 26, 24, 24, 23, 23, m.c.High] : [...HIGH_HIST, m.c.High] })}
+        ${NS.stat({ label: 'Saves YTD', value: m.saves.length, icon: 'life-buoy', sub: `Median ${m.saves.length ? U.median(m.saves, 'days') : 0} days from action to save` })}
+        ${NS.stat({ label: 'Replacement cost avoided', value: F.money(m.avoided, { compact: true }), icon: 'banknote', sub: `Est. at ${REPLACEMENT_FACTOR}× salary per save` })}
+        ${NS.stat({ label: 'Average engagement', value: m.eng, icon: 'heart-pulse', sub: `${scope.filter((p) => p.engagement < 64).length} people below 64` })}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Voluntary attrition · trailing twelve months', sub: eng ? `Company series shown · Engineering TTM is ${m.ttm}% on the same basis · dashed line is the 10% ceiling` : 'Quarterly, annualised · dashed line is the 10% ceiling agreed with the board', body: '<div id="attrLine"></div>' })}
+          <div class="ns-grid c2">
+            ${NS.card({ title: 'Risk distribution', sub: `${F.int(scope.length)} people · bands at 65 and 40`, body: '<div id="bandDonut"></div>' })}
+            ${NS.card({ title: 'Top drivers', sub: 'People in Medium or High carrying each factor', body: '<div id="driverBars"></div>' })}
+          </div>
+          ${NS.card({ title: eng ? 'Risk by org and region' : 'Risk by department and region', sub: 'Share of people in Medium or High · click a cell to explore', body: '<div id="riskHeat"></div>' })}
+        </div>
+        <div class="rr-side">
+          ${queuePreview(persona, m)}
+          ${aiCard(persona)}
+          ${NS.card({ title: 'High-risk headcount · 12 months', body: '<div id="highTrend"></div>' })}
+        </div>
+      </div>`;
+  };
+  const mountExec = (c, root) => {
+    const persona = c.persona, m = metrics(persona), scope = m.scope;
+    const el = (id) => root.querySelector('#' + id);
+    if (el('attrLine')) NS.chart.line(el('attrLine'), { labels: D.series.quarters, series: [{ name: 'Voluntary attrition (TTM)', values: D.series.attrition, color: 'var(--brand)' }], yFormat: (v) => v + '%', yMin: 0, yMax: 20, height: 240, area: true, endLabels: true, legend: false, threshold: { value: 10, label: 'Ceiling 10%' }, markers: el('attrLine').clientWidth < 560 ? [{ i: 2, label: 'Radar' }, { i: 8, label: 'Coaching' }] : [{ i: 2, label: 'Radar launched Q3 ’22' }, { i: 8, label: 'Manager coaching program Q1 ’24' }] });
+    if (el('bandDonut')) NS.chart.donut(el('bandDonut'), { items: BANDS.map((b) => ({ label: b, value: m.c[b], color: BAND[b].color })), size: 170, thickness: 22, center: { value: m.c.High, label: 'High' }, legend: 'bottom', onItem: (d) => NS.go('/people', { band: d.label }) });
+    if (el('driverBars')) { const hm = scope.filter((p) => bandOfP(p) !== 'Low'); const fc = U.countBy(hm.flatMap((p) => p.riskDrivers.filter((d) => d.w > 0).map((d) => d.k)), (k) => k); const items = Object.keys(fc).map((k) => ({ label: D.risk.factors.find((f) => f.k === k).label, value: fc[k], color: 'var(--viz-critical)', sub: `${Math.round((fc[k] / hm.length) * 100)}% of ${hm.length}` })).sort((a, b) => b.value - a.value); NS.chart.hbars(el('driverBars'), { items, valueLabel: 'People', labelWidth: 'minmax(128px,46%)', onItem: (d) => { const k = D.risk.factors.find((f) => f.label === d.label).k; NS.go('/people', { driver: k }); } }); }
+    if (el('riskHeat')) { const regions = ['NA', 'EU', 'APAC']; const rows = persona.id === 'exec' ? U.uniq(scope.map((p) => p.org)).filter((o) => o !== 'Engineering Leadership') : D.departments.map((d) => d.name); const key = persona.id === 'exec' ? 'org' : 'dept'; const values = rows.map((r) => regions.map((rg) => { const ps = scope.filter((p) => p[key] === r && p.region === rg); return ps.length >= 5 ? Math.round((ps.filter((p) => bandOfP(p) !== 'Low').length / ps.length) * 100) : null; })); NS.chart.heatmap(el('riskHeat'), { rows, cols: regions.map((r) => D.regions[r]), values, min: 0, max: 60, format: (v) => (v == null ? 'n<5' : v + '%'), valueLabel: 'Medium + High', labelWidth: 'minmax(120px,auto)', onCell: (ri, ci) => NS.go('/people', { [key]: rows[ri], region: regions[ci] }) }); }
+    if (el('highTrend')) NS.chart.line(el('highTrend'), { labels: D.series.last12.map((l) => l.split(' ')[0].slice(0, 3)), series: [{ name: 'High risk', values: persona.id === 'exec' ? [31, 29, 28, 27, 26, 25, 26, 24, 24, 23, 23, m.c.High] : [...HIGH_HIST, m.c.High], color: 'var(--viz-critical)' }], yMin: 0, height: 150, legend: false, endLabels: true, area: true });
+    root.querySelectorAll('[data-open]').forEach((b) => b.onclick = () => openProfile(b.dataset.open));
+    root.querySelectorAll('[data-log]').forEach((b) => b.onclick = () => logAction(b.dataset.log));
+    mountAi(root, persona);
+    const bd = root.querySelector('[data-board]'); if (bd) bd.onclick = () => downloadCsv('retention-board-pack-Q3-FY26.csv', [['Metric', 'Value', 'Note'], ['TTM voluntary attrition', m.ttm + '%', 'Ceiling 10%'], ['Voluntary exits (12 months)', m.vol.length, ''], ['Regretted share', m.regretted + '%', 'Rated Exceeds or above'], ['High risk now', m.c.High, ''], ['Medium risk now', m.c.Medium, ''], ['Saves YTD', m.saves.length, ''], ['Replacement cost avoided', m.avoided, `${REPLACEMENT_FACTOR}x salary assumption`], ['Average engagement', m.eng, ''], ...D.series.quarters.map((q, i) => [`Attrition ${q}`, D.series.attrition[i] + '%', ''])]);
+  };
+
+  /* Manager home — "Your team" */
+  const homeManager = (c) => {
+    const me = meFor(c.persona), team = D.reports(me.id), m = metrics(c.persona);
+    const hero = team.filter((p) => bandOfP(p) === 'High').sort((a, b) => riskOf(b) - riskOf(a))[0];
+    const tp = teamPulse(team), cp = teamPulse(D.people);
+    const openActs = S.actions.filter((a) => a.status !== 'done' && team.some((p) => p.id === a.pid));
+    const sorted = team.slice().sort((a, b) => riskOf(b) - riskOf(a));
+    return html`
+      <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('users', { size: 12 })} ${NS.esc(me.team)} · ${team.length} reports</span></div>
+        <h1>${NS.greeting()}, ${me.first} 👋</h1>
+        <p>${hero ? `<b>${NS.esc(hero.name)}</b> moved to High risk (${riskOf(hero)}) this month — the strongest driver is <b>${NS.esc(hero.riskDrivers[0].label.toLowerCase())}</b>. ` : 'Nobody on your team is High risk right now. '}The rest of the team sits ${m.c.Medium ? `${m.c.Medium} Medium and ` : ''}${m.c.Low} Low, and team pulse is <b>${tp[5]}</b> against a company average of ${cp[5]}. ${openActs.length ? `${openActs.length} action${openActs.length === 1 ? ' is' : 's are'} open for your team.` : 'No retention actions are open for your team.'}</p>
+        <div class="flex gap-2 wrap mt-4">${hero ? `<button class="ns-btn primary" data-log="${hero.id}">Log an action for ${NS.esc(hero.first)} ${ic('arrow-right')}</button>` : ''}<a class="ns-btn ghost" href="${NS.link('/radar')}">Team radar</a></div>
+      </div>
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'High risk on your team', value: m.c.High, icon: 'alert-triangle', sub: `${m.c.Medium} Medium · ${m.c.Low} Low` })}
+        ${NS.stat({ label: 'Average risk score', value: Math.round(U.avg(team, riskOf)), icon: 'radar', sub: `Company average ${Math.round(U.avg(D.people, riskOf))}` })}
+        ${NS.stat({ label: 'Team pulse', value: tp[5], delta: NS.delta(tp[5] - cp[5], { suf: ' vs company', d: 0 }), sub: '6-month trend', spark: tp })}
+        ${NS.stat({ label: 'Open actions', value: openActs.length, icon: 'clipboard-list', sub: `${openActs.filter(isOverdue).length} overdue` })}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${hero ? `<div class="callout">${NS.avatar(hero, { size: 'lg' })}<div class="grow min-w-0"><div class="flex items-center gap-2 wrap"><b>${NS.esc(hero.name)} · risk ${riskOf(hero)}</b>${bandBadge('High')}${hero.regrettable ? NS.badge('Regrettable if lost', 'brand') : ''}</div><div class="sm ink2 mt-1">${NS.esc(hero.title)} · ${D.levelLabel(hero.level)} · rated ${D.ratingScale[hero.rating - 1].label} · compa ${hero.compa.toFixed(2)} · engagement ${hero.engagement}</div><div class="flex gap-1 wrap mt-2">${hero.riskDrivers.map((d) => driverChip(d)).join('')}</div><div class="sm ink2 mt-2">Recommended: <b>${recommended(hero).map((r) => r.type).slice(0, 2).join('</b> then <b>')}</b>. Replacement would cost about ${F.money(replacementCost(hero), { compact: true })}.</div></div><div class="grid gap-2 flex-none"><button class="ns-btn sm primary" data-log="${hero.id}">${ic('plus')}Log action</button><button class="ns-btn sm secondary" data-open="${hero.id}">Risk profile</button></div></div>` : ''}
+          ${NS.card({ title: 'Team risk', sub: 'Sorted by score · click a person for the full explanation', bodyCls: 'tight', body: `<div>${sorted.map((p) => { const open = openActionsFor(p.id); return `<div class="risk-row"><button class="ns-person" style="text-align:left;min-width:0" data-open="${p.id}">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb">${D.levelLabel(p.level)} · ${F.tenure(p.tenure)}</div></div></button><div>${scoreBar(p)}</div><div class="flex gap-1 wrap hide-row">${p.riskDrivers.filter((d) => d.w > 0).slice(0, 2).map((d) => driverChip(d, { short: true })).join('') || '<span class="xs faint">No active drivers</span>'}</div><div class="flex items-center gap-2 justify-end">${bandBadge(bandOfP(p))}${open.length ? `<span class="xs muted hide-row">${open[0].type}</span>` : bandOfP(p) !== 'Low' ? `<button class="ns-btn xs soft" data-log="${p.id}">Log</button>` : ''}</div></div>`; }).join('')}</div>` })}
+          ${NS.card({ title: 'Team pulse trend', sub: 'Average monthly pulse · your team vs company', body: '<div id="teamPulse"></div>' })}
+        </div>
+        <div class="rr-side">
+          ${NS.card({ title: 'Actions for your team', actions: `<a class="ns-btn xs ghost" href="${NS.link('/actions')}">Queue</a>`, body: openActs.length ? `<div class="act-hist">${openActs.map((a) => { const p = D.byId(a.pid), o = D.byId(a.owner); return `<div class="it">${NS.avatar(p, { size: 'xs' })}<div class="min-w-0"><b>${a.type}</b> <span class="muted">· ${NS.esc(p.first)}</span><div class="xs muted">${o ? NS.esc(o.first) : '—'} · due ${F.date(a.due, 'short')}</div></div>${statusBadge(a)}</div>`; }).join('')}</div>` : `<div class="sm muted">Nothing open. ${hero ? `Start with ${NS.esc(hero.first)}.` : ''}</div>` })}
+          ${aiCard(c.persona)}
+          ${NS.card({ title: '1:1 cadence', sub: 'From calendar signal', body: `<div class="grid gap-2">${team.map((p) => `<div class="flex items-center gap-2 sm"><span class="grow truncate">${NS.esc(p.first)}</span>${cadence(p)}</div>`).join('')}</div>` })}
+          ${NS.card({ title: 'Running a stay conversation', body: `<div class="grid gap-2 sm ink2"><div class="flex gap-2"><span class="ns-badge brand sq">Ask</span><span>“What would make you think about leaving?” — then stay silent.</span></div><div class="flex gap-2"><span class="ns-badge brand sq">Don’t</span><span>Promise a raise or a promotion in the room. Promise to find out and come back with a date.</span></div><div class="flex gap-2"><span class="ns-badge brand sq">Close</span><span>Agree one concrete change and log it as an action so it is tracked.</span></div></div>` })}
+        </div>
+      </div>`;
+  };
+  const mountManager = (c, root) => {
+    const me = meFor(c.persona), team = D.reports(me.id);
+    const el = root.querySelector('#teamPulse'); if (el) NS.chart.line(el, { labels: PULSE_LABELS, series: [{ name: me.team, values: teamPulse(team), color: 'var(--brand)' }, { name: 'Company', values: teamPulse(D.people), color: 'var(--ink-4)', dashed: true }], yMin: 50, yMax: 100, height: 200, endLabels: true, legend: 'bottom' });
+    root.querySelectorAll('[data-open]').forEach((b) => b.onclick = () => openProfile(b.dataset.open));
+    root.querySelectorAll('[data-log]').forEach((b) => b.onclick = () => logAction(b.dataset.log));
+    mountAi(root, c.persona);
+  };
+
+  R['/home'] = { title: 'Home', render: (c) => (c.persona.id === 'manager' ? homeManager(c) : homeExec(c)), mounted: (c, root) => (c.persona.id === 'manager' ? mountManager(c, root) : mountExec(c, root)) };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__RR, D = NSData, U = NS.util, F = NS.fmt, ic = NS.ic; const html = P.html;
+  const { S, save, log, TODAY, iso, BAND, BANDS, bandOf, FACTOR, TYPE_ICON, LEVEL_BANDS, TENURE_BANDS, tenureBand, scopeOf, scopeName, inScope, meFor, riskOf, bandOfP, actionsFor, openActionsFor, lastActionFor, isOverdue, saveFor, replacementCost, recommended, bandCounts, bandBadge, scoreBar, driverChip, driverBars, personLink, cadence, compPos, statusBadge, downloadCsv, logAction, markSaved, openProfile, teamPulse, baselineOf, R } = P;
+
+  /* shared filter helpers (state lives in the URL) */
+  const sel = (id, label, opts, cur) => `<label class="ns-field"><span class="ns-label">${label}</span><select class="ns-select sm" data-f="${id}"><option value="">All</option>${opts.map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${NS.esc(v)}" ${v === cur ? 'selected' : ''}>${NS.esc(l)}</option>`; }).join('')}</select></label>`;
+  const applyFilters = (people, q) => people.filter((p) => (!q.dept || p.dept === q.dept) && (!q.org || p.org === q.org) && (!q.loc || p.city === q.loc) && (!q.region || p.region === q.region) && (!q.band || bandOfP(p) === q.band) && (!q.lvl || LEVEL_BANDS.find((l) => l[0] === q.lvl)[2](p)) && (!q.ten || TENURE_BANDS.find((t) => t[0] === q.ten)[2](p)) && (!q.driver || p.riskDrivers.some((d) => d.k === q.driver && d.w > 0)) && (!q.act || (q.act === 'open' ? openActionsFor(p.id).length > 0 : q.act === 'none' ? !openActionsFor(p.id).length : q.act === 'saved' ? !!saveFor(p.id) : true)));
+  const bindFilters = (root, path, q) => root.querySelectorAll('[data-f]').forEach((s) => s.onchange = () => NS.go(path, { ...q, [s.dataset.f]: s.value }));
+  const filterRow = (persona, scope, q, extra = '') => `<div class="filters">${persona.id === 'manager' || persona.id === 'exec' ? '' : sel('dept', 'Department', D.departments.map((d) => d.name), q.dept)}${persona.id === 'manager' ? '' : sel('org', 'Org', U.uniq(scope.filter((p) => !q.dept || p.dept === q.dept).map((p) => p.org)).sort(), q.org)}${sel('loc', 'Location', U.uniq(scope.map((p) => p.city)).sort(), q.loc)}${sel('lvl', 'Level band', LEVEL_BANDS.map((l) => [l[0], l[1]]), q.lvl)}${sel('ten', 'Tenure', TENURE_BANDS.map((t) => [t[0], t[1]]), q.ten)}${sel('band', 'Risk band', BANDS, q.band)}${extra}</div>`;
+  const clearLink = (path, q) => (Object.keys(q).some((k) => q[k] && k !== 'view' && k !== 'tab') ? `<a class="ns-btn sm ghost" href="${NS.link(path, { view: q.view })}">${ic('x')}Clear filters</a>` : '');
+  P.applyFilters = applyFilters;
+
+  /* RADAR -------------------------------------------------------------- */
+  R['/radar'] = {
+    title: 'Radar',
+    render: (c) => {
+      const q = c.query, persona = c.persona, scope = scopeOf(persona), rows = applyFilters(scope, q), view = q.view === 'tenure' ? 'tenure' : 'radar';
+      const cnt = bandCounts(rows), highs = rows.filter((p) => bandOfP(p) === 'High').sort((a, b) => riskOf(b) - riskOf(a));
+      const quad = { tl: rows.filter((p) => p.engagement < 65 && p.compa >= 0.95).length, tr: rows.filter((p) => p.engagement >= 65 && p.compa >= 0.95).length, bl: rows.filter((p) => p.engagement < 65 && p.compa < 0.95).length, br: rows.filter((p) => p.engagement >= 65 && p.compa < 0.95).length };
+      const hiRate = (list) => (list.length ? Math.round((list.filter((p) => bandOfP(p) !== 'Low').length / list.length) * 100) : 0);
+      const qrows = { tl: rows.filter((p) => p.engagement < 65 && p.compa >= 0.95), tr: rows.filter((p) => p.engagement >= 65 && p.compa >= 0.95), bl: rows.filter((p) => p.engagement < 65 && p.compa < 0.95), br: rows.filter((p) => p.engagement >= 65 && p.compa < 0.95) };
+      return html`${NS.pageHead({ eyebrow: `${scopeName(persona)} · ${F.int(rows.length)} of ${F.int(scope.length)} people`, title: persona.id === 'manager' ? 'Team radar' : 'The radar', sub: view === 'radar' ? 'Engagement against pay position, coloured by risk band. The bottom-left quadrant — underpaid and disengaged — is where resignations come from; the bottom-right is where they are still preventable.' : 'Risk score against tenure. The 18–42 month window is where Northstar historically loses people; the dashed line marks the High threshold.', actions: `<div class="ns-seg sm"><a class="ns-btn" style="height:26px;padding:0 10px;font-size:12px;border-radius:8px;${view === 'radar' ? 'background:var(--surface);box-shadow:var(--shadow-sm);font-weight:600' : 'color:var(--ink-3)'}" href="${NS.link('/radar', { ...q, view: 'radar' })}">${ic('radar')}Radar</a><a class="ns-btn" style="height:26px;padding:0 10px;font-size:12px;border-radius:8px;${view === 'tenure' ? 'background:var(--surface);box-shadow:var(--shadow-sm);font-weight:600' : 'color:var(--ink-3)'}" href="${NS.link('/radar', { ...q, view: 'tenure' })}">${ic('hourglass')}Tenure curve</a></div><button class="ns-btn secondary" data-export>${ic('download')}Export</button>` })}
+        ${filterRow(persona, scope, q)}
+        <div class="ns-grid main-side">
+          <div class="grid gap-4">
+            ${NS.card({ title: view === 'radar' ? 'Engagement × compa-ratio' : 'Risk × tenure', sub: `${cnt.High} High · ${cnt.Medium} Medium · ${cnt.Low} Low · click a point for the risk profile`, actions: clearLink('/radar', q), body: `<div id="scatter"></div><div class="rr-legend">${BANDS.map((b) => `<span><i class="band-dot" style="background:${BAND[b].color}"></i>${b} (${cnt[b]})</span>`).join('')}<span class="faint">· dot size = band</span></div>` })}
+            ${view === 'radar' ? `<div class="ns-grid c4">${[['bl', 'Underpaid & disengaged', 'bad'], ['br', 'Underpaid but engaged', 'warn'], ['tl', 'Paid well, disengaged', 'warn'], ['tr', 'Paid well, engaged', 'ok']].map(([k, l, cls]) => `<div class="mini-stat"><span>${l}</span><b class="tnum">${quad[k]} <span class="sm ${cls}-text" style="font-weight:600">· ${hiRate(qrows[k])}% flagged</span></b></div>`).join('')}</div>` : `<div class="ns-grid c4">${TENURE_BANDS.map(([id, l, fn]) => { const ps = rows.filter(fn); return `<div class="mini-stat"><span>${l}</span><b class="tnum">${ps.length ? Math.round(U.avg(ps, riskOf)) : '—'} <span class="sm muted" style="font-weight:500">avg risk · ${ps.filter((p) => bandOfP(p) === 'High').length} High</span></b></div>`; }).join('')}</div>`}
+          </div>
+          <div class="rr-side">
+            ${NS.card({ title: 'High risk', sub: highs.length ? `${highs.length} ${highs.length === 1 ? 'person' : 'people'} · ${highs.filter((p) => !openActionsFor(p.id).length).length} without an action` : 'Nobody in this view', bodyCls: 'flush', body: highs.length ? `<div class="hi-list" style="padding:4px 20px;max-height:720px;overflow:auto">${highs.map((p) => `<div class="hi-item"><span class="score-pill High">${riskOf(p)}</span><div class="min-w-0"><div class="hi-top"><button class="ns-person" style="text-align:left;min-width:0;padding:0" data-open="${p.id}"><div class="min-w-0"><div class="nm truncate">${NS.esc(p.name)}</div><div class="sb truncate">${NS.esc(p.team)} · ${D.levelLabel(p.level)}</div></div></button>${openActionsFor(p.id).length ? `<span class="ns-badge info flex-none" data-tip="${NS.esc(openActionsFor(p.id)[0].type)}">${ic('check', { size: 11 })}Action</span>` : `<button class="ns-btn xs primary flex-none" data-log="${p.id}">Log</button>`}</div><div class="chips">${p.riskDrivers.filter((d) => d.w > 0).slice(0, 3).map((d) => driverChip(d, { short: true })).join('')}</div></div></div>`).join('')}</div>` : NS.empty({ icon: 'check-circle', title: 'No High-risk people here', body: 'Widen the filters or switch band.' }) })}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const q = c.query, scope = scopeOf(c.persona), rows = applyFilters(scope, q), view = q.view === 'tenure' ? 'tenure' : 'radar';
+      bindFilters(root, '/radar', q);
+      const el = root.querySelector('#scatter');
+      const pt = (p) => { const b = bandOfP(p), r = riskOf(p); return { x: view === 'radar' ? p.engagement : p.tenure, y: view === 'radar' ? p.compa : r, label: p.name, sub: `${p.title} · ${p.team}`, color: BAND[b].color, r: b === 'High' ? 6.5 : b === 'Medium' ? 4.5 : 3.2, id: p.id, tip: `<div class="r"><span>Risk</span><span>${r} · ${b}</span></div>${p.riskDrivers[0] ? `<div class="r"><span>Top driver</span><span>${NS.esc(p.riskDrivers[0].label)}</span></div>` : ''}` }; };
+      const points = [...rows.filter((p) => bandOfP(p) === 'Low'), ...rows.filter((p) => bandOfP(p) === 'Medium'), ...rows.filter((p) => bandOfP(p) === 'High')].map(pt);
+      if (el) {
+        if (view === 'radar') NS.chart.scatter(el, { points, xLabel: 'Engagement', yLabel: 'Compa-ratio', xMin: 20, xMax: 100, yMin: 0.7, yMax: 1.35, yFormat: (v) => v.toFixed(2), height: 440, quadrants: { x: 65, y: 0.95, labels: ['Paid well, disengaged', 'Paid well, engaged', 'Underpaid & disengaged', 'Underpaid but engaged'] }, onPoint: (p) => openProfile(p.id) });
+        else NS.chart.scatter(el, { points, xLabel: 'Tenure (years)', yLabel: 'Risk score', xMin: 0, xMax: 12, yMin: 0, yMax: 100, xFormat: (v) => v + 'y', height: 440, quadrants: { x: 3.5, y: 65, labels: ['High risk · early tenure', 'High risk · tenured', 'Below threshold', 'Below threshold · tenured'] }, onPoint: (p) => openProfile(p.id) });
+      }
+      root.querySelectorAll('[data-open]').forEach((b) => b.onclick = () => openProfile(b.dataset.open));
+      root.querySelectorAll('[data-log]').forEach((b) => b.onclick = () => logAction(b.dataset.log));
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`radar-${view}-${iso(TODAY)}.csv`, [['Employee ID', 'Name', 'Team', 'Department', 'Level', 'Location', 'Tenure', 'Engagement', 'Compa-ratio', 'Risk', 'Band', 'Drivers'], ...rows.map((p) => [p.id, p.name, p.team, p.dept, p.level, p.city, p.tenure, p.engagement, p.compa, riskOf(p), bandOfP(p), p.riskDrivers.map((d) => `${d.label} (${d.w > 0 ? '+' : ''}${d.w})`).join('; ')])]);
+    },
+  };
+
+  /* PEOPLE EXPLORER ----------------------------------------------------- */
+  R['/people'] = {
+    title: 'People',
+    render: (c) => {
+      const q = c.query, persona = c.persona, scope = scopeOf(persona), rows = applyFilters(scope, q), cnt = bandCounts(rows);
+      const extra = `${sel('region', 'Region', Object.entries(D.regions), q.region)}${sel('driver', 'Driver', D.risk.factors.map((f) => [f.k, f.label]), q.driver)}${sel('act', 'Action state', [['open', 'Has an open action'], ['none', 'No action'], ['saved', 'Saved this year']], q.act)}`;
+      return html`${NS.pageHead({ eyebrow: `${scopeName(persona)} · explorer`, title: persona.id === 'manager' ? 'Your people' : 'People', sub: `Every score is explainable — open a row for the drivers, the pulse trend and the recommended action. ${F.int(rows.length)} people in view: ${cnt.High} High, ${cnt.Medium} Medium, ${cnt.Low} Low.`, actions: `${clearLink('/people', q)}<button class="ns-btn secondary" data-export>${ic('download')}Export CSV</button>` })}
+        ${filterRow(persona, scope, q, extra)}
+        <div class="ns-toolbar"><div class="ns-input-wrap grow">${ic('search')}<input class="ns-input" id="q" placeholder="Search name, title, team or manager…" value="${NS.esc(q.q || '')}"></div><div class="flex gap-1 wrap">${BANDS.map((b) => `<a class="ns-chip" aria-pressed="${q.band === b}" href="${NS.link('/people', { ...q, band: q.band === b ? '' : b })}"><i class="band-dot" style="background:${BAND[b].color}"></i>${b} <span class="n">${bandCounts(applyFilters(scope, { ...q, band: '' }))[b]}</span></a>`).join('')}</div></div>
+        <div class="ns-card rr-dense"><div id="tbl"></div></div>`;
+    },
+    mounted: (c, root) => {
+      const q = c.query, scope = scopeOf(c.persona), rows = applyFilters(scope, q);
+      bindFilters(root, '/people', q);
+      const tbl = NS.table(root.querySelector('#tbl'), { rows, rowKey: 'id', pageSize: 15, sort: { key: 'risk', dir: -1 }, search: q.q || '', searchKeys: ['name', 'title', 'team', 'dept', (p) => (D.byId(p.managerId) || {}).name || ''], onRow: (p) => openProfile(p.id), rowCls: (p) => (bandOfP(p) === 'High' ? 'hi' : ''), columns: [
+        { key: 'name', label: 'Person', render: (p) => `<div class="ns-person">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb truncate" style="max-width:165px">${NS.esc(p.title)} · ${p.level}</div></div></div>` },
+        { key: 'team', label: 'Team', cls: 'hide-sm', render: (p) => { const m = D.byId(p.managerId); return `<div class="sm" style="max-width:128px">${NS.esc(p.team)}</div><div class="xs muted nowrap">${m ? NS.esc(m.name) : NS.esc(p.dept)}</div>`; } },
+        { key: 'tenure', label: 'Tenure', align: 'right', cls: 'hide-sm', render: (p) => `<span class="sm tnum">${F.tenure(p.tenure)}</span>` },
+        { key: 'engagement', label: 'Pulse', tip: 'Six-month pulse and current engagement score', render: (p) => `<div class="flex items-center gap-2" data-tip="Engagement ${p.engagement} · pulse ${p.pulse.join(' → ')}"><span style="width:50px;flex:none">${NS.spark(p.pulse, { width: 50, height: 22, color: p.pulse[5] < p.pulse[2] - 8 ? 'var(--viz-critical)' : 'var(--brand)' })}</span><b class="sm tnum">${p.engagement}</b></div>` },
+        { key: 'compa', label: 'Compa', align: 'right', render: (p) => `<span class="sm tnum ${p.compa < 0.9 ? 'bad-text' : ''}">${p.compa.toFixed(2)}</span>` },
+        { key: 'risk', label: 'Risk', render: (p) => scoreBar(p), sort: (p) => riskOf(p) },
+        { key: 'band', label: 'Band', cls: 'hide-md', render: (p) => bandBadge(bandOfP(p)), sort: (p) => riskOf(p) },
+        { key: 'driver', label: 'Top driver', cls: 'hide-sm', render: (p) => { const d = p.riskDrivers.find((x) => x.w > 0); return d ? driverChip(d, { short: true }) : '<span class="faint xs">None</span>'; }, sort: (p) => (p.riskDrivers[0] ? p.riskDrivers[0].w : 0) },
+        { key: 'action', label: 'Last action', render: (p) => { const a = lastActionFor(p.id); return a ? `<span class="flex items-center gap-1 nowrap muted" data-tip="${a.type} · ${a.status === 'done' ? 'completed ' + F.date(a.completed, 'short') : 'due ' + F.date(a.due, 'short')}">${ic(P.TYPE_ICON[a.type], { size: 14 })}${statusBadge(a)}</span>` : bandOfP(p) === 'High' ? `<button class="ns-btn xs primary" data-log="${p.id}">Log</button>` : '<span class="faint xs">—</span>'; }, sort: (p) => { const a = lastActionFor(p.id); return a ? a.created : ''; } },
+      ] });
+      root.querySelector('#q').oninput = U.debounce((e) => tbl.setSearch(e.target.value), 120);
+      root.addEventListener('click', (e) => { const b = e.target.closest('[data-log]'); if (b) { e.stopPropagation(); logAction(b.dataset.log); } });
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`people-risk-${iso(TODAY)}.csv`, [['Employee ID', 'Name', 'Title', 'Team', 'Department', 'Manager', 'Level', 'Location', 'Tenure', 'Engagement', 'Compa-ratio', 'Risk', 'Band', 'Top driver', 'Last action', 'Status'], ...tbl.rows().map((p) => { const a = lastActionFor(p.id); return [p.id, p.name, p.title, p.team, p.dept, (D.byId(p.managerId) || {}).name || '', p.level, p.city, p.tenure, p.engagement, p.compa, riskOf(p), bandOfP(p), p.riskDrivers[0] ? p.riskDrivers[0].label : '', a ? a.type : '', a ? a.status : '']; })]);
+    },
+  };
+
+  /* PERSON PAGE ---------------------------------------------------------- */
+  R['/people/:id'] = {
+    title: (c) => (D.byId(c.params.id) || {}).name || 'Person', nav: 'people',
+    crumbs: (c) => [{ label: 'People', href: NS.link('/people') }, { label: (D.byId(c.params.id) || {}).name || '' }],
+    render: (c) => {
+      const p = D.byId(c.params.id); if (!p) return NS.empty({ title: 'Not found', body: 'No person with that ID.' });
+      if (!inScope(c.persona, p.id)) return NS.empty({ icon: 'lock', title: 'Outside your scope', body: `${p.name} is not in ${scopeName(c.persona)}. Risk profiles are visible to the person’s manager, their HR partner and leadership.`, action: `<a class="ns-btn secondary" href="${NS.link('/people')}">Back to your people</a>` });
+      const r = riskOf(p), b = bandOf(r), mgr = D.byId(p.managerId), sv = saveFor(p.id), acts = actionsFor(p.id), recs = recommended(p), team = D.reports(p.managerId);
+      return html`<div class="ns-card mb-4"><div class="ns-card-body flex gap-5 items-center wrap">${NS.avatar(p, { size: 'xxl' })}<div class="grow min-w-0"><div class="flex items-center gap-2 wrap"><h1 style="font-size:24px">${NS.esc(p.name)}</h1>${bandBadge(b)}${sv ? NS.badge(`Saved ${F.date(sv.date, 'short')}`, 'ok') : ''}${p.status !== 'Active' ? NS.badge(p.status, 'warn') : ''}</div><div class="md muted mt-1">${NS.esc(p.title)} · ${D.levelLabel(p.level)} · ${NS.esc(p.team)}</div><div class="flex gap-4 wrap mt-3 sm"><span class="flex items-center gap-2">${ic('map-pin', { size: 14 })}${p.city} · ${D.regions[p.region]}${p.remote ? ' · remote' : ''}</span><span class="flex items-center gap-2">${ic('calendar', { size: 14 })}Joined ${F.date(p.hireDate, 'my')} · ${F.tenure(p.tenure)}</span>${mgr ? `<span class="flex items-center gap-2">${ic('user', { size: 14 })}Reports to ${inScope(c.persona, mgr.id) ? `<a href="${NS.link('/people/' + mgr.id)}">${NS.esc(mgr.name)}</a>` : NS.esc(mgr.name)}</span>` : ''}<span class="flex items-center gap-2">${ic('mail', { size: 14 })}${p.email}</span></div></div><div class="flex gap-2 wrap">${b !== 'Low' ? `<button class="ns-btn secondary" data-saved>${ic('check-circle')}Mark as saved</button>` : ''}<a class="ns-btn secondary" href="${NS.link('/model', { p: p.id })}" ${c.persona.id === 'manager' ? 'style="display:none"' : ''}>${ic('sliders')}What-if</a><button class="ns-btn primary" data-log>${ic('plus')}Log an action</button></div></div></div>
+        <div class="ns-grid c3">
+          <div class="ns-card"><div class="ns-card-body center"><div class="mb-2">${NS.ring({ value: r / 100, size: 150, thickness: 12, label: String(r), sub: `${b} risk`, color: BAND[b].color })}</div><div class="sm muted">Baseline ${Math.round(baselineOf(p))} + ${U.sum(p.riskDrivers.filter((d) => d.w > 0), 'w')} from drivers${p.riskDrivers.some((d) => d.w < 0) ? ` − ${Math.abs(U.sum(p.riskDrivers.filter((d) => d.w < 0), 'w'))} protective` : ''}</div><div class="grid gap-2 mt-3 sm" style="text-align:left"><div class="flex justify-between"><span class="muted">Engagement</span><b class="tnum">${p.engagement}</b></div><div class="flex justify-between"><span class="muted">Compa-ratio</span><b class="tnum">${p.compa.toFixed(2)}</b></div><div class="flex justify-between"><span class="muted">Time in level</span><b class="tnum">${p.timeInLevel} yrs</b></div><div class="flex justify-between"><span class="muted">FY25 rating</span><b>${p.rating ? D.ratingScale[p.rating - 1].label : '—'}</b></div><div class="flex justify-between"><span class="muted">Regrettable</span><b>${p.regrettable ? 'Yes' : 'No'}</b></div><div class="flex justify-between"><span class="muted">Replacement cost</span><b class="tnum">${F.money(replacementCost(p), { compact: true })}</b></div></div></div></div>
+          ${NS.card({ title: 'Why this score', sub: 'Drivers and their weights', body: driverBars(p.riskDrivers) })}
+          ${NS.card({ title: 'Pulse · last 6 months', sub: team.length > 1 ? `vs ${NS.esc(p.team)} average` : 'Monthly pulse', body: '<div id="ppPulse"></div>' })}
+          ${NS.card({ title: 'Pay position', sub: `${D.levelLabel(p.level)} band in ${p.city} · ${F.money(p.band.min, { compact: true })} – ${F.money(p.band.max, { compact: true })}`, body: compPos(p) + `<div class="sm muted mt-3">${p.compa < 0.9 ? `${p.first} is paid ${Math.round((1 - p.compa) * 100)}% under the midpoint. A move to 0.95 would cost about ${F.money(Math.round((0.95 - p.compa) * p.band.mid), { compact: true })} a year — ${Math.round(((0.95 - p.compa) * p.band.mid) / replacementCost(p) * 100)}% of the replacement cost.` : p.compa < 0.95 ? `${p.first} sits just under the midpoint; with a rating of ${p.rating ? D.ratingScale[p.rating - 1].label : '—'} this is worth a look at the next cycle.` : `${p.first} is paid at or above the midpoint — pay is not the lever here.`}</div>` })}
+          ${NS.card({ title: 'Manager & cadence', body: `<div class="grid gap-3">${mgr ? `<div class="flex items-center gap-3">${NS.avatar(mgr, { size: 'sm' })}<div class="min-w-0"><b class="sm">${NS.esc(mgr.name)}</b><div class="xs muted">${NS.esc(mgr.title)} · ${team.length} reports</div></div></div>` : ''}<div class="flex items-center gap-3 wrap">${cadence(p)}${p.managerChanged ? NS.badge('Manager changed in last 6 months', 'warn') : NS.badge('Stable reporting line', 'neutral')}</div><div class="sm muted">${p.oneOnOnes === 'rare' ? 'Rare 1:1s are the cheapest thing to fix on this page.' : p.oneOnOnes === 'monthly' ? 'Monthly 1:1s are thin for someone in this band — suggest fortnightly.' : 'Cadence is healthy.'}</div></div>` })}
+          ${NS.card({ title: 'Recommended actions', sub: 'Mapped from the strongest drivers', body: `<div class="grid gap-2">${recs.map((x) => `<div class="flex items-center gap-3"><span class="ns-icon-box sm">${ic(TYPE_ICON[x.type])}</span><div class="grow min-w-0"><b class="sm">${x.type}</b><div class="xs muted">${NS.esc(x.driver)}</div></div><button class="ns-btn xs soft flex-none" data-log="${x.type}">Log</button></div>`).join('')}</div>` })}
+          <div class="span-2">${NS.card({ title: 'Action history', sub: acts.length ? `${acts.length} logged · ${acts.filter((a) => a.status === 'done').length} completed` : 'No actions yet', bodyCls: 'flush', body: acts.length ? `<table class="ns-table"><thead><tr><th>Action</th><th>Owner</th><th>Created</th><th>Due / done</th><th>Status</th></tr></thead><tbody>${acts.map((a) => { const o = D.byId(a.owner); return `<tr><td><b>${a.type}</b><div class="xs muted" style="max-width:420px;white-space:normal">${NS.esc(a.note || '')}</div></td><td>${o ? `<div class="flex items-center gap-2">${NS.avatar(o, { size: 'xs' })}<span class="sm">${NS.esc(o.name)}</span></div>` : '—'}</td><td class="sm tnum">${F.date(a.created, 'short')}</td><td class="sm tnum">${a.status === 'done' ? F.date(a.completed, 'short') : F.date(a.due, 'short')}</td><td>${statusBadge(a)}</td></tr>`; }).join('')}</tbody></table>` : `<div class="ns-card-body sm muted">${b === 'High' ? `${p.first} is High risk with no action on record. Log one — the model will not do it for you.` : 'Nothing has been needed so far.'}</div>` })}</div>
+          ${sv ? NS.card({ title: 'Save record', body: `<div class="grid gap-2 sm"><div class="flex justify-between"><span class="muted">Flagged at</span><b>${sv.prevRisk} · High</b></div><div class="flex justify-between"><span class="muted">Now</span><b>${riskOf(p)} · ${bandOfP(p)}</b></div><div class="flex justify-between"><span class="muted">Action</span><b>${sv.type}</b></div><div class="flex justify-between"><span class="muted">Days to save</span><b>${sv.days}</b></div><div class="flex justify-between"><span class="muted">Cost avoided</span><b>${F.money(replacementCost(p), { compact: true })}</b></div></div>` }) : NS.card({ title: 'Skills', body: `<div class="ns-chips">${p.skills.map((s) => `<span class="ns-tag">${NS.esc(s)}</span>`).join('')}</div><div class="xs muted mt-3">${p.riskDrivers.some((d) => d.k === 'market') ? 'Includes skills in a hot hiring market.' : 'No hot-market skill flag.'}</div>` })}
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const p = D.byId(c.params.id); if (!p || !inScope(c.persona, p.id)) return;
+      const el = root.querySelector('#ppPulse'); if (el) { const team = D.reports(p.managerId); NS.chart.line(el, { labels: PULSE_LABELS, series: [{ name: p.first, values: p.pulse, color: BAND[bandOfP(p)].color }, ...(team.length > 1 ? [{ name: 'Team avg', values: teamPulse(team), color: 'var(--ink-4)', dashed: true }] : [])], yMin: 0, yMax: 100, height: 170, legend: team.length > 1 ? 'bottom' : false }); }
+      root.querySelectorAll('[data-log]').forEach((b) => b.onclick = () => logAction(p.id, b.dataset.log || null));
+      const sv = root.querySelector('[data-saved]'); if (sv) sv.onclick = () => markSaved(p.id);
+    },
+  };
+  const { PULSE_LABELS } = P;
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__RR, D = NSData, U = NS.util, F = NS.fmt, ic = NS.ic; const html = P.html;
+  const { S, save, log, store, TODAY, iso, addDays, daysBetween, BAND, BANDS, bandOf, TYPES, TYPE_ICON, FACTOR, MODEL, REASONS, THEMES, REPLACEMENT_FACTOR, TENURE_BANDS, HRBP, MGR, PRIYA, REWARDS, scopeOf, scopeName, inScope, meFor, featuresOf, contributions, baselineOf, scoreWith, EXITS, riskOf, bandOfP, openActionsFor, isOverdue, replacementCost, savesIn, exitsIn, recommended, bandCounts, highNoAction, bandBadge, driverBars, typeBadge, statusBadge, downloadCsv, logAction, openProfile, R } = P;
+  S.exitReviews = S.exitReviews || {}; S.scenarios = S.scenarios || []; S.sim = S.sim || null;
+  const LAURA = 'NS-1901';
+  const sel = (id, label, opts, cur) => `<label class="ns-field"><span class="ns-label">${label}</span><select class="ns-select sm" data-f="${id}"><option value="">All</option>${opts.map((o) => { const [v, l] = Array.isArray(o) ? o : [o, o]; return `<option value="${NS.esc(v)}" ${v === cur ? 'selected' : ''}>${NS.esc(l)}</option>`; }).join('')}</select></label>`;
+  const bindFilters = (root, path, q) => root.querySelectorAll('[data-f]').forEach((s) => s.onchange = () => NS.go(path, { ...q, [s.dataset.f]: s.value }));
+  const hasFilters = (q, keys) => keys.some((k) => q[k]);
+  const pct = (n, d, dp = 0) => (d ? U.round((n / d) * 100, dp) : 0);
+  const typeColor = (t) => `var(--viz-${TYPES.indexOf(t) + 1})`;
+
+  /* ================================================================== */
+  /* ACTION QUEUE — kanban + effectiveness                               */
+  /* ================================================================== */
+  const COLS = [['todo', 'To do', 'circle'], ['doing', 'In progress', 'circle-dot'], ['done', 'Done', 'check-circle']];
+  const scopeActs = (persona) => { const ids = new Set(scopeOf(persona).map((p) => p.id)); return S.actions.filter((a) => ids.has(a.pid)); };
+  const findAct = (id) => S.actions.find((a) => a.id === id);
+  const dueLabel = (a) => {
+    if (a.status === 'done') return a.saved ? `<span class="due saved">${ic('check-circle')}Saved ${F.date(a.completed, 'short')}</span>` : `<span class="due">${ic('check')}Done ${F.date(a.completed, 'short')}</span>`;
+    const d = daysBetween(iso(TODAY), a.due);
+    return d < 0 ? `<span class="due over">${ic('alert-triangle')}${-d} day${d === -1 ? '' : 's'} overdue</span>` : `<span class="due">${ic('calendar')}${d === 0 ? 'Due today' : d === 1 ? 'Due tomorrow' : 'Due ' + F.date(a.due, 'short')}</span>`;
+  };
+  const kcard = (a) => {
+    const p = D.byId(a.pid), o = D.byId(a.owner), r = riskOf(p), b = bandOf(r);
+    return `<div class="ns-kcard kcard ${isOverdue(a) ? 'is-over' : ''}" data-id="${a.id}" data-name="${NS.esc((p.name + ' ' + p.team + ' ' + a.type).toLowerCase())}" tabindex="0">
+      <div class="kcard-top">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0 grow"><div class="nm">${NS.esc(p.name)}</div><div class="tm">${NS.esc(p.team)} · ${D.levelLabel(p.level)}</div></div><span class="kscore ${b}" data-tip="Risk ${r} · ${b}">${r}</span></div>
+      <div>${typeBadge(a.type, a.status === 'done' ? (a.saved ? 'ok' : 'neutral') : 'brand')}</div>
+      ${a.note ? `<div class="knote">${NS.esc(a.note)}</div>` : ''}
+      <div class="meta">${dueLabel(a)}<span class="flex items-center gap-1">${o ? NS.avatar(o, { size: 'xs', tip: true }) : ''}<button class="ns-btn xs ghost" data-more="${a.id}" aria-label="Card actions">${ic('more-horizontal')}</button></span></div></div>`;
+  };
+  const ownerChoices = (p, extra) => U.uniq([p.managerId, HRBP, REWARDS, LAURA, NS.persona.personId, extra].filter(Boolean)).map((id) => D.byId(id)).filter(Boolean);
+
+  const recordSave = (a) => {
+    const p = D.byId(a.pid), cur = riskOf(p), newRisk = Math.max(12, Math.round(cur - 34 - (cur > 75 ? 6 : 0)));
+    S.overrides[p.id] = { risk: newRisk, at: iso(TODAY) };
+    a.status = 'done'; a.completed = iso(TODAY); a.saved = true;
+    const days = Math.max(1, daysBetween(a.created, iso(TODAY)));
+    S.saves.push({ pid: p.id, prevRisk: cur, newRisk, date: iso(TODAY), type: a.type, days, actionId: a.id });
+    log(`Closed “${a.type}” for ${p.name} as a save (${cur} → ${newRisk})`); save();
+    NS.toast(`${p.first} counted as a save`, { desc: `Risk ${cur} → ${newRisk} · ${F.money(replacementCost(p), { compact: true })} replacement cost avoided · ${days} days from action`, type: 'ok' });
+    NS.refresh();
+  };
+  const moveAct = (a, col) => {
+    if (!a || a.status === col) return;
+    const p = D.byId(a.pid), label = COLS.find((c) => c[0] === col)[1];
+    if (a.saved && col !== 'done') { NS.toast('Saved actions stay in Done', { desc: 'A save is part of the effectiveness record. Log a new action if the risk returns.', type: 'warn' }); return; }
+    if (col === 'done' && bandOfP(p) !== 'Low') {
+      NS.modal({ title: 'Close out this action', sub: `${a.type} · ${p.name} · risk ${riskOf(p)} (${bandOfP(p)})`, size: 'sm',
+        body: `<div class="grid gap-3"><label class="ns-radio-card flex gap-3 items-start" style="padding:12px;border:1px solid var(--line);border-radius:12px;cursor:pointer"><input type="radio" name="oc" value="saved" checked><span><b class="sm">It worked — count as a save</b><div class="xs muted">Re-scores ${NS.esc(p.first)} as the model would once the driver is resolved and adds ${F.money(replacementCost(p), { compact: true })} to cost avoided.</div></span></label><label class="flex gap-3 items-start" style="padding:12px;border:1px solid var(--line);border-radius:12px;cursor:pointer"><input type="radio" name="oc" value="monitor"><span><b class="sm">Done — keep monitoring</b><div class="xs muted">The action happened but the signal has not moved yet. ${NS.esc(p.first)} stays in the ${bandOfP(p)} band.</div></span></label></div>`,
+        actions: [{ label: 'Cancel' }, { label: 'Close action', cls: 'primary', onClick: (m) => { const v = m.el.querySelector('input[name="oc"]:checked').value; if (v === 'saved') recordSave(a); else { a.status = 'done'; a.completed = iso(TODAY); log(`Completed “${a.type}” for ${p.name} (monitoring)`); save(); NS.toast('Action completed', { desc: `${a.type} · ${p.first} · still ${bandOfP(p)} risk, keep watching`, type: 'info' }); NS.refresh(); } } }] });
+      return;
+    }
+    const prev = a.status; a.status = col;
+    if (col === 'done') a.completed = iso(TODAY); else delete a.completed;
+    log(`Moved “${a.type}” for ${p.name} to ${label}`); save();
+    NS.toast(`Moved to ${label}`, { desc: `${a.type} · ${p.name}`, action: { label: 'Undo', onClick: () => { a.status = prev; if (prev !== 'done') delete a.completed; save(); NS.refresh(); } } });
+    NS.refresh();
+  };
+  const editAct = (a) => {
+    const p = D.byId(a.pid);
+    NS.modal({ title: 'Edit action', sub: `${p.name} · ${p.title} · risk ${riskOf(p)}`, size: 'lg',
+      body: `<div class="grid gap-4"><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Action type</span><select class="ns-select" id="etype">${TYPES.map((t) => `<option ${t === a.type ? 'selected' : ''}>${t}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Owner</span><select class="ns-select" id="eowner">${ownerChoices(p, a.owner).map((o) => `<option value="${o.id}" ${o.id === a.owner ? 'selected' : ''}>${NS.esc(o.name)} · ${NS.esc(o.id === p.managerId ? 'Manager' : o.title)}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Due</span><input class="ns-input" type="date" id="edue" value="${a.due}"></label><label class="ns-field"><span class="ns-label">Status</span><select class="ns-select" id="estatus" ${a.saved ? 'disabled' : ''}>${COLS.map(([id, l]) => `<option value="${id}" ${id === a.status ? 'selected' : ''}>${l}</option>`).join('')}</select></label></div><label class="ns-field"><span class="ns-label">Plan</span><textarea class="ns-textarea" id="enote">${NS.esc(a.note || '')}</textarea></label><div class="xs muted">Created ${F.date(a.created, 'med')} · ${a.id}${a.saved ? ' · counted as a save' : ''}</div></div>`,
+      actions: [{ label: 'Delete', cls: 'danger-soft', onClick: () => { NS.confirm({ title: 'Delete this action?', body: `${a.type} for ${p.name} will be removed from the queue.`, confirmLabel: 'Delete', danger: true }).then((ok) => { if (!ok) return; const i = S.actions.indexOf(a); if (i >= 0) S.actions.splice(i, 1); const si = S.saves.findIndex((s) => s.actionId === a.id); if (si >= 0) { S.saves.splice(si, 1); delete S.overrides[a.pid]; } log(`Deleted “${a.type}” for ${p.name}`); save(); NS.toast('Action deleted', { desc: `${a.type} · ${p.name}`, type: 'info' }); NS.refresh(); }); } }, { label: 'Open risk profile', onClick: () => { setTimeout(() => openProfile(a.pid), 60); } }, { label: 'Save changes', cls: 'primary', onClick: (m) => { const el = (s) => m.el.querySelector(s); a.type = el('#etype').value; a.owner = el('#eowner').value; a.due = el('#edue').value || a.due; a.note = el('#enote').value.trim(); const st = el('#estatus').value; if (!a.saved && st !== a.status) { if (st === 'done') { a.status = 'done'; a.completed = iso(TODAY); } else { a.status = st; delete a.completed; } } log(`Edited “${a.type}” for ${p.name}`); save(); NS.toast('Action updated', { desc: `${a.type} · owner ${D.byId(a.owner).first} · due ${F.date(a.due, 'short')}` }); NS.refresh(); } }] });
+  };
+  const newActionPicker = (persona) => {
+    const cands = scopeOf(persona).filter((p) => bandOfP(p) !== 'Low').sort((a, b) => riskOf(b) - riskOf(a));
+    if (!cands.length) { NS.toast('Nobody in scope is Medium or High risk', { type: 'info' }); return; }
+    NS.modal({ title: 'Log a retention action', sub: 'Pick who it is for — the next step suggests the action from their drivers.', size: 'sm',
+      body: `<label class="ns-field"><span class="ns-label">Person</span><select class="ns-select" id="npick">${cands.map((p) => `<option value="${p.id}">${NS.esc(p.name)} · ${riskOf(p)} ${bandOfP(p)}${openActionsFor(p.id).length ? ' · has an action' : ''}</option>`).join('')}</select></label>`,
+      actions: [{ label: 'Cancel' }, { label: 'Continue', cls: 'primary', onClick: (m) => { const pid = m.el.querySelector('#npick').value; setTimeout(() => logAction(pid), 60); } }] });
+  };
+  const effectiveness = (people) => {
+    const saves = savesIn(people);
+    const done = S.actions.filter((a) => a.status === 'done' && people.some((p) => p.id === a.pid));
+    const by = TYPES.map((t) => { const sv = saves.filter((s) => s.type === t), dn = done.filter((a) => a.type === t); return { type: t, saves: sv.length, done: dn.length, rate: pct(sv.length, dn.length), median: sv.length ? Math.round(U.median(sv, 'days')) : null }; }).filter((x) => x.saves || x.done).sort((a, b) => b.saves - a.saves);
+    return { saves, done, by, median: saves.length ? Math.round(U.median(saves, 'days')) : 0, rate: pct(saves.length, done.length) };
+  };
+
+  R['/actions'] = {
+    title: 'Action queue',
+    render: (c) => {
+      const q = c.query, persona = c.persona, scope = scopeOf(persona), all = scopeActs(persona), me = persona.personId;
+      const acts = all.filter((a) => (!q.type || a.type === q.type) && (!q.owner || (q.owner === 'me' ? a.owner === me : a.owner === q.owner)) && (!q.band || bandOfP(D.byId(a.pid)) === q.band) && (!q.due || (q.due === 'overdue' ? isOverdue(a) : q.due === 'week' ? a.status !== 'done' && a.due <= iso(addDays(TODAY, 7)) : true)));
+      const byCol = { todo: [], doing: [], done: [] };
+      acts.forEach((a) => byCol[a.status].push(a));
+      byCol.todo.sort((a, b) => (isOverdue(b) - isOverdue(a)) || (a.due > b.due ? 1 : -1)); byCol.doing.sort((a, b) => (isOverdue(b) - isOverdue(a)) || (a.due > b.due ? 1 : -1)); byCol.done.sort((a, b) => (b.completed > a.completed ? 1 : -1));
+      const open = all.filter((a) => a.status !== 'done'), overdue = all.filter(isOverdue), gap = highNoAction(scope).sort((a, b) => riskOf(b) - riskOf(a));
+      const own = persona.id === 'manager' && savesIn(scope).length < 3;
+      const eff = effectiveness(own ? D.people : scope);
+      const owners = U.uniq(all.map((a) => a.owner)).map((id) => D.byId(id)).filter(Boolean).sort((a, b) => (a.name > b.name ? 1 : -1));
+      const highs = scope.filter((p) => bandOfP(p) === 'High');
+      const covered = highs.length - gap.length;
+      return html`${NS.pageHead({ eyebrow: `${scopeName(persona)} · retention actions`, title: 'Action queue', sub: 'Every High-risk person should have exactly one owner and a date. Drag cards between columns; closing a card asks whether it worked, and saves feed the effectiveness numbers below.', actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export</button><button class="ns-btn primary" data-new>${ic('plus')}Log an action</button>` })}
+        <div class="ns-stats mb-4">
+          ${NS.stat({ label: 'Open actions', value: open.length, icon: 'clipboard-list', sub: `${open.filter((a) => a.status === 'doing').length} in progress · ${open.filter((a) => a.status === 'todo').length} to do` })}
+          ${NS.stat({ label: 'Overdue', value: overdue.length, icon: 'alert-triangle', sub: overdue.length ? `Oldest ${Math.max(...overdue.map((a) => daysBetween(a.due, iso(TODAY))))} days late` : 'Nothing late', cls: overdue.length ? 'bad' : '' })}
+          ${NS.stat({ label: 'High-risk coverage', value: pct(covered, highs.length), unit: '%', icon: 'shield-check', sub: `${covered} of ${highs.length} High have an owner` })}
+          ${NS.stat({ label: own ? 'Saves YTD · company' : 'Saves YTD', value: eff.saves.length, icon: 'life-buoy', sub: `Median ${eff.median} days from action to save` })}
+        </div>
+        <div class="ns-toolbar mb-3"><div class="ns-input-wrap grow" style="min-width:200px">${ic('search')}<input class="ns-input" id="kq" placeholder="Filter cards by person, team or action…"></div>
+          <div class="flex gap-1 wrap"><a class="ns-chip" aria-pressed="${q.owner === 'me'}" href="${NS.link('/actions', { ...q, owner: q.owner === 'me' ? '' : 'me' })}">${ic('user')}Mine <span class="n">${all.filter((a) => a.owner === me && a.status !== 'done').length}</span></a><a class="ns-chip" aria-pressed="${q.due === 'overdue'}" href="${NS.link('/actions', { ...q, due: q.due === 'overdue' ? '' : 'overdue' })}">${ic('alert-triangle')}Overdue <span class="n">${overdue.length}</span></a><a class="ns-chip" aria-pressed="${q.due === 'week'}" href="${NS.link('/actions', { ...q, due: q.due === 'week' ? '' : 'week' })}">${ic('calendar')}Due in 7 days</a></div>
+          ${hasFilters(q, ['type', 'owner', 'band', 'due']) ? `<a class="ns-btn sm ghost" href="${NS.link('/actions')}">${ic('x')}Clear</a>` : ''}</div>
+        <div class="filters">${sel('type', 'Action type', TYPES, q.type)}${sel('owner', 'Owner', [['me', 'Assigned to me'], ...owners.map((o) => [o.id, o.name])], q.owner)}${sel('band', 'Current risk band', BANDS, q.band)}</div>
+        <div class="ns-kanban" id="kb">${COLS.map(([id, l, icn]) => { const list = byCol[id]; const shown = q.all === id ? list : list.slice(0, 8); const od = list.filter(isOverdue).length; return `<div class="ns-kanban-col" data-col="${id}"><div class="ns-kanban-head"><span class="flex items-center gap-2">${ic(icn, { size: 14 })}${l}</span><span class="flex items-center gap-2">${od ? `<span class="ns-badge bad">${od} overdue</span>` : ''}${id === 'done' ? `<span class="ns-badge ok">${list.filter((a) => a.saved).length} saved</span>` : ''}<span class="n">${list.length}</span></span></div>${shown.map(kcard).join('')}${!list.length ? `<div class="kempty">${ic(id === 'done' ? 'check-circle' : 'inbox')}<span>${id === 'todo' ? (gap.length ? `Nothing queued yet — ${NS.esc(gap[0].first)} needs an owner` : 'Nothing queued') : id === 'doing' ? 'Drag a card here when work starts' : 'Completed actions land here'}</span></div>` : ''}${list.length > shown.length ? `<div class="kcol-foot"><a class="ns-btn xs ghost" href="${NS.link('/actions', { ...q, all: id })}">Show all ${list.length} ${ic('chevron-down', { size: 12 })}</a></div>` : ''}</div>`; }).join('')}</div>
+        <div class="ns-grid c3 mt-4">
+          ${NS.card({ title: 'Needs an owner', sub: gap.length ? `${gap.length} High-risk ${gap.length === 1 ? 'person' : 'people'} with no open action` : 'Every High-risk person is covered', bodyCls: 'flush', body: gap.length ? `<div style="padding:4px 20px;max-height:360px;overflow:auto">${gap.map((p) => `<div class="ns-row"><button class="ns-person" style="text-align:left;min-width:0" data-open="${p.id}">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb">Risk ${riskOf(p)} · ${NS.esc(recommended(p)[0].type)}</div></div></button><div class="grow"></div><button class="ns-btn xs primary" data-log="${p.id}">Log</button></div>`).join('')}</div>` : NS.empty({ icon: 'check-circle', title: 'Fully covered', body: 'Nobody High risk is waiting for an owner.' }) })}
+          ${NS.card({ title: 'Effectiveness · saves by action type', sub: own ? 'Company-wide — your team has no closed saves yet' : `${eff.saves.length} saves from ${eff.done.length} completed actions · ${eff.rate}% save rate`, body: eff.by.length ? '<div id="effBars"></div>' : NS.empty({ icon: 'bar-chart', title: 'No completed actions yet', body: 'Close a card in Done to start the record.' }) })}
+          ${NS.card({ title: 'Time to save', sub: 'Days from action logged to risk leaving the High band', body: `<div class="flex items-end gap-3 wrap"><div class="big-num">${eff.median}<small>days median</small></div><div class="grow"></div><div class="xs muted right">${eff.by.filter((x) => x.median != null).slice(0, 1).map((x) => `Fastest lever: <b class="ink">${x.type}</b>`).join('')}</div></div><div id="saveMonths" class="mt-3"></div>` })}
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const persona = c.persona, scope = scopeOf(persona), q = c.query;
+      bindFilters(root, '/actions', q);
+      const kb = root.querySelector('#kb');
+      NS.dnd(kb, { item: '.ns-kcard', zone: '.ns-kanban-col', canDrop: (it, z) => { const a = findAct(it.dataset.id); return !(a && a.saved && z.dataset.col !== 'done'); }, onDrop: (it, z) => moveAct(findAct(it.dataset.id), z.dataset.col) });
+      kb.addEventListener('click', (e) => {
+        const more = e.target.closest('[data-more]');
+        if (more) { e.stopPropagation(); const a = findAct(more.dataset.more); NS.dropdown(more, { items: [{ head: 'Move to' }, ...COLS.filter(([id]) => id !== a.status && !(a.saved && id !== 'done')).map(([id, l, icn]) => ({ label: l, icon: icn, onClick: () => moveAct(a, id) })), { sep: true }, { label: 'Edit action', icon: 'pencil', onClick: () => editAct(a) }, { label: 'Open risk profile', icon: 'radar', onClick: () => openProfile(a.pid) }, { label: 'Full profile page', icon: 'user', onClick: () => NS.go('/people/' + a.pid) }] }); return; }
+        const card = e.target.closest('.ns-kcard'); if (card) editAct(findAct(card.dataset.id));
+      });
+      kb.addEventListener('keydown', (e) => { if (e.key === 'Enter') { const card = e.target.closest('.ns-kcard'); if (card) editAct(findAct(card.dataset.id)); } });
+      const kq = root.querySelector('#kq'); kq.oninput = () => { const v = kq.value.trim().toLowerCase(); kb.querySelectorAll('.ns-kcard').forEach((cd) => { cd.style.display = !v || cd.dataset.name.includes(v) ? '' : 'none'; }); };
+      root.querySelectorAll('[data-open]').forEach((b) => b.onclick = () => openProfile(b.dataset.open));
+      root.querySelectorAll('[data-log]').forEach((b) => b.onclick = () => logAction(b.dataset.log));
+      root.querySelector('[data-new]').onclick = () => newActionPicker(persona);
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`retention-actions-${iso(TODAY)}.csv`, [['Action ID', 'Employee ID', 'Name', 'Team', 'Risk', 'Band', 'Action', 'Owner', 'Status', 'Created', 'Due', 'Completed', 'Saved', 'Plan'], ...scopeActs(persona).map((a) => { const p = D.byId(a.pid); return [a.id, p.id, p.name, p.team, riskOf(p), bandOfP(p), a.type, (D.byId(a.owner) || {}).name || '', a.status, a.created, a.due, a.completed || '', a.saved ? 'Yes' : '', a.note || '']; })]);
+      const own = persona.id === 'manager' && savesIn(scope).length < 3, eff = effectiveness(own ? D.people : scope);
+      const eb = root.querySelector('#effBars'); if (eb) NS.chart.hbars(eb, { items: eff.by.map((x) => ({ label: x.type, value: x.saves, color: 'var(--brand)', sub: `${x.rate}% saved${x.median != null ? ` · ${x.median}d` : ''}` })), valueLabel: 'Saves', labelWidth: 'minmax(120px,44%)', onItem: (d) => NS.go('/actions', { type: d.label }) });
+      const sm = root.querySelector('#saveMonths'); if (sm) { const months = D.series.last12.slice(3); const vals = months.map((_, i) => { const ym = `2026-${String(i + 1).padStart(2, '0')}`; return eff.saves.filter((s) => s.date.slice(0, 7) === ym).length; }); NS.chart.bars(sm, { labels: months.map((m) => m.split(' ')[0].slice(0, 3)), series: [{ name: 'Saves', values: vals, color: 'var(--viz-good)' }], height: 150, legend: false, showValues: true }); }
+    },
+  };
+
+  /* ================================================================== */
+  /* COHORTS — attrition analytics                                       */
+  /* ================================================================== */
+  const THEME_MAP = { Compensation: ['Pay below market', 'Equity refresh missing'], Growth: ['No visible path to the next level', 'Faster promotion elsewhere'], 'Better offer': ['Faster promotion elsewhere', 'Pay below market'], Manager: ['Manager turnover', 'Recognition felt uneven'], Burnout: ['On-call and after-hours load', 'Team re-org fatigue'], Relocation: ['Relocation for family', 'Wanted fully remote'], Other: ['Wanted fully remote', 'Team re-org fatigue'] };
+  const themesOf = (x) => { if (!x.voluntary) return []; const m = THEME_MAP[x.reason] || []; return NS.hashStr(x.id) % 3 === 0 ? m.slice(0, 1) : m; };
+  const QTRS = D.series.quarters.slice(-4);
+  const qOf = (x) => Math.floor(x.month / 3);
+  const reasonColor = (r) => (REASONS.find((x) => x[0] === r) || [0, 0, 'var(--viz-8)'])[2];
+  const leadMonths = (x) => 2 + (NS.hashStr(x.id + 'lead') % 5);
+  const firstOf = (x) => x.name.split(' ')[0];
+  const exitStory = (x) => {
+    const h = NS.hashStr(x.id), f = firstOf(x);
+    return ({ Compensation: `${f} accepted an offer about ${12 + (h % 14)}% above their base. They said a market adjustment at the last cycle would have kept them — they had raised it in two 1:1s.`, Growth: `${f} felt the path to the next level was unclear after ${x.tenure} years at Northstar; the new role is a level up with a named scope.`, 'Better offer': `A recruiter approached ${f} directly. The offer combined title and equity that Northstar could not match inside the two weeks they had.`, Manager: `${f} had two manager changes in eighteen months and felt their work was no longer visible to the new lead.`, Burnout: `On-call and release load stayed high for two quarters. ${f} left without a new role lined up and asked for the load data to be shared with the team.`, Relocation: `${f} is moving for family reasons to a city without a Northstar office; the role could not be made fully remote.`, Other: `${f} is leaving to study full-time and said they would consider returning.`, 'Involuntary / contract end': `Contract end or role change — excluded from voluntary attrition and from the model backtest.` })[x.reason];
+  };
+  const cohortFilter = (persona, q) => exitsIn(persona).filter((x) => (q.inv === '1' || x.voluntary) && (!q.region || x.region === q.region) && (!q.dept || x.dept === q.dept) && (!q.org || x.org === q.org) && (!q.reason || x.reason === q.reason) && (!q.theme || themesOf(x).includes(q.theme)));
+  const headFilter = (persona, q) => scopeOf(persona).filter((p) => (!q.region || p.region === q.region) && (!q.dept || p.dept === q.dept) && (!q.org || p.org === q.org));
+  const exitDrawer = (x) => {
+    const rv = S.exitReviews[x.id], mgr = D.byId(x.managerId);
+    NS.drawer({ eyebrow: 'Exit record', title: `<span class="flex items-center gap-3">${NS.avatar(x.name, { size: 'lg' })}<span><span style="display:block">${NS.esc(x.name)}</span><span class="sm muted" style="font-weight:400">${D.levelLabel(x.level)} · ${NS.esc(x.team)} · ${NS.esc(x.city)}</span></span></span>`,
+      body: `<div class="grid gap-4">
+        <div class="mstat-row"><div class="mini-stat"><span>Left</span><b>${F.date(x.date, 'short')}</b></div><div class="mini-stat"><span>Tenure</span><b>${x.tenure} yrs</b></div><div class="mini-stat"><span>Replacement cost</span><b>${F.money(Math.round(x.salary * REPLACEMENT_FACTOR), { compact: true })}</b></div></div>
+        <div class="flex gap-2 wrap">${x.voluntary ? NS.badge('Voluntary', 'neutral') : NS.badge('Involuntary', 'neutral')}<span class="ns-badge sq" style="background:color-mix(in srgb,${reasonColor(x.reason)} 16%,transparent)">${NS.esc(x.reason)}</span>${x.regretted ? NS.badge('Regretted · rated Exceeds+', 'bad', true) : NS.badge('Non-regretted', 'neutral')}</div>
+        ${NS.card({ title: 'Exit interview', sub: 'Summarised from the exit conversation', body: `<div class="exit-quote">${NS.esc(exitStory(x))}</div>${themesOf(x).length ? `<div class="flex gap-2 wrap mt-3">${themesOf(x).map((t) => `<span class="theme-chip">${NS.esc(t)}</span>`).join('')}</div>` : ''}` })}
+        ${NS.card({ title: 'What the radar saw', body: x.voluntary ? `<div class="flex items-center gap-3 wrap">${bandBadge(x.predicted)}<span class="sm ink2">${x.predicted === 'High' ? `Flagged High ${leadMonths(x)} months before the resignation.` : x.predicted === 'Medium' ? `Sat in Medium — flagged, but below the action threshold.` : 'Scored Low — a miss. Misses like this are what the recall target is about.'}</span></div><div class="xs muted mt-2">Manager at exit: ${mgr ? NS.esc(mgr.name) : '—'} · last rating ${D.ratingScale[x.rating - 1].label} · base ${F.money(x.salary, { compact: true })}</div>` : '<div class="sm muted">Involuntary exits are excluded from scoring.</div>' })}
+        ${NS.card({ title: 'Retention council review', sub: rv ? `Reviewed ${F.date(rv.at, 'short')}` : 'Not reviewed yet', body: `<label class="ns-field"><span class="ns-label">Learning <span class="opt">what would have changed the outcome</span></span><textarea class="ns-textarea" id="xrnote" placeholder="e.g. Pay flag was visible in March; the review slipped a cycle.">${NS.esc(rv ? rv.note : '')}</textarea></label>` })}
+      </div>`,
+      foot: `<button class="ns-btn ghost" data-close>Close</button><div class="grow"></div>${rv ? `<button class="ns-btn secondary" data-unrev>Clear review</button>` : ''}<button class="ns-btn primary" data-rev>${ic('check')}${rv ? 'Update review' : 'Mark as reviewed'}</button>`,
+      mounted: (body, api) => {
+        const b = api.el.querySelector('[data-rev]'); b.onclick = () => { S.exitReviews[x.id] = { at: iso(TODAY), note: api.el.querySelector('#xrnote').value.trim() }; log(`Reviewed exit of ${x.name}`); save(); NS.toast('Exit reviewed', { desc: `${x.name} · logged for the retention council` }); api.close(); NS.refresh(); };
+        const u = api.el.querySelector('[data-unrev]'); if (u) u.onclick = () => { delete S.exitReviews[x.id]; save(); api.close(); NS.refresh(); };
+      } });
+  };
+
+  R['/cohorts'] = {
+    title: 'Cohorts', personas: ['hrbp', 'exec', 'cpo'],
+    render: (c) => {
+      const q = c.query, persona = c.persona, eng = persona.id === 'exec';
+      const ex = cohortFilter(persona, q), vol = ex.filter((x) => x.voluntary), heads = headFilter(persona, q);
+      const reg = vol.filter((x) => x.regretted), flagged = vol.filter((x) => x.predicted === 'High');
+      const allVol = cohortFilter(persona, { ...q, theme: '', reason: '' }).filter((x) => x.voluntary);
+      const themeCounts = THEMES.map(([t]) => [t, allVol.filter((x) => themesOf(x).includes(t)).length]).filter((t) => t[1]).sort((a, b) => b[1] - a[1]);
+      const reviewed = ex.filter((x) => S.exitReviews[x.id]).length;
+      const deptOpts = eng ? sel('org', 'Org', U.uniq(scopeOf(persona).map((p) => p.org)).sort(), q.org) : sel('dept', 'Department', D.departments.map((d) => d.name), q.dept);
+      return html`${NS.pageHead({ eyebrow: `${scopeName(persona)} · last 12 months`, title: 'Attrition cohorts', sub: `Who left, when, and why — ${F.int(ex.length)} ${q.inv === '1' ? '' : 'voluntary '}exits between ${F.date('2025-10-01', 'my')} and ${F.date(TODAY, 'my')}. Names are exit records, not current employees.`, actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export exits</button>` })}
+        <div class="filters">${sel('region', 'Region', Object.entries(D.regions), q.region)}${deptOpts}${sel('reason', 'Exit reason', REASONS.map((r) => r[0]), q.reason)}<label class="ns-field"><span class="ns-label">Exit type</span><select class="ns-select sm" data-f="inv"><option value="">Voluntary only</option><option value="1" ${q.inv === '1' ? 'selected' : ''}>Include involuntary</option></select></label></div>
+        ${hasFilters(q, ['region', 'dept', 'org', 'reason', 'theme', 'inv']) ? `<div class="flex items-center gap-2 wrap mb-3 sm muted">${ic('filter', { size: 14 })}Filtered view${q.theme ? ` · theme “${NS.esc(q.theme)}”` : ''}<a class="ns-btn xs ghost" href="${NS.link('/cohorts')}">${ic('x')}Clear filters</a></div>` : ''}
+        <div class="ns-stats mb-4">
+          ${NS.stat({ label: 'Voluntary attrition', value: F.num(pct(vol.length, heads.length, 1), 1), unit: '%', icon: 'user-minus', sub: `${vol.length} of ${F.int(heads.length)} people · ceiling 10%` })}
+          ${NS.stat({ label: 'Regretted exits', value: reg.length, icon: 'user-x', sub: `${pct(reg.length, vol.length)}% of voluntary · rated Exceeds+` })}
+          ${NS.stat({ label: 'Flagged High beforehand', value: pct(flagged.length, vol.length), unit: '%', icon: 'radar', sub: `${flagged.length} of ${vol.length} · live recall` })}
+          ${NS.stat({ label: 'Median tenure at exit', value: vol.length ? F.num(U.median(vol, 'tenure'), 1) : '—', unit: vol.length ? 'yrs' : '', icon: 'hourglass', sub: `${vol.filter((x) => x.tenure >= 1.5 && x.tenure <= 3.5).length} left inside the 18–42 month window` })}
+          ${NS.stat({ label: 'Cost of regretted exits', value: F.money(U.sum(reg, (x) => x.salary * REPLACEMENT_FACTOR), { compact: true }), icon: 'banknote', sub: `At ${REPLACEMENT_FACTOR}× salary` })}
+        </div>
+        <div class="ns-grid c2">
+          ${NS.card({ title: 'Exits by quarter', sub: 'Regretted vs non-regretted · click a bar to see that quarter below', body: '<div id="qBars"></div>' })}
+          ${NS.card({ title: 'Why people left', sub: `${vol.length} voluntary exits · click a reason to filter`, body: vol.length ? '<div id="reasonDonut"></div>' : NS.empty({ icon: 'pie-chart', title: 'No voluntary exits in this view' }) })}
+          ${NS.card({ title: 'Attrition by region', sub: `${eng ? 'Company series · ' : ''}Voluntary, trailing twelve months · dashed line is the 10% ceiling`, body: '<div id="regionLine"></div>' })}
+          ${NS.card({ title: 'Attrition by tenure band', sub: 'Voluntary exits as a share of current headcount in each band', body: '<div id="tenureBars"></div>' })}
+          ${NS.card({ title: eng ? 'Attrition by org' : 'Attrition by department', sub: 'Voluntary exit rate · orange past 10%', body: '<div id="deptBars"></div>' })}
+          ${NS.card({ title: 'Exit interview themes', sub: `Coded from ${allVol.length} exit conversations · a conversation can carry two themes`, body: themeCounts.length ? `<div class="flex gap-2 wrap">${themeCounts.map(([t, n]) => `<a class="theme-chip" aria-pressed="${q.theme === t}" href="${NS.link('/cohorts', { ...q, theme: q.theme === t ? '' : t })}">${NS.esc(t)} <b>${n}</b></a>`).join('')}</div><div class="ns-alert info mt-4">${ic('lightbulb')}<div><b>Read-across</b><p>${themeCounts[0] ? `“${NS.esc(themeCounts[0][0])}” is the most common theme (${themeCounts[0][1]} of ${allVol.length}). ` : ''}Pay and growth themes together account for ${pct(allVol.filter((x) => ['Compensation', 'Growth', 'Better offer'].includes(x.reason)).length, allVol.length)}% of exits — both are drivers the radar flags early, which is why the Compensation review and Growth conversation lead the action queue.</p></div></div>` : NS.empty({ icon: 'message-square', title: 'No themes in this view' }) })}
+        </div>
+        <div class="ns-card mt-4"><div class="ns-card-head"><div><h3>Recent exits</h3><p>${F.int(ex.length)} records · ${reviewed} reviewed by the retention council · click a row for the exit interview</p></div><div class="ns-input-wrap" style="max-width:240px">${ic('search')}<input class="ns-input sm" id="xq" placeholder="Search name or team…"></div></div><div id="exitTbl"></div></div>`;
+    },
+    mounted: (c, root) => {
+      const q = c.query, persona = c.persona, eng = persona.id === 'exec';
+      const ex = cohortFilter(persona, q), vol = ex.filter((x) => x.voluntary), heads = headFilter(persona, q);
+      bindFilters(root, '/cohorts', q);
+      const el = (id) => root.querySelector('#' + id);
+      NS.chart.bars(el('qBars'), { labels: QTRS, series: [{ name: 'Regretted', values: QTRS.map((_, i) => ex.filter((x) => qOf(x) === i && x.regretted && x.voluntary).length), color: 'var(--viz-critical)' }, { name: q.inv === '1' ? 'Non-regretted & involuntary' : 'Non-regretted', values: QTRS.map((_, i) => ex.filter((x) => qOf(x) === i && !(x.regretted && x.voluntary)).length), color: 'var(--viz-1)' }], stacked: true, showValues: true, height: 220, onBar: (i) => { const t = root.querySelector('#xq'); tbl.setFilter((x) => qOf(x) === i); if (t) t.placeholder = `Showing ${QTRS[i]} · search…`; root.querySelector('#exitTbl').scrollIntoView({ behavior: 'smooth', block: 'start' }); } });
+      if (el('reasonDonut')) { const cnt = U.countBy(vol, 'reason'); NS.chart.donut(el('reasonDonut'), { items: REASONS.filter((r) => cnt[r[0]]).map((r) => ({ label: r[0], value: cnt[r[0]], color: r[2] })), size: 170, thickness: 24, center: { value: vol.length, label: 'voluntary' }, onItem: (d) => NS.go('/cohorts', { ...q, reason: q.reason === d.label ? '' : d.label }) }); }
+      const ar = D.series.attritionByRegion; NS.chart.line(el('regionLine'), { labels: D.series.quarters, series: [{ name: 'North America', values: ar.NA }, { name: 'Europe', values: ar.EU }, { name: 'Asia-Pacific', values: ar.APAC }], yFormat: (v) => v + '%', yMin: 0, yMax: 20, height: 220, threshold: { value: 10, label: 'Ceiling 10%' }, area: false, legend: 'bottom' });
+      NS.chart.bars(el('tenureBars'), { labels: TENURE_BANDS.map((t) => t[1]), series: [{ name: 'Voluntary exit rate', values: TENURE_BANDS.map(([id, , fn]) => { const hc = heads.filter(fn).length; const n = vol.filter((x) => fn({ tenure: x.tenure })).length; return hc ? U.round((n / hc) * 100, 1) : 0; }), color: 'var(--brand)' }], yFormat: (v) => v + '%', height: 220, legend: false, showValues: true });
+      const key = eng ? 'org' : 'dept'; const groups = eng ? U.uniq(heads.map((p) => p.org)) : D.departments.map((d) => d.name);
+      const items = groups.map((g) => { const hc = heads.filter((p) => p[key] === g).length, n = vol.filter((x) => x[key] === g).length; return { label: g, value: hc ? U.round((n / hc) * 100, 1) : 0, sub: `${n} exits · ${F.int(hc)} people`, hc }; }).filter((x) => x.hc >= 8).sort((a, b) => b.value - a.value).map((x) => ({ ...x, color: x.value > 10 ? 'var(--viz-warn)' : 'var(--brand)' }));
+      NS.chart.hbars(el('deptBars'), { items, format: (v) => v + '%', valueLabel: 'Exit rate', max: Math.max(12, ...items.map((i) => i.value)), onItem: (d) => NS.go('/cohorts', { ...q, [key]: d.label }) });
+      const rows = ex.slice().sort((a, b) => (b.date > a.date ? 1 : -1));
+      const tbl = NS.table(el('exitTbl'), { rows, rowKey: 'id', pageSize: 10, sort: { key: 'date', dir: -1 }, searchKeys: ['name', 'team', 'dept', 'city', 'reason'], onRow: (x) => exitDrawer(x), columns: [
+        { key: 'name', label: 'Name', render: (x) => `<div class="ns-person">${NS.avatar(x.name, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(x.name)}</div><div class="sb">${D.levelLabel(x.level)} · ${NS.esc(x.team)}</div></div></div>` },
+        { key: 'dept', label: eng ? 'Org' : 'Department', cls: 'hide-sm', render: (x) => `<div class="sm nowrap">${NS.esc(eng ? x.org : x.dept)}</div><div class="xs muted">${NS.esc(x.city)}</div>` },
+        { key: 'tenure', label: 'Tenure', align: 'right', cls: 'hide-sm', render: (x) => `<span class="sm tnum">${x.tenure} yrs</span>` },
+        { key: 'date', label: 'Left', render: (x) => `<span class="sm tnum nowrap">${F.date(x.date, 'short')}</span>` },
+        { key: 'reason', label: 'Reason', render: (x) => `<span class="flex items-center gap-2 sm nowrap"><i class="band-dot" style="background:${reasonColor(x.reason)}"></i>${NS.esc(x.reason === 'Involuntary / contract end' ? 'Involuntary' : x.reason)}</span>` },
+        { key: 'regretted', label: 'Regretted', render: (x) => (x.regretted && x.voluntary ? NS.badge('Regretted', 'bad', true) : '<span class="faint xs">—</span>'), sort: (x) => (x.regretted ? 1 : 0) },
+        { key: 'predicted', label: 'Radar said', cls: 'hide-sm', render: (x) => (x.voluntary ? bandBadge(x.predicted) : '<span class="faint xs">n/a</span>'), sort: (x) => BANDS.indexOf(x.predicted) },
+        { key: 'rev', label: 'Council', render: (x) => (S.exitReviews[x.id] ? `<span class="ok-text flex items-center gap-1 sm nowrap">${ic('check-circle', { size: 14 })}Reviewed</span>` : '<span class="faint xs">Pending</span>'), sort: (x) => (S.exitReviews[x.id] ? 1 : 0) },
+      ] });
+      root.querySelector('#xq').oninput = U.debounce((e) => tbl.setSearch(e.target.value), 120);
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`exits-last-12-months-${iso(TODAY)}.csv`, [['Record', 'Name', 'Department', 'Org', 'Team', 'Level', 'Location', 'Region', 'Tenure', 'Left', 'Voluntary', 'Reason', 'Regretted', 'Radar band before exit', 'Themes', 'Council reviewed'], ...tbl.rows().map((x) => [x.id, x.name, x.dept, x.org, x.team, x.level, x.city, x.region, x.tenure, x.date, x.voluntary ? 'Yes' : 'No', x.reason, x.regretted && x.voluntary ? 'Yes' : 'No', x.voluntary ? x.predicted : '', themesOf(x).join('; '), S.exitReviews[x.id] ? 'Yes' : 'No'])]);
+    },
+  };
+
+  /* ================================================================== */
+  /* MODEL — transparency, backtest, calibration, what-if               */
+  /* ================================================================== */
+  const BACKTEST = { cohort: 'FY25 cohort · Oct ’24 – Sep ’25', rows: [['High', 64, 124], ['Medium', 11, 301], ['Low', 4, 508]] }; // left, stayed
+  const CAL = { labels: ['0–9', '10–19', '20–29', '30–39', '40–49', '50–59', '60–69', '70–79', '80–89', '90+'], pred: [0.4, 0.7, 1.1, 1.9, 3.3, 5.6, 14.2, 29.5, 44.8, 61.0], obs: [0.3, 0.9, 1.0, 2.2, 3.0, 6.3, 12.6, 31.7, 41.4, 66.7] };
+  const PROTECT = { k: 'protect', label: 'Protective factors', desc: 'Recognised strong performer paid above midpoint, or promoted in the last twelve months.' };
+  const factorRows = () => [...D.risk.factors, PROTECT].map((f) => ({ ...f, m: MODEL.find((x) => x.k === f.k) }));
+  const importance = (people) => { const pts = {}; people.forEach((p) => contributions(featuresOf(p)).forEach((c) => { pts[c.k] = (pts[c.k] || 0) + Math.abs(c.w); })); const tot = U.sum(Object.values(pts)) || 1; return Object.keys(pts).map((k) => ({ k, share: U.round((pts[k] / tot) * 100, 1), n: people.filter((p) => contributions(featuresOf(p)).some((c) => c.k === k)).length })).sort((a, b) => b.share - a.share); };
+  const simFeatures = (p, st) => { const f = featuresOf(p); return { ...f, compa: st.compa, engagement: st.eng, promoted: st.promo || f.promoted, timeInLevel: st.promo ? 0 : f.timeInLevel, lowManager: st.mgr ? false : f.lowManager }; };
+  const simDefault = (p) => ({ pid: p.id, compa: U.round(p.compa, 2), eng: p.engagement, promo: false, mgr: false });
+
+  R['/model'] = {
+    title: 'Model', personas: ['hrbp', 'exec', 'cpo'],
+    render: (c) => {
+      const persona = c.persona, scope = scopeOf(persona), q = c.query;
+      const tot = BACKTEST.rows.reduce((a, r) => ({ left: a.left + r[1], stayed: a.stayed + r[2] }), { left: 0, stayed: 0 });
+      const hi = BACKTEST.rows[0], recall = pct(hi[1], tot.left), precision = pct(hi[1], hi[1] + hi[2]);
+      const live = exitsIn(persona).filter((x) => x.voluntary), liveRecall = pct(live.filter((x) => x.predicted === 'High').length, live.length);
+      const cands = scope.filter((p) => riskOf(p) >= 40 || p.id === q.p).sort((a, b) => riskOf(b) - riskOf(a));
+      let st = S.sim && cands.some((p) => p.id === S.sim.pid) ? S.sim : null;
+      if (q.p && cands.some((p) => p.id === q.p) && (!st || st.pid !== q.p)) st = simDefault(D.byId(q.p));
+      if (!st) st = simDefault(D.byId(cands.some((p) => p.id === PRIYA) ? PRIYA : cands[0].id));
+      S.sim = st; const sp = D.byId(st.pid);
+      const scen = S.scenarios.filter((s) => inScope(persona, s.pid));
+      return html`${NS.pageHead({ eyebrow: 'Model transparency · v2.0', title: 'How the score works', sub: 'The flight-risk score is a points model, not a black box: nine documented factors add or subtract points from a baseline, and every person’s drivers are shown wherever their score is. Below: the weights, how the model performed on last year’s leavers, and a simulator to test what would move a score.', actions: `<span class="ns-badge">${ic('refresh', { size: 12 })} Retrained ${F.date('2026-09-14', 'med')}</span><button class="ns-btn secondary" data-card>${ic('download')}Model card</button>` })}
+        <div class="ns-stats mb-4">
+          ${NS.stat({ label: 'Recall · backtest', value: recall, unit: '%', icon: 'radar', sub: `${hi[1]} of ${tot.left} FY25 leavers were flagged High` })}
+          ${NS.stat({ label: 'Precision · backtest', value: precision, unit: '%', icon: 'target', sub: `${hi[1]} of ${hi[1] + hi[2]} flagged High actually left` })}
+          ${NS.stat({ label: 'Live recall · last 12 months', value: liveRecall, unit: '%', icon: 'activity', sub: `${live.filter((x) => x.predicted === 'High').length} of ${live.length} voluntary leavers${persona.id === 'exec' ? ' in Engineering' : ''}` })}
+          ${NS.stat({ label: 'Discrimination (AUC)', value: '0.84', icon: 'bar-chart', sub: 'Ranking quality on the FY25 holdout' })}
+        </div>
+        <div class="ns-alert brand mb-4">${ic('info')}<div><b>Tuned for recall, on purpose</b><p>A missed resignation costs about ${REPLACEMENT_FACTOR}× salary; an unnecessary stay interview costs thirty minutes. The High threshold (65) is set so that roughly four in five leavers are flagged in advance — which means about two in three people flagged High would have stayed anyway. Treat High as “worth a conversation”, never as a verdict.</p></div></div>
+        <div class="ns-grid c2">
+          ${NS.card({ title: 'Factors and weights', sub: 'Points added to (or subtracted from) the baseline · rules as implemented', body: `<div>${factorRows().map((f) => `<div class="factor"><span class="ns-icon-box sm ${f.k === 'protect' ? 'ok' : ''}">${ic(FACTOR[f.k].icon)}</span><div class="min-w-0"><b class="sm">${NS.esc(f.label)}</b><div class="xs muted">${NS.esc(f.desc)}</div><div class="rule">${NS.esc(f.m.rule)}</div></div><span class="w ${f.m.w < 0 ? 'neg' : ''}">${f.m.w > 0 ? '+' : '−'}${Math.abs(f.m.w)}${f.m.alt ? ` / ${f.m.alt > 0 ? '+' : '−'}${Math.abs(f.m.alt)}` : ''}</span></div>`).join('')}</div>` })}
+          <div class="grid gap-4">
+            ${NS.card({ title: 'Feature importance', sub: `Share of all risk points across ${scopeName(persona)} (${F.int(scope.length)} people)`, body: '<div id="impBars"></div>' })}
+            ${NS.card({ title: 'Model governance', body: `<dl class="ns-dl"><dt>Version</dt><dd>v2.0 · points model, 9 factors</dd><dt>Last trained</dt><dd>${F.date('2026-09-14', 'long')}</dd><dt>Training data</dt><dd>Oct ’21 – Sep ’25 · 312 voluntary exits</dd><dt>Scoring</dt><dd>Nightly · ${F.int(D.people.length)} people</dd><dt>Never used</dt><dd>Gender, age, ethnicity, nationality, leave or health records</dd><dt>Who sees scores</dt><dd>Manager (own reports), HR partner, leadership. Never the employee; never an input to ratings or pay decisions.</dd><dt>Next review</dt><dd>Dec 2026 retrain · fairness audit</dd></dl>` })}
+          </div>
+          ${NS.card({ title: 'Backtest · predicted band vs actual exits', sub: `${BACKTEST.cohort} · band at start of year vs voluntary exit within 12 months`, body: `<div class="bt-wrap"><table class="bt-table"><thead><tr><th>Predicted band</th><th>Left</th><th>Stayed</th><th>Total</th><th>Exit rate</th></tr></thead><tbody>${BACKTEST.rows.map(([b, l, s]) => `<tr><td><span class="flex items-center gap-2"><i class="band-dot" style="background:${BAND[b].color}"></i>${b}</span></td><td class="${b === 'High' ? 'hit' : ''}">${l}</td><td>${s}</td><td>${l + s}</td><td>${F.num(pct(l, l + s, 1), 1)}%</td></tr>`).join('')}</tbody><tfoot><tr><td>Total</td><td>${tot.left}</td><td>${tot.stayed}</td><td>${F.int(tot.left + tot.stayed)}</td><td>${F.num(pct(tot.left, tot.left + tot.stayed, 1), 1)}%</td></tr></tfoot></table></div><div class="mstat-row mt-4"><div class="mini-stat"><span>Recall (High)</span><b>${recall}%</b></div><div class="mini-stat"><span>Precision (High)</span><b>${precision}%</b></div><div class="mini-stat"><span>Recall (Medium+)</span><b>${pct(hi[1] + BACKTEST.rows[1][1], tot.left)}%</b></div></div><div id="btBars" class="mt-4"></div>` })}
+          ${NS.card({ title: 'Calibration', sub: 'Predicted exit probability vs observed exit rate, by score decile · FY25', body: '<div id="calLine"></div><div class="xs muted mt-2">Close lines mean the probabilities can be taken at face value. The model slightly over-predicts in the 80–89 decile, which is acceptable for a recall-tuned score.</div>' })}
+        </div>
+        <div class="ns-card mt-4" id="simCard"><div class="ns-card-head"><div><h3>What-if simulator</h3><p>Move the inputs and the score recomputes with the documented weights above. Nothing here changes a real record until you log an action.</p></div></div><div class="ns-card-body">
+          <div class="sim">
+            <div class="grid gap-4">
+              <label class="ns-field"><span class="ns-label">Person <span class="opt">Medium and High risk in ${NS.esc(scopeName(persona))}</span></span><select class="ns-select" id="simP">${cands.map((p) => `<option value="${p.id}" ${p.id === sp.id ? 'selected' : ''}>${NS.esc(p.name)} · ${NS.esc(p.team)} · ${riskOf(p)}</option>`).join('')}</select></label>
+              <div class="sim-ctl"><span class="ns-label">Compa-ratio <span><s>now ${sp.compa.toFixed(2)}</s><b id="vCompa">${st.compa.toFixed(2)}</b></span></span><input type="range" class="ns-range" id="sCompa" min="0.75" max="1.3" step="0.01" value="${st.compa}" style="--p:${((st.compa - 0.75) / 0.55) * 100}%"><div class="comp-scale"><span>0.75</span><span>0.90 · pay flag</span><span>1.00 midpoint</span><span>1.30</span></div></div>
+              <div class="sim-ctl"><span class="ns-label">Engagement <span><s>now ${sp.engagement}</s><b id="vEng">${st.eng}</b></span></span><input type="range" class="ns-range" id="sEng" min="30" max="100" step="1" value="${st.eng}" style="--p:${((st.eng - 30) / 70) * 100}%"><div class="comp-scale"><span>30</span><span>64 · strong flag</span><span>72 · soft</span><span>100</span></div></div>
+              <div class="flex gap-5 wrap"><label class="ns-switch"><input type="checkbox" id="tPromo" ${st.promo ? 'checked' : ''}><i></i><span><b class="sm">Promote this cycle</b><div class="xs muted">Adds the −12 protective factor</div></span></label><label class="ns-switch"><input type="checkbox" id="tMgr" ${st.mgr ? 'checked' : ''}><i></i><span><b class="sm">Resolve manager signal</b><div class="xs muted">Coaching lifts it above 0.65</div></span></label></div>
+              <div><div class="flex items-center justify-between mb-2"><span class="ns-label" style="margin:0">Drivers in this scenario</span><span class="xs muted" id="simBase"></span></div><div id="simDrv"></div></div>
+            </div>
+            <div class="sim-out"><div id="simRing"></div><div id="simBand"></div><div class="sim-delta" id="simDelta"></div><div class="cost" id="simCost"></div><button class="ns-btn primary" data-sim-save>${ic('save')}Save scenario</button><button class="ns-btn secondary" data-sim-log>${ic('plus')}Log as action</button><button class="ns-btn ghost" data-sim-reset>${ic('undo')}Reset to today</button></div>
+          </div></div></div>
+        <div class="ns-grid c2 mt-4">
+          ${NS.card({ title: 'Saved scenarios', sub: scen.length ? `${scen.length} saved · shared with your HR partner` : 'Save a scenario to compare options before a comp or growth conversation', body: scen.length ? `<div>${scen.map((s) => { const p = D.byId(s.pid); return `<div class="sc-row">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><b class="truncate" style="display:block">${NS.esc(p.name)}</b><div class="xs muted truncate">compa ${s.fromCompa.toFixed(2)} → ${s.compa.toFixed(2)} · engagement ${s.fromEng} → ${s.eng}${s.promo ? ' · promoted' : ''}${s.mgr ? ' · manager signal fixed' : ''}</div></div><span class="flex items-center gap-2 nowrap"><span class="kscore ${bandOf(s.from)}">${s.from}</span>${ic('arrow-right', { size: 12 })}<span class="kscore ${bandOf(s.risk)}">${s.risk}</span></span><span class="flex gap-1 hide-row"><button class="ns-btn xs ghost" data-sc-load="${s.id}">Load</button><button class="ns-btn xs ghost" data-sc-del="${s.id}" aria-label="Delete scenario">${ic('trash')}</button></span></div>`; }).join('')}</div>` : NS.empty({ icon: 'sliders', title: 'No scenarios yet', body: 'Try Priya Raman at compa 0.95 — the pay driver drops out and she leaves the High band.' }) })}
+          ${NS.card({ title: 'Fairness check', sub: 'Average risk score by group · no protected attribute is a model input', body: '<div id="fairBars"></div><div class="xs muted mt-3">Audit rule: any group more than 5 points from the population mean triggers a review of the factor rules.</div>' })}
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const persona = c.persona, scope = scopeOf(persona);
+      const el = (id) => root.querySelector('#' + id);
+      const imp = importance(scope);
+      NS.chart.hbars(el('impBars'), { items: imp.map((x) => ({ label: x.k === 'protect' ? 'Protective factors' : D.risk.factors.find((f) => f.k === x.k).label, value: x.share, color: x.k === 'protect' ? 'var(--viz-good)' : 'var(--brand)', sub: `${F.int(x.n)} people carry it` })), format: (v) => F.num(v, 1) + '%', valueLabel: 'Share of points' });
+      NS.chart.hbars(el('btBars'), { items: BACKTEST.rows.map(([b, l, s]) => ({ label: `${b} band`, value: U.round((l / (l + s)) * 100, 1), color: BAND[b].color, sub: `${l} of ${l + s} left` })), format: (v) => F.num(v, 1) + '%', valueLabel: 'Exit rate', max: 40 });
+      NS.chart.line(el('calLine'), { labels: CAL.labels, series: [{ name: 'Observed exit rate', values: CAL.obs, color: 'var(--brand)' }, { name: 'Predicted probability', values: CAL.pred, color: 'var(--ink-4)', dashed: true }], yFormat: (v) => v + '%', yMin: 0, yMax: 70, height: 260, legend: 'bottom', markers: [{ i: 6, label: 'High ≥ 65' }], area: false });
+      const groups = [...[['F', 'Women'], ['M', 'Men'], ['X', 'Non-binary']].map(([g, l]) => ({ l, ps: scope.filter((p) => p.gender === g) })), ...Object.entries(D.regions).map(([r, l]) => ({ l, ps: scope.filter((p) => p.region === r) }))].filter((g) => g.ps.length >= 10);
+      const mean = U.avg(scope, riskOf);
+      NS.chart.hbars(el('fairBars'), { items: groups.map((g) => { const v = U.round(U.avg(g.ps, riskOf), 1); return { label: g.l, value: v, sub: `${F.int(g.ps.length)} people · ${v - mean >= 0 ? '+' : '−'}${F.num(Math.abs(v - mean), 1)} vs mean`, color: Math.abs(v - mean) > 5 ? 'var(--viz-warn)' : 'var(--viz-1)' }; }), format: (v) => F.num(v, 1), valueLabel: 'Average risk', max: 60 });
+
+      /* simulator */
+      const st = S.sim, p = D.byId(st.pid), cur = riskOf(p);
+      const draw = () => {
+        const res = scoreWith(p, simFeatures(p, st)), b = bandOf(res.risk), d = res.risk - cur;
+        el('simRing').innerHTML = NS.ring({ value: res.risk / 100, size: 132, thickness: 12, label: String(res.risk), sub: 'what-if score', color: BAND[b].color });
+        el('simBand').innerHTML = bandBadge(b);
+        el('simDelta').innerHTML = d === 0 ? '<span class="muted">No change from today</span>' : `<span class="${d < 0 ? 'ok-text' : 'bad-text'}">${d < 0 ? '▼' : '▲'} ${Math.abs(d)} pts vs today (${cur})</span>`;
+        const raise = Math.max(0, Math.round((st.compa - p.compa) * p.band.mid)), rc = replacementCost(p);
+        el('simCost').innerHTML = raise ? `Pay move costs about <b class="ink">${F.money(raise, { compact: true })}/yr</b> — ${pct(raise, rc)}% of the ${F.money(rc, { compact: true })} it would cost to replace ${NS.esc(p.first)}.` : `Replacing ${NS.esc(p.first)} would cost about <b class="ink">${F.money(rc, { compact: true })}</b> (${REPLACEMENT_FACTOR}× salary).`;
+        el('simDrv').innerHTML = driverBars(res.contributions);
+        el('simBase').textContent = `Baseline ${Math.round(baselineOf(p))} + ${U.sum(res.contributions, 'w')} from drivers`;
+        return res;
+      };
+      draw();
+      const persist = U.debounce(() => save(), 300);
+      const sC = el('sCompa'), sE = el('sEng');
+      sC.oninput = () => { st.compa = +(+sC.value).toFixed(2); el('vCompa').textContent = st.compa.toFixed(2); sC.style.setProperty('--p', ((st.compa - 0.75) / 0.55) * 100 + '%'); draw(); persist(); };
+      sE.oninput = () => { st.eng = +sE.value; el('vEng').textContent = st.eng; sE.style.setProperty('--p', ((st.eng - 30) / 70) * 100 + '%'); draw(); persist(); };
+      el('tPromo').onchange = (e) => { st.promo = e.target.checked; draw(); persist(); };
+      el('tMgr').onchange = (e) => { st.mgr = e.target.checked; draw(); persist(); };
+      el('simP').onchange = (e) => { S.sim = simDefault(D.byId(e.target.value)); save(); NS.go('/model', { p: e.target.value }); };
+      root.querySelector('[data-sim-reset]').onclick = () => { S.sim = simDefault(p); save(); NS.refresh(); };
+      root.querySelector('[data-sim-save]').onclick = () => { const res = draw(); S.scenarios.unshift({ id: 'SC-' + Date.now(), pid: p.id, compa: st.compa, eng: st.eng, promo: st.promo, mgr: st.mgr, risk: res.risk, from: cur, fromCompa: p.compa, fromEng: p.engagement, at: iso(TODAY) }); S.scenarios = S.scenarios.slice(0, 12); log(`Saved what-if for ${p.name} (${cur} → ${res.risk})`); save(); NS.toast('Scenario saved', { desc: `${p.name} · ${cur} → ${res.risk} (${bandOf(res.risk)})` }); NS.refresh(); };
+      root.querySelector('[data-sim-log]').onclick = () => { const t = st.compa - p.compa > 0.005 ? 'Compensation review' : st.promo ? 'Growth conversation' : st.mgr ? 'Manager coaching' : st.eng > p.engagement ? 'Stay interview' : null; logAction(p.id, t); };
+      root.querySelectorAll('[data-sc-del]').forEach((b) => b.onclick = () => { S.scenarios = S.scenarios.filter((s) => s.id !== b.dataset.scDel); save(); NS.toast('Scenario removed', { type: 'info' }); NS.refresh(); });
+      root.querySelectorAll('[data-sc-load]').forEach((b) => b.onclick = () => { const s = S.scenarios.find((x) => x.id === b.dataset.scLoad); S.sim = { pid: s.pid, compa: s.compa, eng: s.eng, promo: s.promo, mgr: s.mgr }; save(); NS.go('/model', { p: s.pid }); setTimeout(() => { const cd = document.querySelector('#simCard'); if (cd) cd.scrollIntoView({ behavior: 'smooth' }); }, 120); });
+      root.querySelector('[data-card]').onclick = () => downloadCsv('retention-radar-model-card-v2.0.csv', [['Factor', 'Weight', 'Alternate weight', 'Rule', 'Description', 'Share of points'], ...factorRows().map((f) => [f.label, f.m.w, f.m.alt || '', f.m.rule, f.desc, ((imp.find((x) => x.k === f.k) || {}).share || 0) + '%']), [], ['Backtest', BACKTEST.cohort], ['Band', 'Left', 'Stayed'], ...BACKTEST.rows, [], ['Replacement cost assumption', `${REPLACEMENT_FACTOR}x annual salary`]]);
+    },
+  };
+
+  /* ================================================================== */
+  /* BOOT                                                                */
+  /* ================================================================== */
+  const personas = [
+    { ...D.personas.hrbp, note: 'Whole company · owns the action queue' },
+    { ...D.personas.manager, note: 'Your team only · 9 people' },
+    { ...D.personas.exec, note: 'Engineering org · executive summary' },
+    { ...D.personas.cpo, note: 'Whole company · board framing' },
+  ];
+  const overdueIn = (persona) => scopeActs(persona).filter(isOverdue).length;
+  const item = (id, label, icon, extra = {}) => ({ id, label, icon, ...extra });
+  const actionsItem = (persona) => item('actions', 'Action queue', 'kanban', { badge: highNoAction(scopeOf(persona)).length || '' });
+  NS.app({
+    id: 'retention-radar', name: 'Retention Radar', sub: 'Northstar Labs', brand: 'cyan', version: '2.0',
+    mark: ic('radar', { size: 20 }),
+    about: { tagline: 'See who’s drifting before they resign — and what to do about it.', description: 'Predictive attrition and flight-risk analytics for Northstar Labs. Every person gets a nightly, explainable risk score built from nine documented factors — pay position, time in level, engagement, manager signal, re-orgs, the tenure window, external demand and pulse trajectory. The radar shows where risk concentrates, the action queue makes sure every High-risk person has an owner and a date, and the cohort and model views keep the whole thing honest: who actually left, why, and how often the model saw it coming.', highlights: [{ icon: 'radar', title: 'Explainable scores', body: 'Every score shows its drivers and weights — no black box.' }, { icon: 'kanban', title: 'Action queue', body: 'Drag-and-drop retention actions with owners, dates and save tracking.' }, { icon: 'users', title: 'Attrition cohorts', body: 'Exits by quarter, reason, region, tenure and department.' }, { icon: 'sliders', title: 'What-if simulator', body: 'Move pay or engagement and watch the score recompute.' }] },
+    personas, defaultPersona: 'hrbp',
+    nav: (persona) => persona.id === 'manager'
+      ? [{ group: 'Your team', items: [item('home', 'Your team', 'home'), item('radar', 'Team radar', 'radar'), item('people', 'Your people', 'users'), actionsItem(persona)] }]
+      : persona.id === 'cpo'
+        ? [{ group: 'Board view', items: [item('home', 'Overview', 'home'), item('cohorts', 'Attrition cohorts', 'bar-chart'), item('model', 'Model & what-if', 'sliders')] }, { group: 'Operate', items: [item('radar', 'Radar', 'radar'), item('people', 'People', 'users'), actionsItem(persona)] }]
+        : [{ group: persona.id === 'exec' ? 'Engineering' : 'Retention', items: [item('home', persona.id === 'exec' ? 'Summary' : 'Overview', 'home'), item('radar', 'Radar', 'radar'), item('people', 'People', 'users'), actionsItem(persona)] }, { group: 'Insight', items: [item('cohorts', 'Attrition cohorts', 'bar-chart'), item('model', 'Model & what-if', 'sliders')] }],
+    promo: (persona) => { const scope = scopeOf(persona), highs = scope.filter((p) => bandOfP(p) === 'High'), gap = highNoAction(scope); if (!highs.length) return { title: 'No High-risk people', body: 'Keep the 1:1 cadence going — the radar re-scores nightly.', cta: { label: 'Team radar', route: '/radar' } }; return gap.length ? { title: `${gap.length} High-risk ${gap.length === 1 ? 'person' : 'people'} without an action`, body: persona.id === 'manager' ? `${gap[0].first} is at ${riskOf(gap[0])} — log a stay conversation or comp review this week.` : `${highs.length - gap.length} of ${highs.length} High-risk people have an owner and a date.`, progress: Math.round(((highs.length - gap.length) / highs.length) * 100), cta: { label: 'Assign owners', route: '/actions' } } : { title: 'Every High-risk person is covered', body: `${overdueIn(persona)} action${overdueIn(persona) === 1 ? ' is' : 's are'} overdue.`, progress: 100, cta: { label: 'Open queue', route: '/actions' } }; },
+    notifications: [
+      { icon: 'alert-triangle', title: 'Priya Raman moved to High risk (71)', body: 'Paid below 90% of midpoint after an Exceeds rating · Identity & Access', time: 'Today', route: '/people/NS-1207' },
+      { icon: 'clock', title: `${S.actions.filter(isOverdue).length} actions overdue`, body: 'Oldest is a stay interview nine days past due.', time: 'Today', route: '/actions?due=overdue' },
+      { icon: 'file-text', title: 'Q3 attrition report ready', body: `TTM voluntary attrition ${D.series.attrition[D.series.attrition.length - 1]}% · under the 10% ceiling`, time: 'Yesterday', route: '/cohorts' },
+      { icon: 'refresh', title: 'Model v2.0 retrained', body: 'Backtest recall 81% · precision 34% on the FY25 cohort', time: 'Sep 14', route: '/model' },
+    ],
+    routes: R, default: '/home',
+    commands: (persona) => {
+      const scope = scopeOf(persona), top = highNoAction(scope).sort((a, b) => riskOf(b) - riskOf(a))[0];
+      return [
+        { label: 'Log a retention action', icon: 'plus', group: 'Actions', run: () => newActionPicker(persona) },
+        ...(top ? [{ label: `Log an action for ${top.name} (${riskOf(top)})`, icon: 'user-plus', group: 'Actions', run: () => logAction(top.id) }] : []),
+        { label: 'High risk without an action', icon: 'alert-triangle', group: 'Views', run: () => NS.go('/people', { band: 'High', act: 'none' }) },
+        { label: 'Radar · High band only', icon: 'radar', group: 'Views', run: () => NS.go('/radar', { band: 'High' }) },
+        { label: 'Overdue actions', icon: 'clock', group: 'Views', run: () => NS.go('/actions', { due: 'overdue' }) },
+        ...(persona.id !== 'manager' ? [{ label: 'What-if simulator', icon: 'sliders', group: 'Views', run: () => NS.go('/model') }, { label: 'Recent exits', icon: 'user-minus', group: 'Views', run: () => NS.go('/cohorts') }] : []),
+        { label: 'Export people and risk (CSV)', icon: 'download', group: 'Actions', run: () => NS.go('/people') },
+      ];
+    },
+    search: (q) => { if (q.length < 2) return []; const s = q.toLowerCase(); return scopeOf(NS.persona).filter((p) => p.name.toLowerCase().includes(s) || p.team.toLowerCase().includes(s) || p.title.toLowerCase().includes(s)).sort((a, b) => riskOf(b) - riskOf(a)).slice(0, 7).map((p) => ({ group: 'People', label: p.name, hint: `${p.title} · risk ${riskOf(p)} ${bandOfP(p)}`, avatar: NS.avatar(p, { size: 'xs' }), run: () => NS.go('/people/' + p.id) })); },
+    onReset: () => store.clear(),
+  });
+})();
+</script>
+</body>
+</html>
