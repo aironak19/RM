@@ -1,0 +1,1051 @@
+<!doctype html>
+<html lang="en" data-brand="amber">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>The Leader’s Field Guide · Northstar Labs</title>
+<meta name="description" content="The Leader’s Field Guide — the operating manual for Northstar Labs managers: a quarterly playbook, a 1:1 runner, conversation scripts, culture KPIs and the Crucible leadership test. Concept prototype with illustrative data.">
+<meta name="theme-color" content="#D97706">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%23D97706'/%3E%3Ccircle cx='24' cy='24' r='13' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Cpath d='M30 18l-4 8-8 4 4-8z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/ns.css">
+<script src="../shared/ns.js"></script>
+<script src="../shared/ns-data.js"></script>
+<style>
+  /* ---------- shared bits ---------- */
+  .ns-brand-name{font-size:13.5px;letter-spacing:-.02em}
+  .ns-overlay.center{text-align:start} /* shared runtime: the .center utility (text-align) leaks into modals */
+  .ns-grid.main-side,.ns-grid.side-main{align-items:start}
+  .lfg-side{position:sticky;top:calc(var(--topbar-h) + 20px);display:grid;gap:16px}
+  @media (max-width:1200px){.lfg-side{position:static}}
+  .qcards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+  @media (max-width:1100px){.qcards{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:520px){.qcards{grid-template-columns:minmax(0,1fr)}}
+  .qcard{display:grid;gap:8px;padding:16px 16px 14px;border-radius:16px;border:1px solid var(--line);background:var(--surface);text-decoration:none;color:inherit;position:relative;transition:transform var(--dur),box-shadow var(--dur),border-color var(--dur);min-width:0}
+  .qcard:hover{transform:translateY(-2px);box-shadow:var(--shadow);border-color:var(--brand-line)}
+  .qcard .q{font-family:var(--font-display);font-weight:800;font-size:26px;letter-spacing:-.03em;color:var(--brand-text);line-height:1}
+  .qcard .nm{font-weight:700;font-size:15px;color:var(--ink)}
+  .qcard p{font-size:12.5px;color:var(--ink-3);line-height:1.45;margin:0}
+  .qcard.now{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .qcard .tag{position:absolute;top:12px;right:12px}
+  .qcard .done{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;color:var(--ok);font-weight:600}
+  .qcard .done svg{width:12px;height:12px}
+  .week-item{display:grid;grid-template-columns:auto 1fr auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-2)}
+  .week-item:last-child{border-bottom:0}
+  .week-item .t{font-weight:600;font-size:13.5px;color:var(--ink)}
+  .week-item .s{font-size:12px;color:var(--ink-3);margin-top:1px}
+  .week-item .act{display:flex;gap:6px;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+  .tool-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:8px}
+  .tool{display:flex;gap:10px;align-items:center;padding:10px 12px;border-radius:12px;border:1px solid var(--line);background:var(--surface);text-decoration:none;color:inherit;transition:background var(--dur),border-color var(--dur);min-width:0}
+  .tool:hover{background:var(--surface-2);border-color:var(--brand-line)}
+  .tool b{font-size:13px;display:block;color:var(--ink)}
+  .tool span{font-size:11.5px;color:var(--ink-3)}
+  .tool .ns-icon-box{width:32px;height:32px;border-radius:9px}.tool .ns-icon-box svg{width:15px;height:15px}
+  .quote-week{font-family:var(--font-display);font-size:19px;line-height:1.4;letter-spacing:-.01em;color:var(--ink);font-weight:700}
+  .quote-week::before{content:"“";color:var(--brand);font-size:38px;line-height:0;vertical-align:-14px;margin-right:2px}
+  .read-list{display:grid;gap:6px}
+  .read-list a{display:flex;align-items:center;gap:10px;padding:7px 10px;border-radius:10px;font-size:13px;color:var(--ink-2);text-decoration:none}
+  .read-list a:hover{background:var(--surface-2)}
+  .read-list .st{width:20px;height:20px;border-radius:50%;border:1.5px solid var(--line-strong);display:grid;place-items:center;flex:none;color:var(--ink-4);font-size:10px}
+  .read-list .st.done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .read-list .st svg{width:11px;height:11px}
+  .kpi-mini{display:grid;gap:8px}
+  .kpi-mini .row{display:grid;grid-template-columns:1fr auto auto;gap:10px;align-items:center;font-size:13px}
+  .kpi-mini .row b{font-variant-numeric:tabular-nums}
+
+  /* ---------- playbook (long-form) ---------- */
+  .pb{display:grid;grid-template-columns:224px minmax(0,1fr);gap:44px;align-items:start;max-width:1080px;margin:0 auto}
+  .prose .qcards{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .prose .qcard p{font-size:13px;margin:0;line-height:1.45}
+  .pb-toc{position:sticky;top:calc(var(--topbar-h) + 20px);display:grid;gap:2px}
+  .pb-toc .h{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink-4);padding:0 12px 8px}
+  .pb-toc a{display:block;padding:7px 12px;border-left:2px solid var(--line);font-size:13px;color:var(--ink-3);text-decoration:none;line-height:1.35;transition:color var(--dur),border-color var(--dur)}
+  .pb-toc a:hover{color:var(--ink)}
+  .pb-toc a[aria-current="true"]{border-color:var(--brand);color:var(--brand-text);font-weight:600}
+  .pb-toc .toc-foot{margin-top:14px;padding:12px;border-radius:12px;background:var(--surface);border:1px solid var(--line);display:grid;gap:8px}
+  .pb-body{max-width:72ch;min-width:0}
+  .pb-head{padding-bottom:22px;border-bottom:1px solid var(--line);margin-bottom:8px}
+  .pb-head h1{font-family:var(--font-display);font-size:36px;letter-spacing:-.03em;line-height:1.1;margin:8px 0 12px;color:var(--ink)}
+  .pb-head .lede{font-size:17px;line-height:1.6;color:var(--ink-2);max-width:60ch}
+  .pb-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin-top:18px;font-size:12.5px;color:var(--ink-3)}
+  .pb-phil{display:grid;grid-template-columns:auto 1fr;gap:16px;align-items:center;margin:26px 0 0;padding:18px 20px;border-radius:16px;background:linear-gradient(135deg,var(--brand-soft),var(--surface));border:1px solid var(--brand-line)}
+  .pb-phil .k{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--brand-text)}
+  .pb-phil .v{font-family:var(--font-display);font-size:20px;font-weight:700;letter-spacing:-.01em;line-height:1.3;color:var(--ink)}
+  .prose h2{font-family:var(--font-display);font-size:25px;letter-spacing:-.02em;line-height:1.2;margin:46px 0 12px;color:var(--ink);scroll-margin-top:calc(var(--topbar-h) + 20px)}
+  .prose h2 .num{display:inline-grid;place-items:center;width:30px;height:30px;border-radius:9px;background:var(--brand-soft);color:var(--brand-text);font-size:13px;font-weight:800;vertical-align:6px;margin-right:10px;letter-spacing:0}
+  .prose h3{font-size:16.5px;font-weight:700;margin:28px 0 10px;color:var(--ink)}
+  .prose h3 .sub{font-weight:500;color:var(--ink-3);font-size:14px}
+  .prose p{font-size:15.5px;line-height:1.72;color:var(--ink-2);margin:0 0 14px}
+  .prose p.small{font-size:13.5px;color:var(--ink-3)}
+  .prose > *:last-child{margin-bottom:0}
+  .pullq{margin:26px 0;padding:6px 0 6px 22px;border-left:3px solid var(--brand);font-family:var(--font-display);font-size:21px;font-weight:700;letter-spacing:-.01em;line-height:1.4;color:var(--ink)}
+  .pullq small{display:block;font-family:var(--font-sans);font-weight:500;font-size:12.5px;color:var(--ink-3);letter-spacing:0;margin-top:8px}
+  .steps{display:grid;margin:8px 0 22px}
+  .step{display:grid;grid-template-columns:40px 1fr;gap:16px;padding:14px 0;border-bottom:1px solid var(--line-2)}
+  .step:last-child{border-bottom:0}
+  .step .n{width:36px;height:36px;border-radius:50%;background:var(--brand-soft);color:var(--brand-text);display:grid;place-items:center;font-family:var(--font-display);font-weight:800;font-size:14px}
+  .step .n.ic svg{width:16px;height:16px}
+  .step b{display:block;font-size:15px;color:var(--ink);line-height:1.35}
+  .step b .when{font-weight:500;color:var(--ink-3);font-size:13px;margin-left:6px}
+  .step p{font-size:14.5px;margin:4px 0 0;line-height:1.6}
+  .std-table{width:100%;border-collapse:separate;border-spacing:0;font-size:14px;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin:10px 0 22px;background:var(--surface)}
+  .std-table th{background:var(--surface-2);text-transform:uppercase;font-size:11.5px;letter-spacing:.08em;color:var(--ink-3);padding:11px 14px;text-align:left;font-weight:700}
+  .std-table td{padding:12px 14px;border-top:1px solid var(--line-2);vertical-align:top;line-height:1.55;color:var(--ink-2)}
+  .std-table td:first-child{font-weight:600;color:var(--ink);white-space:nowrap}
+  .std-table td.leak{color:var(--bad)}.std-table td.fixed{color:var(--ok);font-weight:600}
+  .lit{display:grid;gap:8px;margin:10px 0 22px}
+  .lit label{display:flex;gap:12px;align-items:center;padding:11px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);font-size:14.5px;color:var(--ink-2);cursor:pointer;transition:background var(--dur)}
+  .lit label:hover{background:var(--surface-2)}
+  .lit label.on{border-color:var(--ok-line);background:var(--ok-bg);color:var(--ink)}
+  .traps{display:grid;gap:10px;margin:10px 0 22px}
+  .trap{display:grid;grid-template-columns:auto 1fr;gap:12px;padding:14px 16px;border-radius:14px;background:var(--bad-bg);border:1px solid var(--bad-line)}
+  .trap .ns-icon-box{width:32px;height:32px;border-radius:9px;background:color-mix(in srgb,var(--bad) 14%,transparent);color:var(--bad)}
+  .trap .ns-icon-box svg{width:15px;height:15px}
+  .trap b{display:block;color:var(--bad);font-size:14.5px}
+  .trap p{margin:2px 0 0;font-size:14px;color:var(--ink-2);line-height:1.55}
+  .script{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 18px}
+  @media (max-width:640px){.script{grid-template-columns:minmax(0,1fr)}}
+  .script > div{padding:16px 18px;border-radius:14px;position:relative;min-width:0}
+  .script .dont{background:var(--bad-bg);border:1px solid var(--bad-line)}
+  .script .say{background:var(--ok-bg);border:1px solid var(--ok-line)}
+  .script .lbl{display:flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;margin-bottom:10px}
+  .script .lbl svg{width:13px;height:13px}
+  .script .dont .lbl{color:var(--bad)}.script .say .lbl{color:var(--ok)}
+  .script q{display:block;font-size:14.5px;line-height:1.6;color:var(--ink);font-style:italic;quotes:"“" "”"}
+  .script .cp{position:absolute;top:10px;right:10px}
+  .email{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--surface);margin:10px 0 22px;box-shadow:var(--shadow-xs)}
+  .email-head{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:11px 14px;background:var(--surface-2);border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-3);flex-wrap:wrap}
+  .email-head b{color:var(--ink);font-weight:600}
+  .email-body{padding:18px 20px;font-size:14.5px;line-height:1.7;color:var(--ink-2)}
+  .email-body p{margin:0 0 12px;font-size:14.5px}.email-body p:last-child{margin:0}
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:10px 0 22px}
+  @media (max-width:640px){.compare{grid-template-columns:minmax(0,1fr)}}
+  .compare > div{border-radius:14px;border:1px solid var(--line);background:var(--surface);padding:16px 18px;border-top-width:3px}
+  .compare .bad{border-top-color:var(--bad)}.compare .good{border-top-color:var(--ok)}
+  .compare b{display:flex;align-items:center;gap:8px;font-size:15px;color:var(--ink);margin-bottom:10px}
+  .compare .bad b{color:var(--bad)}.compare .good b{color:var(--ok)}
+  .compare ul{margin:0;padding:0;list-style:none;display:grid;gap:8px}
+  .compare li{display:flex;gap:8px;font-size:14px;color:var(--ink-2);line-height:1.5}
+  .compare li svg{width:14px;height:14px;flex:none;margin-top:3px}
+  .compare .bad li svg{color:var(--bad)}.compare .good li svg{color:var(--ok)}
+  .ladder{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:end;margin:10px 0 22px}
+  @media (max-width:640px){.ladder{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .rung{padding:16px 14px 14px;border-radius:14px;background:var(--surface);border:1px solid var(--line);min-width:0;display:grid;gap:4px;align-content:start}
+  .rung.l1{padding-top:16px}.rung.l2{padding-top:30px}.rung.l3{padding-top:44px}.rung.l4{padding-top:58px}
+  @media (max-width:640px){.rung{padding-top:16px!important}}
+  .rung .lv{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--brand-text)}
+  .rung .nm{font-family:var(--font-display);font-size:18px;font-weight:800;letter-spacing:-.01em;color:var(--ink)}
+  .rung p{font-size:13px;color:var(--ink-3);margin:0;line-height:1.45}
+  .rung .map{font-size:11.5px;color:var(--ink-4);margin-top:6px}
+  .lv-actions{display:grid;gap:8px;margin:10px 0 22px}
+  .lv-action{display:grid;grid-template-columns:110px 1fr;gap:14px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+  @media (max-width:520px){.lv-action{grid-template-columns:minmax(0,1fr)}}
+  .lv-action .lv{font-family:var(--font-display);font-weight:800;font-size:13px;letter-spacing:.06em;color:var(--brand-text)}
+  .lv-action .lv small{display:block;font-family:var(--font-sans);font-weight:500;letter-spacing:0;color:var(--ink-3);font-size:11.5px}
+  .lv-action p{margin:0;font-size:14px;color:var(--ink-2)}
+  .blueprint{display:grid;gap:10px;margin:10px 0 22px}
+  .bp-block{display:grid;grid-template-columns:64px 1fr;gap:14px;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--surface)}
+  .bp-block .tm{font-family:var(--font-display);font-weight:800;font-size:15px;color:var(--brand-text);line-height:1.1}
+  .bp-block .tm small{display:block;font-family:var(--font-sans);font-weight:500;font-size:11px;color:var(--ink-4);letter-spacing:.06em;text-transform:uppercase;margin-top:3px}
+  .bp-block b{display:block;font-size:15px;color:var(--ink)}
+  .bp-block .core{font-size:14.5px;color:var(--ink-2);font-style:italic;margin-top:4px;line-height:1.55}
+  .bp-block .alts{margin-top:8px;display:grid;gap:4px}
+  .bp-block .alts span{font-size:13px;color:var(--ink-3);padding-left:14px;position:relative}
+  .bp-block .alts span::before{content:"→";position:absolute;left:0;color:var(--brand)}
+  .guard{display:grid;gap:8px;margin:10px 0 22px}
+  .guard div{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line);font-size:14.5px;color:var(--ink);font-weight:500}
+  .guard svg{width:18px;height:18px;color:var(--bad);flex:none}
+  .starters{display:grid;gap:6px;margin:10px 0 22px}
+  .starters div{display:flex;gap:10px;align-items:flex-start;padding:10px 14px;border-radius:12px;background:var(--brand-soft);font-size:14.5px;color:var(--ink);font-style:italic;line-height:1.5}
+  .starters svg{width:16px;height:16px;color:var(--brand-text);flex:none;margin-top:3px}
+  .rhythm{display:grid;gap:8px;margin:10px 0 22px}
+  .rhythm > div{display:grid;grid-template-columns:64px 1fr;gap:14px;align-items:start;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+  .rhythm .day{font-family:var(--font-display);font-weight:800;font-size:12px;letter-spacing:.1em;color:var(--on-brand);background:var(--brand);border-radius:8px;padding:6px 0;text-align:center}
+  .rhythm b{font-size:14.5px;color:var(--ink)}.rhythm b small{font-weight:500;color:var(--ink-3);margin-left:6px;font-size:12.5px}
+  .rhythm p{margin:3px 0 0;font-size:14px}
+  .board{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 22px}
+  @media (max-width:640px){.board{grid-template-columns:minmax(0,1fr)}}
+  .board > div{padding:14px;border-radius:14px;border:1px solid var(--line);background:var(--surface);display:grid;gap:8px;align-content:start;min-width:0}
+  .board .k{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+  .board .v{font-family:var(--font-display);font-size:20px;font-weight:800;letter-spacing:-.02em;color:var(--ink)}
+  .board .v.ok{color:var(--ok)}.board .v.warn{color:var(--warn)}
+  .vision{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin:10px 0 22px}
+  @media (max-width:640px){.vision{grid-template-columns:minmax(0,1fr)}}
+  .vision > div{padding:16px;border-radius:14px;border:1px solid var(--line);background:var(--surface);display:grid;gap:6px;align-content:start;position:relative;overflow:hidden}
+  .vision > div::after{content:"";position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--brand)}
+  .vision .k{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-text)}
+  .vision b{font-family:var(--font-display);font-size:16px;color:var(--ink)}
+  .vision p{margin:0;font-size:13.5px;line-height:1.5}
+  .nb{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:6px;margin:10px 0 10px}
+  .nb .ax{display:grid;place-items:center;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-4);padding:4px}
+  .nb .ax.y{writing-mode:vertical-rl;transform:rotate(180deg)}
+  .nb button{min-height:78px;border-radius:12px;border:1px dashed var(--line-strong);background:var(--surface-2);padding:10px;font-weight:600;font-size:13px;color:var(--ink-2);text-align:left;display:grid;align-content:end;gap:4px;transition:all var(--dur);min-width:0}
+  .nb button small{font-size:10.5px;font-weight:600;color:var(--ink-4);letter-spacing:.06em;text-transform:uppercase}
+  .nb button:hover{border-color:var(--brand);color:var(--ink)}
+  .nb button.on{background:var(--brand);border-color:var(--brand);border-style:solid;color:var(--on-brand);box-shadow:0 8px 20px -10px var(--brand)}
+  .nb button.on small{color:var(--on-brand);opacity:.8}
+  .nb-note{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px;background:var(--brand-soft);border:1px solid var(--brand-line);font-size:14px;color:var(--ink-2);margin:0 0 22px}
+  .nb-note b{color:var(--brand-text)}
+  .pb-foot{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-top:40px;padding-top:24px;border-top:1px solid var(--line)}
+  @media (max-width:520px){.pb-foot{grid-template-columns:minmax(0,1fr)}}
+  .pb-foot a{display:grid;gap:4px;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--surface);text-decoration:none;color:inherit;transition:border-color var(--dur),background var(--dur)}
+  .pb-foot a:hover{border-color:var(--brand-line);background:var(--surface-2)}
+  .pb-foot a.next{text-align:right}
+  .pb-foot small{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-4)}
+  .pb-foot b{font-size:15px;color:var(--ink)}
+  .pb-done{display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap;margin-top:34px;padding:16px 18px;border-radius:16px;background:var(--surface);border:1px solid var(--line)}
+  .pb-done.on{background:var(--ok-bg);border-color:var(--ok-line)}
+  @media (max-width:1000px){.pb{grid-template-columns:minmax(0,1fr);gap:20px}.pb-toc{position:static;display:flex;overflow-x:auto;gap:6px;padding-bottom:6px;scrollbar-width:thin}.pb-toc .h,.pb-toc .toc-foot{display:none}.pb-toc a{border-left:0;border:1px solid var(--line);border-radius:99px;padding:6px 12px;white-space:nowrap;background:var(--surface)}.pb-toc a[aria-current="true"]{border-color:var(--brand);background:var(--brand-soft)}.pb-head h1{font-size:28px}.prose h2{font-size:22px}}
+
+  /* ---------- scripts library ---------- */
+  .scard{position:relative}
+  .scard .fav{position:absolute;top:12px;right:12px;z-index:1}
+  .scard .fav svg{color:var(--ink-4)}
+  .scard .fav[aria-pressed="true"] svg{color:var(--brand);fill:var(--brand)}
+  .scard .script,.scard .email,.scard .compare,.scard .starters{margin:0}
+  .scard .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:12px;padding-right:40px}
+
+  /* ---------- 1:1 runner ---------- */
+  .timer{display:grid;gap:14px;padding:22px;border-radius:18px;background:linear-gradient(135deg,var(--brand-800),var(--brand-600));color:#fff;position:relative;overflow:hidden}
+  .timer::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 120% at 100% 0%,rgba(255,255,255,.16),transparent 60%)}
+  .timer > *{position:relative}
+  .timer .big{font-family:var(--font-display);font-size:52px;font-weight:800;letter-spacing:-.04em;line-height:1;font-variant-numeric:tabular-nums}
+  .timer .big small{font-size:16px;font-weight:600;opacity:.75;letter-spacing:0;margin-left:6px}
+  .timer .over{color:#FECACA}
+  .segs{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+  .segs div{height:8px;border-radius:99px;background:rgba(255,255,255,.22);overflow:hidden}
+  .segs div i{display:block;height:100%;width:0;background:#fff;border-radius:99px;transition:width .5s linear}
+  .seg-lbls{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;font-size:11px;letter-spacing:.08em;text-transform:uppercase;opacity:.85}
+  .seg-lbls span.cur{opacity:1;font-weight:700}
+  .timer .ns-btn{color:var(--brand-800);background:#fff;border:0}
+  .timer .ns-btn.ghost{background:rgba(255,255,255,.14);color:#fff}
+  .timer .ns-btn.ghost:hover{background:rgba(255,255,255,.22)}
+  .block{border:1px solid var(--line);border-radius:16px;background:var(--surface);overflow:hidden;transition:border-color var(--dur),box-shadow var(--dur)}
+  .block.cur{border-color:var(--brand);box-shadow:0 0 0 3px var(--brand-soft)}
+  .block.done{opacity:.72}
+  .block-head{display:flex;align-items:center;gap:12px;padding:14px 16px;border-bottom:1px solid var(--line-2)}
+  .block-head .n{width:32px;height:32px;border-radius:10px;background:var(--brand-soft);color:var(--brand-text);display:grid;place-items:center;font-weight:800;font-family:var(--font-display);flex:none}
+  .block.cur .block-head .n{background:var(--brand);color:var(--on-brand)}
+  .block-head b{font-size:15px;color:var(--ink);display:block}
+  .block-head span.s{font-size:12px;color:var(--ink-3)}
+  .block-body{padding:14px 16px;display:grid;gap:12px}
+  .prompt{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--brand-soft);font-size:14px;color:var(--ink);font-style:italic;line-height:1.5;cursor:pointer;border:1px solid transparent;transition:border-color var(--dur)}
+  .prompt:hover{border-color:var(--brand-line)}
+  .prompt svg{width:15px;height:15px;color:var(--brand-text);flex:none;margin-top:3px}
+  .prompt.alt{background:var(--surface-2);font-style:normal;color:var(--ink-2)}
+  .prompt.data{background:var(--info-bg);color:var(--ink);border-color:var(--info-line)}.prompt.data svg{color:var(--info)}
+  .hist{display:grid;gap:10px}
+  .hist-item{padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface);display:grid;gap:6px}
+  .hist-item .d{display:flex;justify-content:space-between;gap:10px;font-size:12.5px;color:var(--ink-3)}
+  .hist-item .d b{color:var(--ink)}
+  .hist-item p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.5}
+  .hist-item p b{color:var(--ink-3);font-weight:600;font-size:11px;letter-spacing:.08em;text-transform:uppercase;display:block;margin-bottom:2px}
+  .rep-pick{display:flex;gap:8px;flex-wrap:wrap}
+  .rep-pick a{display:inline-flex;align-items:center;gap:8px;padding:6px 10px 6px 6px;border-radius:99px;border:1px solid var(--line);background:var(--surface);text-decoration:none;color:var(--ink-2);font-size:13px;font-weight:500;transition:all var(--dur)}
+  .rep-pick a:hover{border-color:var(--ink-4)}
+  .rep-pick a[aria-current="true"]{background:var(--ink);border-color:var(--ink);color:var(--ink-inverse)}
+  .rep-pick a .ns-avatar{--sz:22px;font-size:9px}
+  .rep-pick a i.dot{width:7px;height:7px;border-radius:50%;background:var(--bad);display:inline-block}
+  .rep-pulse{width:150px;flex:none}
+  @media (max-width:720px){.rep-pulse{width:100%}.rep-pulse svg{max-width:220px}}
+  .golden{display:flex;gap:12px;align-items:center;padding:14px 16px;border-radius:14px;background:var(--surface);border:1px dashed var(--brand-line)}
+  .golden .pct{font-family:var(--font-display);font-size:24px;font-weight:800;letter-spacing:-.03em;color:var(--brand-text);white-space:nowrap}
+  .golden p{margin:0;font-size:13px;color:var(--ink-2);line-height:1.45}
+
+  /* ---------- KPIs ---------- */
+  .kpi-card{display:grid;gap:10px}
+  .kpi-card .top{display:flex;justify-content:space-between;gap:10px;align-items:flex-start}
+  .kpi-card .val{font-family:var(--font-display);font-size:34px;font-weight:800;letter-spacing:-.03em;line-height:1;color:var(--ink)}
+  .kpi-card .val small{font-size:14px;font-weight:600;color:var(--ink-3);letter-spacing:0;margin-left:4px}
+  .kpi-card .tgt{font-size:12.5px;color:var(--ink-3)}
+  .kpi-card .def{font-size:13px;color:var(--ink-2);line-height:1.5}
+  .kpi-card .tip{display:flex;gap:8px;align-items:flex-start;font-size:12.5px;color:var(--ink-2);padding:10px 12px;border-radius:10px;background:var(--surface-2);line-height:1.45}
+  .kpi-card .tip svg{width:14px;height:14px;color:var(--brand-text);flex:none;margin-top:2px}
+  .kpi-card .why{font-size:12.5px;color:var(--ink-3);font-style:italic;line-height:1.5}
+  .pillars{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  @media (max-width:640px){.pillars{grid-template-columns:minmax(0,1fr)}}
+  .pillar{display:flex;gap:12px;align-items:center;padding:12px 14px;border-radius:12px;border:1px solid var(--line);background:var(--surface)}
+  .pillar b{display:block;font-size:14px;color:var(--ink)}.pillar span{font-size:12.5px;color:var(--ink-3)}
+  .qmarks{display:inline-flex;gap:4px;align-items:center}
+  .qmarks i{width:22px;height:22px;border-radius:6px;display:grid;place-items:center;font-size:10px;font-weight:700;font-style:normal;background:var(--ok-bg);color:var(--ok)}
+  .qmarks i.pend{background:var(--warn-bg);color:var(--warn)}
+  .dots{display:inline-flex;gap:3px}
+  .dots i{width:10px;height:10px;border-radius:50%;background:var(--ok)}.dots i.off{background:var(--line-strong)}
+
+  .heat-compact .ns-heat .cell{aspect-ratio:auto;height:42px}
+  .heat-compact .ns-heat .hl{font-size:12.5px}
+
+  /* ---------- crucible ---------- */
+  .cru-wrap{max-width:820px;margin:0 auto}
+  .cru-hero{padding:34px 34px 30px;border-radius:22px;background:radial-gradient(80% 120% at 0% 0%,rgba(255,255,255,.14),transparent 60%),linear-gradient(135deg,#1C1917,#292524 60%,#44403C);color:#fff;position:relative;overflow:hidden}
+  .cru-hero h1{font-family:var(--font-display);font-size:34px;letter-spacing:-.03em;color:#fff;margin:14px 0 10px;line-height:1.1}
+  .cru-hero p{color:rgba(255,255,255,.82);font-size:15px;line-height:1.6;max-width:56ch}
+  .cru-hero .ns-badge{background:rgba(255,255,255,.12);color:#fff;border-color:rgba(255,255,255,.18)}
+  .cru-hero .ns-btn.primary{background:var(--brand-400);color:#1C1917;border:0}
+  .cru-hero .ns-btn.primary:hover{background:var(--brand-200)}
+  .cru-hero .ns-btn.ghost{color:#fff;border:1px solid rgba(255,255,255,.3)}
+  .cru-q{font-family:var(--font-display);font-size:22px;line-height:1.4;letter-spacing:-.01em;color:var(--ink);margin:10px 0 20px}
+  .cru-opt{display:grid;grid-template-columns:36px 1fr;gap:14px;align-items:center;width:100%;text-align:left;padding:14px 16px;border-radius:14px;border:1px solid var(--line);background:var(--surface);font-size:14.5px;line-height:1.5;color:var(--ink-2);transition:all var(--dur)}
+  .cru-opt:hover{border-color:var(--brand-line);background:var(--surface-2)}
+  .cru-opt .k{width:32px;height:32px;border-radius:10px;border:1px solid var(--line-strong);display:grid;place-items:center;font-weight:700;font-size:13px;color:var(--ink-3);background:var(--surface)}
+  .cru-opt[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--ink)}
+  .cru-opt[aria-pressed="true"] .k{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+  .arch{display:grid;grid-template-columns:auto 1fr;gap:20px;align-items:center;padding:24px;border-radius:20px;background:linear-gradient(135deg,var(--brand-soft),var(--surface));border:1px solid var(--brand-line)}
+  @media (max-width:640px){.arch{grid-template-columns:minmax(0,1fr)}}
+  .arch .em{width:72px;height:72px;border-radius:20px;background:var(--brand);color:var(--on-brand);display:grid;place-items:center}
+  .arch .em svg{width:34px;height:34px}
+  .arch h2{font-family:var(--font-display);font-size:28px;letter-spacing:-.03em;margin:4px 0 6px;color:var(--ink)}
+  .arch p{font-size:15px;color:var(--ink-2);line-height:1.6;margin:0}
+  .loading{display:grid;place-items:center;gap:14px;padding:64px 20px;text-align:center}
+  .loading .spin{width:48px;height:48px;border-radius:50%;border:4px solid var(--brand-soft);border-top-color:var(--brand);animation:lfg-spin .9s linear infinite}
+  @keyframes lfg-spin{to{transform:rotate(360deg)}}
+  .ans{display:grid;gap:10px}
+  .ans-item{display:grid;grid-template-columns:30px 1fr;gap:12px;padding:12px 14px;border-radius:12px;border:1px solid var(--line-2);background:var(--surface-2)}
+  .ans-item .n{width:26px;height:26px;border-radius:8px;background:var(--surface);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink-3)}
+  .ans-item .q{margin:0 0 8px;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  .sr{display:grid;gap:8px}
+  .sr div{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;color:var(--ink-2);line-height:1.5}
+  .sr div svg{width:16px;height:16px;flex:none;margin-top:2px}
+  .sr.good svg{color:var(--ok)}.sr.risk svg{color:var(--warn)}
+
+  /* ---------- adoption ---------- */
+  .cohort{display:flex;gap:14px;align-items:center}
+  .cohort b{display:block;font-size:14px;color:var(--ink)}.cohort span{font-size:12.5px;color:var(--ink-3)}
+  .lfg-people{display:flex;flex-wrap:wrap;gap:6px}
+  .lfg-people .ns-avatar{--sz:26px;font-size:10px}
+  .skill-input{width:100%;font-size:12.5px;height:30px;border-radius:8px}
+</style>
+</head>
+<body>
+<script>
+(function () {
+  'use strict';
+  const D = NSData, U = NS.util, F = NS.fmt, ic = NS.ic;
+  const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const store = NS.store('leaders-field-guide');
+  const TODAY = new Date('2026-09-24T10:00:00');
+  const ISO = (d) => (d instanceof Date ? d : new Date(d)).toISOString().slice(0, 10);
+  const TODAY_ISO = ISO(TODAY);
+  const MGR_ID = 'NS-1180';
+
+  /* ------------------------------------------------------------------ */
+  /* 1. Domain content — the guide itself                                */
+  /* ------------------------------------------------------------------ */
+  const QUARTERS = [
+    { id: 'q1', q: 'Q1', name: 'Strategy', line: 'Setting the clear course for the year.', icon: 'compass', months: 'Jan – Mar', phil: 'If it doesn’t scare you, it’s too small.' },
+    { id: 'q2', q: 'Q2', name: 'Execution', line: 'Building momentum and shipping.', icon: 'rocket', months: 'Apr – Jun', phil: 'Clear the path, trust the feet.' },
+    { id: 'q3', q: 'Q3', name: 'Review', line: 'Calibrating and fixing leaks.', icon: 'activity', months: 'Jul – Sep', phil: 'Fix leaks before adding fuel.' },
+    { id: 'q4', q: 'Q4', name: 'Planning', line: 'Retrospective and next year vision.', icon: 'milestone', months: 'Oct – Dec', phil: 'Clarity, fairness, alignment.' },
+  ];
+  const CURRENT_Q = 'q3';
+  const LADDER = [
+    { id: 'L1', name: 'Learning', line: 'Needs direction', levels: ['P0', 'P1'], map: 'P0 – P1 · Intern, Associate', action: 'Provide clear docs & safety. Check in daily.', signals: ['Asks before acting; needs the “why” spelled out', 'Ships with review and pairing', 'Learns the codebase, the customers and the rituals'] },
+    { id: 'L2', name: 'Doing', line: 'Executes independently', levels: ['P2', 'P3'], map: 'P2 – P3 · Engineer, Senior', action: 'Focus on speed & quality. Reduce hand-holding.', signals: ['Owns a scoped problem end-to-end', 'Estimates well and flags risk early', 'Quality is consistent without supervision'] },
+    { id: 'L3', name: 'Teaching', line: 'Mentors others', levels: ['P4', 'P4.5'], map: 'P4 – P4.5 · Principal, Tech Lead', action: 'Assign them a junior to mentor. Ask: “How would you scale yourself?”', signals: ['Raises the bar of the people around them', 'Writes the docs others learn from', 'Turns one solution into a reusable pattern'] },
+    { id: 'L4', name: 'Leading', line: 'Sets strategy', levels: ['P5', 'P5.5', 'P6', 'M1', 'M2', 'M3', 'M4', 'M4.5', 'M5', 'M6', 'E1', 'E2'], map: 'P5+ · Architect, Fellow — and the M track', action: 'Delegate a complex problem completely. Step back.', signals: ['Defines what winning looks like for a whole area', 'Builds the team that builds the thing', 'Trades off across quarters, not sprints'] },
+  ];
+  const rungFor = (level) => LADDER.find((l) => l.levels.includes(level)) || (String(level).startsWith('M') || String(level).startsWith('E') ? LADDER[3] : LADDER[1]);
+  const BLOCKS = [
+    { id: 'checkin', n: 1, title: 'Personal check-in', alias: 'Build rapport', time: '00–10', mins: 10, line: 'How are you feeling? What’s draining you?', core: 'Before we dive in, how are you really showing up today? What’s your energy level like?', alts: ['What’s one thing outside work bringing you joy?', 'Did you get enough rest this weekend?'] },
+    { id: 'blockers', n: 2, title: 'Blockers & updates', alias: 'Remove obstacles', time: '10–20', mins: 10, line: 'Where are you stuck? How can I help?', core: 'Looking at your week, what’s the biggest rock you moved, and what’s the one pebble in your shoe slowing you down?', alts: ['Where are you waiting on me or others?', 'What’s a small win we should celebrate?'] },
+    { id: 'growth', n: 3, title: 'Growth & feedback', alias: 'Future focus', time: '20–30', mins: 10, line: 'One thing to improve next week.', core: 'Thinking 6 months out, what is the one skill you want to be famous for on this team? How can I help you get there?', alts: ['What part of your job is draining you most?', 'Who on the team do you want to learn from?'] },
+  ];
+  const GUARDRAILS = ['Do NOT cancel 1:1s (reschedule only).', 'Do NOT solve their problems; ask questions.', 'Do NOT give feedback angry. Wait 24h.'];
+  const STARTERS = ['What’s the feedback you’re scared to give me?', 'If you could change one thing about our meetings, what would it be?', 'Are we moving too fast or too slow on [Project X]?', 'Who helped you the most this week?', 'Do you feel you have the tools you need to succeed?'];
+  const DONTS = [['The Status Update Trap', 'Don’t spend 30 minutes asking “is this done?”. Read the tracker before you walk in.'], ['The Last-Minute Cancel', 'Signals growth is not a priority. Reschedule, never cancel.'], ['The Monologue', 'If you catch yourself talking for more than three minutes straight, you are doing it wrong. Ask, don’t tell.'], ['The “I’m Fine” Acceptance', 'Don’t accept one-word answers. Probe gently.']];
+  const EMAILS = [
+    { id: 'team', chapter: 'overview', cats: ['emails', 'reset'], title: 'Copy-paste to your team', subject: 'Quick update on how we work', body: 'Team,\n\nI want to make sure I’m supporting you effectively. Moving forward, I’m adjusting our 1:1s to be 90% about **your** growth and blockers, not just status updates.\n\nPlease come prepared with one thing you’re stuck on and one win from the week.\n\n– [Your Name]' },
+    { id: 'q1', chapter: 'q1', cats: ['emails', 'alignment'], title: 'The “Q1 Kickoff” email', subject: 'Our North Star for Q1 🚀', body: 'Team,\n\nWe have one major focus this quarter: [Insert Audacious Goal]. Why? Because [Insert Strategic Reason].\n\nIn our 1:1s this week, I want to discuss how your specific role maps to this goal and identify one skill you want to master to help us get there.\n\nLet’s build.\n– [Your Name]' },
+    { id: 'q2', chapter: 'q2', cats: ['emails'], title: 'The “Momentum Check” email', subject: 'Quick check: Obstacles to [Goal]?', body: 'Team,\n\nWe’re mid-sprint on [Project]. My only goal right now is to make sure you have what you need to move fast.\n\n**Reply with just one line:** What is the biggest thing slowing you down right now? I will handle it.\n\n– [Your Name]' },
+    { id: 'q3', chapter: 'q3', cats: ['emails', 'reset'], title: 'The Mid-Year Reset email', subject: 'Resetting our 1:1s for the rest of the year', body: 'Hi Team,\n\nI’ve been reviewing how I support you, and I realized I’ve let our 1:1s slip into status updates (or missed them entirely). That’s on me, and I want to fix it.\n\nStarting this week, I’m resetting our calendar invites. These 30 minutes are for **you** — your growth, your blockers, and your career path. Not for checking off tasks.\n\nPlease come to our next chat ready to tell me: *What is the one thing slowing you down right now?*\n\nThanks,\n[Your Name]' },
+    { id: 'q4', chapter: 'q4', cats: ['emails', 'ratings'], title: 'The Q4 Kickoff email', subject: 'Kickoff: Annual Reviews & Next Steps', body: 'Team,\n\nWe are entering Q4 planning mode. This is our moment to reflect on wins and set the stage for next year.\n\n**Action:** Please complete your self-reflections by [Date]. Be honest about your ‘Superpower’ and your ‘Kryptonite’.\n\n– [Your Name]' },
+  ];
+  const emailById = (id) => EMAILS.find((e) => e.id === id);
+  const SCRIPTS = [
+    { id: 's-deadline', type: 'pair', cat: 'deadlines', chapter: 'overview', title: 'The missed deadline', dont: 'You missed the deadline again. Why can’t you get this right?', say: 'I noticed the deadline was missed. What happened in the process, and how do we fix the system for next time?' },
+    { id: 's-attitude', type: 'pair', cat: 'attitude', chapter: 'overview', title: 'Behaviour in the meeting', dont: 'Your attitude in the meeting was bad.', say: 'When you rolled your eyes during Kavya’s idea, it shut down the conversation. I need you to lead by listening.' },
+    { id: 's-align', type: 'pair', cat: 'alignment', chapter: 'q1', title: 'Announcing the quarter’s goal', dont: 'Management decided we need to increase output by 20%.', say: 'Our mission this quarter is [Goal]. If we hit this, it unlocks [Benefit]. I need your help to figure out how we get there.' },
+    { id: 's-strategic', type: 'pair', cat: 'feedback', chapter: 'q1', title: '“Be more strategic”', dont: 'You need to be more strategic.', say: 'To get to Level 3, I need you to stop solving the problem yourself and start teaching [Name] how to solve it.' },
+    { id: 'b-drifter', type: 'before', cat: 'reset', chapter: 'q3', before: { name: 'The Drifter', text: 'I don’t have time for 1:1s, my door is open.' }, after: { name: 'The Builder', text: 'I’ve booked a recurring 30 mins with you. This is your time. Please bring one thing you’re stuck on so I can unblock you.' } },
+    { id: 'b-taskmaster', type: 'before', cat: 'reset', chapter: 'q3', before: { name: 'The Taskmaster', text: 'Did you finish the report?' }, after: { name: 'The Coach', text: 'The report was late. Let’s look at the process — what specific hurdle slowed you down, and how do we remove it?' } },
+    { id: 'r-rating', type: 'pair', cat: 'ratings', chapter: 'q4', title: 'Delivering a calibrated rating', dontLabel: 'Don’t blame HR', sayLabel: 'Own the message', dont: 'I fought for a higher rating, but they said no.', say: 'We calibrated across the dept. Based on [Outcome X], your rating is finalized at [Y]. Let’s discuss how to get to [Z].' },
+    { id: 'st-starters', type: 'starters', cat: 'feedback', chapter: 'overview', title: '“Real Talk” starters', items: STARTERS },
+  ];
+  const CATS = [['all', 'All'], ['feedback', 'Feedback'], ['deadlines', 'Deadlines'], ['attitude', 'Attitude'], ['alignment', 'Alignment'], ['reset', '1:1 reset'], ['ratings', 'Ratings'], ['emails', 'Emails']];
+  const NINE = { rows: ['High', 'Medium', 'Low'], cols: ['Low', 'Medium', 'High'], cells: [['Rough Diamond', 'Future Star', 'Consistent Star'], ['Inconsistent', 'Core Player', 'High Performer'], ['Talent Risk', 'Effective', 'Trusted Pro']], notes: { 'Rough Diamond': 'New or misplaced. Fix the role or the ramp before judging the person.', 'Future Star': 'Invest: a stretch assignment plus a mentor. Watch for boredom.', 'Consistent Star': 'Retain at all costs. Promote, pay, and hand them the hardest problem.', 'Inconsistent': 'Diagnose skill vs will. Tight loop of weekly goals.', 'Core Player': 'The reliable middle. Clarity and recognition keep them here — or move them up.', 'High Performer': 'Deep expert. Grow scope sideways; don’t force the management track.', 'Talent Risk': 'Honest conversation now. Role change or a managed exit within a quarter.', 'Effective': 'Solid contributor at their ceiling. Keep them engaged; don’t over-promise growth.', 'Trusted Pro': 'Master of the craft. Recognise, retain, and use them to teach.' } };
+  const KPIS = [
+    { id: 'clarity', name: 'Role Clarity', short: 'Clarity', target: 100, unit: '%', targetLabel: '100%', def: 'Of roles have defined Competency Maps (L1–L4).', why: 'If we don’t know what “good” looks like, we can’t hire for it. Clarity precedes competence.', tip: 'Map every role to L1–L4 during Q1 1:1s and give each person one skill to master.', chapter: 'q1', icon: 'layers' },
+    { id: 'alignment', name: 'Alignment', short: 'Alignment', target: 100, unit: '%', targetLabel: '100%', def: 'Of employees have quarterly Goals/OKRs set by Day 1.', why: 'Movement without direction is just noise. Everyone needs a North Star.', tip: 'Quarterly goals are due before Day 1, not Day 10. Set the “Week’s One Goal” every Monday.', chapter: 'q1', icon: 'target' },
+    { id: 'comms', name: 'Communication', short: 'Weekly 1:1s', target: 100, unit: '%', targetLabel: 'Weekly', def: '1:1 meetings occur weekly between every manager and report.', why: 'Performance is a continuous conversation, not an annual event.', tip: 'Book a recurring 30 minutes with every report. Reschedule, never cancel.', chapter: 'overview', icon: 'message-square' },
+    { id: 'retention', name: 'Retention', short: 'Retention', target: 90, unit: '%', targetLabel: '> 90%', def: 'Retention rate of top-tier talent (High Performers), trailing 12 months.', why: 'Losing our best people is the most expensive mistake we can make.', tip: 'Review the Consistent Star and Rough Diamond boxes monthly; hold the career conversation before the resignation.', chapter: 'q4', icon: 'shield-check' },
+    { id: 'enps', name: 'Engagement', short: 'eNPS', target: 40, unit: '', targetLabel: '> 40', def: 'Employee Net Promoter Score (eNPS) measured quarterly.', why: 'High performance shouldn’t mean burnout. We need sustainable intensity.', tip: 'Sustainable intensity: audit workload in the Wednesday pulse check and log the win every Friday.', chapter: 'q2', icon: 'heart-pulse' },
+    { id: 'growth', name: 'Career Growth', short: 'Growth', target: 70, unit: '%', targetLabel: '> 70%', def: 'Of leadership roles filled by internal promotion.', why: 'We build leaders from within rather than buying them.', tip: 'Give every L3 a junior to mentor this quarter — that is next year’s L4 bench.', chapter: 'q1', icon: 'trending-up', orgOnly: true },
+  ];
+  const PILLARS = [['Clarity', 'Removing ambiguity.', 'eye'], ['Impact', 'Focusing on needle movers.', 'zap'], ['Accountability', 'Objective standards.', 'scale']];
+  const QUOTES = [['We build engines, not fires.', 'The Field Guide philosophy'], ['If it doesn’t scare you, it’s too small.', 'Q1 · Set audacious goals'], ['Clear the path, trust the feet.', 'Q2 · Execution'], ['Fix leaks before adding fuel.', 'Q3 · Review'], ['What gets measured, gets managed.', 'Culture KPIs'], ['Think of this as a compass, not a map.', 'The growth-focused 1:1'], ['Listen 90%, talk 10%.', 'The golden rule']];
+
+  /* Chapters — long-form content as typed blocks */
+  const CH = [
+    { id: 'overview', num: 1, label: 'Overview', eyebrow: 'Chapter 1 · Overview', title: 'The Leader’s Field Guide', lede: 'To building high-performance teams (without the stress). This is the operating manual for managers at Northstar Labs — organised around the year, with three tools you use every week.', badge: 'Start here', phil: ['Philosophy', 'We build engines, not fires.'], goal: ['Goal', 'High performance, low stress.'], sections: [
+      { id: 'year', title: 'The year at a glance', blocks: [{ t: 'p', text: 'A team runs on a rhythm, not on heroics. Each quarter has one job. Click a quarter to open its chapter.' }, { t: 'quarters' }] },
+      { id: 'tool1', title: 'Tool 1: The Weekly Engine', blocks: [{ t: 'h3', text: 'The 1:1 Ritual', sub: '30-minute blueprint' }, { t: 'p', text: 'The single highest-leverage half hour of your week. Three blocks of ten minutes, in this order, every week.' }, { t: 'golden' }, { t: 'blueprint', short: true }, { t: 'h3', text: 'The Guardrails' }, { t: 'guardrails' }] },
+      { id: 'tool2', title: 'Tool 2: “Real Talk” scripts', blocks: [{ t: 'p', text: 'Cheat codes for difficult conversations. The pattern is always the same: describe what you observed, name the impact, and ask a question about the system rather than the person.' }, { t: 'script', id: 's-deadline' }, { t: 'script', id: 's-attitude' }, { t: 'p', small: true, text: 'The full library — including the emails — lives under Script library, with a Copy button on every card.' }] },
+      { id: 'tool3', title: 'Tool 3: Career Ladder', blocks: [{ t: 'p', text: 'Four rungs. Everyone on your team sits on one of them, and your job changes depending on which. The ladder maps onto Northstar’s P and M levels — see the Career ladder page for the mapping and your team’s placement.' }, { t: 'ladder' }] },
+      { id: 'cheatsheet', title: 'The Growth-Focused 1:1 (cheat sheet)', blocks: [{ t: 'quote', text: 'A flexible framework for managers to foster a performance-driven culture. Think of this as a compass, not a map.', by: 'Internal Guide v2.4' }, { t: 'h3', text: 'The 30-minute agenda blueprint' }, { t: 'blueprint' }, { t: 'h3', text: '“Real Talk” starters' }, { t: 'starters' }, { t: 'h3', text: 'Manager’s “Do Not Do” list' }, { t: 'donts' }] },
+      { id: 'email', title: 'Copy-paste to your team', blocks: [{ t: 'p', text: 'Send this once, then live up to it. It resets expectations for what a 1:1 is for.' }, { t: 'email', id: 'team' }] },
+    ] },
+    { id: 'q1', num: 2, label: 'Q1 · Strategy', eyebrow: 'Chapter 2 · Q1 Strategy', title: 'Goal & Competency Setting Guide', lede: 'Setting the clear course for the year. Q1 is where you decide what winning looks like and where every person on the team sits on the ladder.', badge: 'Objective: Clarity & Alignment', phil: ['Philosophy', 'If it doesn’t scare you, it’s too small.'], sections: [
+      { id: 'flight', title: 'The Q1 Flight Plan', blocks: [{ t: 'steps', items: [['The Vision', 'Define the “Audacious Goal”. What does winning look like?'], ['The People', 'Map competencies. Who is doing what? Who needs training?'], ['Momentum', 'First quarterly review. Adjust course. Full speed ahead.']] }] },
+      { id: 'goals', title: 'Step 1: Set Audacious Goals', blocks: [{ t: 'p', text: 'Most teams don’t fail from a lack of effort; they fail from a lack of a single, scary, binary target. Test every candidate goal against three standards.' }, { t: 'table', head: ['Criteria', 'The Standard'], rows: [['Impact', 'Changes the game (not just “10% better”).'], ['Clarity', 'Binary outcome. Did we do it? Yes / No.'], ['Focus', 'The “One Thing”. Pick 1 major goal, not 5.']] }, { t: 'h3', text: 'Litmus test checklist' }, { t: 'checklist', id: 'litmus', items: ['Can I write it on a post-it note?', 'Does the team know why it matters?', 'Is it directly tied to company revenue or mission?'] }] },
+      { id: 'traps', title: 'Strategy Traps', blocks: [{ t: 'traps', items: [['“Peanut Buttering”', 'Spreading resources too thin across too many projects.'], ['Set & Forget', 'Announcing the goal in January and never mentioning it again.'], ['Secret Strategy', 'Keeping the “Why” in your head. Over-communicate context.'], ['Ignoring Capacity', 'Setting goals without checking if the team is burnt out.']] }] },
+      { id: 'mapping', title: 'Step 2: Competency Mapping', blocks: [{ t: 'quote', text: 'Your Q1 job is to identify where each person sits on the ladder and give them one specific skill to master.' }, { t: 'p', text: 'Your manager action changes by rung. Do not treat an L1 like an L3, and never manage an L4 like an L2.' }, { t: 'levels' }] },
+      { id: 'scripts', title: 'Alignment Scripts', blocks: [{ t: 'script', id: 's-align' }, { t: 'script', id: 's-strategic' }] },
+      { id: 'email', title: 'The “Q1 Kickoff” email', blocks: [{ t: 'email', id: 'q1' }] },
+    ] },
+    { id: 'q2', num: 3, label: 'Q2 · Execution', eyebrow: 'Chapter 3 · Q2 Execution & Momentum', title: 'From Strategy to Shipping', lede: 'The art of getting things done. Q2 is about building momentum: a weekly loop, a leader who unblocks instead of dictating, and a rhythm the team can feel.', badge: 'Phase Q2', phil: ['Philosophy', 'Clear the path, trust the feet.'], sections: [
+      { id: 'loop', title: 'The Execution Loop', blocks: [{ t: 'steps', items: [['Align', 'Clarify the “Week’s One Goal”. What must ship?', 'Mon'], ['Build', 'Deep work. Leader focuses on unblocking.', 'Tue – Thu'], ['Ship', 'Demo or release. Close the loop. Celebrate.', 'Fri'], ['Review', 'Quick retro. What slowed us down? Fix it.', 'Fri']] }] },
+      { id: 'stance', title: 'The Leader’s Stance', blocks: [{ t: 'compare', bad: ['The Micromanager', ['Dictates the “How” instead of the “What”.', 'Demands status updates randomly.', 'Solves the problem for the team.']], good: ['The Facilitator (you)', ['Sets clear outcomes, trusts the method.', 'Asks “What is blocking you?”', 'Connects people to solve problems.']] }] },
+      { id: 'unblock', title: 'Unblocking Protocol', blocks: [{ t: 'steps', items: [['Identify the blocker', 'Is it technical, organizational, or personal?'], ['Can the team solve it?', 'YES: coach them. NO: step in.'], ['Escalate or eliminate', 'Your job is to cut the red tape immediately.']] }] },
+      { id: 'email', title: 'The “Momentum Check” email', blocks: [{ t: 'email', id: 'q2' }] },
+      { id: 'rhythm', title: 'The Weekly Rhythm', blocks: [{ t: 'rhythm', rows: [['MON', 'Sprint planning', '45m', 'Set a clear goal. Ensure everyone knows “What does ‘Done’ look like?”'], ['T–TH', 'Daily standups', '15m', 'Focus on blockers. “I’m blocked by X” is the key sentence.'], ['WED', 'Mid-week “Pulse Check”', 'Async', 'Leader scans progress. Intervene gently if tickets haven’t moved.'], ['FRI', 'Demo & retro', '60m', 'Show the work. Discuss one thing to improve the process. Log the win.']] }] },
+      { id: 'visual', title: 'Visual Management', blocks: [{ t: 'p', text: 'Make progress visible so nobody has to ask. One board, four signals, updated at the Wednesday pulse check. Sample board:' }, { t: 'board' }] },
+    ] },
+    { id: 'q3', num: 4, label: 'Q3 · Review', eyebrow: 'Chapter 4 · Q3 Review', title: 'Course Correction & Refinement', lede: 'Calibrating and fixing leaks. Halfway through the year the question is not “are we working hard?” but “where is the energy leaking out?” — usually through the 1:1.', badge: 'You are here · Q3', phil: ['Philosophy', 'Fix leaks before adding fuel.'], sections: [
+      { id: 'loop', title: 'The Feedback Loop', blocks: [{ t: 'steps', items: [['Audit 1:1s', 'Identify managers with < 75% completion rate.'], ['Analyze & retrain', 'Skill or will? Schedule a “Reset Session” to reteach the blueprint.'], ['Apply correction', 'Manager restarts 1:1s with a specific correction script.']] }] },
+      { id: 'leaks', title: 'Leak Detection', blocks: [{ t: 'traps', items: [['The “Ghost” Calendar', 'No recurring 1:1s visible.'], ['Status Update Trap', '1:1s are 100% updates, 0% coaching.'], ['Surprise Resignations', 'Leaving because they didn’t know how they were doing.']] }] },
+      { id: 'calibration', title: 'Performance Calibration', blocks: [{ t: 'p', text: 'Three areas, one leak each, one fix each. If your 1:1s look like the middle column, run the reset below.' }, { t: 'table', head: ['Area', 'Leak', 'Fixed'], cls: 'leak', rows: [['Cadence', '“We talk when there is a fire”', 'Weekly, recurring, sacred'], ['Content', 'Manager talks 80% (orders)', 'Employee talks 80% (growth)'], ['Feedback', 'Saved for the annual review', 'Continuous loop (weekly)']] }] },
+      { id: 'before', title: 'Before / After', blocks: [{ t: 'before', id: 'b-drifter' }, { t: 'before', id: 'b-taskmaster' }] },
+      { id: 'email', title: 'The Mid-Year Reset email', blocks: [{ t: 'p', text: 'Owning the slip is the whole point. Send it, then rebook every invite the same day.' }, { t: 'email', id: 'q3' }] },
+    ] },
+    { id: 'q4', num: 5, label: 'Q4 · Planning', eyebrow: 'Chapter 5 · Q4 Planning', title: 'The Grand Finale: Calibration, Ratings & Vision', lede: 'Retrospective and next year’s vision. Q4 closes the loop with fair ratings, honest conversations and a picture of next year everyone can repeat.', badge: 'Goal: Clarity, Fairness, Alignment', phil: ['Goal', 'Clarity, fairness, alignment.'], sections: [
+      { id: 'sequence', title: 'The Sequence', blocks: [{ t: 'steps', items: [['Reflect', 'Self-evaluations launch. Gather peer feedback.'], ['Assess', 'Draft performance reviews. Initial ratings.'], ['Calibrate', 'Manager roundtables. 9-box grid. Finalize comp.'], ['Deliver', 'Rating conversations. Letters. Next year’s goals.']] }] },
+      { id: 'ninebox', title: 'Calibration: the 9-box', blocks: [{ t: 'p', text: 'Potential on the vertical axis, performance on the horizontal. Click a box to read what to do with the people in it.' }, { t: 'ninebox' }, { t: 'quote', text: 'Based on results AND behaviors, where does this person sit compared to peers?', by: 'The roundtable prompt' }] },
+      { id: 'traps', title: 'Calibration Traps', blocks: [{ t: 'traps', items: [['Recency Bias', 'Evaluating only the last 2 months.'], ['Halo Effect', 'Letting one win mask huge flaws.'], ['No Surprises', 'The annual review is not for new feedback.']] }] },
+      { id: 'vision', title: 'Vision Board', blocks: [{ t: 'p', text: 'Three headlines for next year. If your team can’t repeat them in the corridor, they are too long.' }, { t: 'vision', items: [['Q1 Focus', 'Launch & Stabilize', 'Establish the new baseline metrics and clear technical debt.'], ['Q2–Q3 Growth', 'Scale & Optimize', 'Expand features to new markets and increase velocity.'], ['Q4 Outcomes', 'Market Leader', 'Achieve #1 NPS in the category and finalize automation.']] }] },
+      { id: 'scripts', title: 'Rating Scripts', blocks: [{ t: 'script', id: 'r-rating' }] },
+      { id: 'email', title: 'The Q4 Kickoff email', blocks: [{ t: 'email', id: 'q4' }] },
+    ] },
+  ];
+  const chapterById = (id) => CH.find((c) => c.id === id);
+  const readMinutes = (ch) => { const txt = JSON.stringify(ch); return Math.max(3, Math.round(txt.split(/\s+/).length / 190)); };
+
+  /* Crucible content */
+  const DILEMMAS = [
+    { q: 'Your most brilliant engineer is a “High Performer” (10× output) but is toxic to the team culture — they belittle juniors. A deadline is in two weeks. What do you do?', opts: [['Tolerate the behaviour until the deadline passes, then address it.', { pragmatic: 2 }], ['Let them go immediately. Culture > performance, even if we miss the deadline.', { ruthless: 2, peopleFirst: 1 }], ['Isolate them from the team to work alone on the critical path.', { pragmatic: 1, strategic: 1 }], ['Publicly reprimand them in the next standup to set a boundary.', { ruthless: 2 }]] },
+    { q: 'You have two direct reports vying for a promotion. Person A is loyal and steady but lacks vision. Person B is visionary and brilliant but flighty and inconsistent. Who do you promote?', opts: [['Person A: reliability scales better than inconsistency.', { strategic: 1, pragmatic: 1 }], ['Person B: you can hire a project manager to stabilise them.', { strategic: 1, peopleFirst: 1 }], ['Neither: look externally for the complete package.', { strategic: 2 }], ['Split the role: give A operational control and B strategic control.', { strategic: 2, peopleFirst: 1 }]] },
+    { q: 'Your boss gives you a directive that you know is a strategic mistake and will waste three months of team effort. You’ve argued your case, but they insisted. What now?', opts: [['Malicious compliance: do exactly what they said so it fails fast.', { ruthless: 1 }], ['Disagree and commit: rally the team to do the best job possible anyway.', { pragmatic: 2 }], ['Go over their head to their boss with your data.', { strategic: 1, ruthless: 1 }], ['Quietly work on the “right” solution in the background while appearing to follow the directive.', { strategic: 1 }]] },
+    { q: 'The company is announcing 10% layoffs tomorrow. You know who is on the list. One of them asks you directly: “Am I safe? I’m about to sign a mortgage.”', opts: [['Lie: “Yes, don’t worry.” Protect them from panic until it is official.', { peopleFirst: 1 }], ['Hint: “I wouldn’t sign anything major right now.” Breaks confidentiality, saves them financial ruin.', { peopleFirst: 2 }], ['Stonewall: “I cannot discuss rumours.” Professional, but cold.', { ruthless: 1, pragmatic: 1 }], ['Deflect: “Let’s focus on work for today.”', { pragmatic: 1 }]] },
+    { q: 'You discover a critical bug in your product two hours before a major launch. Fixing it takes two days. Launching with it risks corrupting 5% of user data.', opts: [['Delay the launch. Zero tolerance for data loss.', { strategic: 1, peopleFirst: 1 }], ['Launch anyway. We can hot-patch it in four hours.', { ruthless: 2 }], ['Launch with a “Beta” tag and a disclaimer.', { pragmatic: 2 }], ['Ask the CEO to make the call.', { pragmatic: 1 }]] },
+    { q: 'A project is failing. The team has worked 60-hour weeks for a month. To save it, they need to work one more weekend. If you don’t, the project dies.', opts: [['Ask them to work the weekend, promising time off later.', { ruthless: 1, pragmatic: 1 }], ['Kill the project. The burnout risk is too high.', { ruthless: 1, peopleFirst: 2 }], ['You work the weekend alone to finish it.', { peopleFirst: 1, pragmatic: 1 }], ['Tell the client and stakeholders the delivery is late.', { strategic: 1, peopleFirst: 1 }]] },
+    { q: 'You are new. An older, beloved employee who is “resting and vesting” (doing very little work) is on your team. Everyone loves them.', opts: [['Leave them be. They add social glue to the team.', { peopleFirst: 1, pragmatic: 1 }], ['Put them on a Performance Improvement Plan immediately.', { ruthless: 2 }], ['Gradually increase their workload until they quit or step up.', { ruthless: 1, pragmatic: 1 }], ['Have a “crucial conversation” about retirement or a role change.', { strategic: 1, peopleFirst: 1 }]] },
+  ];
+  const DIMS = [['ruthless', 'Commander'], ['peopleFirst', 'Servant'], ['strategic', 'Architect'], ['pragmatic', 'Realist']];
+  const ARCHETYPES = {
+    ruthless: { name: 'The Commander', icon: 'flag', desc: 'You prioritize results and decisiveness above all else. This drives speed but risks burnout.', strengths: [['Decisiveness', 'You tend to make the hard call rather than avoiding conflict.'], ['Focus', 'You prioritize the long-term health of the project over short-term comfort.']], risks: [['Context', 'Ensure you aren’t making decisions in a vacuum. Ask more questions before acting.'], ['Burnout', 'Speed that the team can’t sustain is borrowed, not earned. Watch the Wednesday pulse.']], chapters: ['overview', 'q2', 'q3'] },
+    peopleFirst: { name: 'The Servant Leader', icon: 'heart', desc: 'You prioritize your team’s well-being. This builds loyalty but may slow down critical hard decisions.', strengths: [['Trust', 'People tell you the truth early because you protect them.'], ['Retention', 'Your teams stay. Loyalty is your compounding asset.']], risks: [['Hard calls', 'Kindness that delays a necessary decision becomes unkind. Put a date on the difficult conversation.'], ['Own the message', 'Don’t outsource the tough rating to “HR” or “management”.']], chapters: ['q1', 'q4', 'q2'] },
+    strategic: { name: 'The Architect', icon: 'network', desc: 'You look at the system design rather than the immediate fire. Excellent for scaling.', strengths: [['Systems thinking', 'You fix the process, not the symptom.'], ['Scaling', 'You design roles and rituals that outlast you.']], risks: [['The room', 'Systems are built of people having a bad Tuesday. Check the human before the diagram.'], ['Speed', 'A good decision this week beats a perfect one next quarter.']], chapters: ['overview', 'q3', 'q1'] },
+    pragmatic: { name: 'The Balanced Realist', icon: 'scale', desc: 'You balance the needs of the business with the needs of your people effectively.', strengths: [['Judgement', 'You weigh business and people without dogma.'], ['Adaptability', 'You pick the tool for the situation instead of the situation for the tool.']], risks: [['Edge', 'Balance can look like hedging. Pick one audacious bet this quarter and say it out loud.'], ['Deferral', '“Ask the CEO” is sometimes the right call — and sometimes an escape hatch.']], chapters: ['q1', 'q2', 'q4'] },
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* 2. Team facts (deterministic) + persisted state                      */
+  /* ------------------------------------------------------------------ */
+  const CADENCE_DAYS = { weekly: 7, biweekly: 14, monthly: 30, rare: 60 };
+  const CADENCE_LABEL = { weekly: 'Weekly', biweekly: 'Bi-weekly', monthly: 'Monthly', rare: 'Rare' };
+  const CAD_W = { weekly: 100, biweekly: 75, monthly: 40, rare: 10 };
+  const cadenceScore = (ppl) => (ppl.length ? Math.round(U.avg(ppl, (p) => CAD_W[p.oneOnOnes] ?? 50)) : 0);
+  const LAST_SEED = { 'NS-1207': '2026-09-10', 'NS-1208': '2026-09-17', 'NS-1209': '2026-09-03', 'NS-1210': '2026-09-18', 'NS-1211': '2026-09-21', 'NS-1212': '2026-09-22', 'NS-1213': '2026-09-11', 'NS-1214': '2026-09-16', 'NS-2019': '2026-09-15' };
+  const GOALS = { 'NS-1207': ['Ship OAuth 2.1 token rotation for first-party clients', 82, 'on'], 'NS-1208': ['Bring authorization API p95 under 120 ms', 61, 'risk'], 'NS-1209': ['Design the multi-region identity failover', 74, 'on'], 'NS-1210': ['Migrate the session store to the new cache tier', 48, 'behind'], 'NS-1211': ['Own the audit-log ingestion pipeline', 70, 'on'], 'NS-1212': ['Complete the distributed-systems learning path', 88, 'on'], 'NS-1213': ['Retire the legacy SAML connector', 55, 'risk'], 'NS-1214': ['Raise core-package test coverage to 85%', 66, 'on'], 'NS-2019': ['Automate the tenant-provisioning runbook', 35, 'behind'] };
+  const goalFor = (p) => { const g = GOALS[p.id]; if (g) return { title: g[0], progress: g[1], status: g[2] }; const r = NS.rng(NS.hashStr(p.id + 'goal')); const pr = Math.round(35 + r() * 60); return { title: `Q3 goal · ${p.skills[0] || 'core'} improvement`, progress: pr, status: pr >= 65 ? 'on' : pr >= 50 ? 'risk' : 'behind' }; };
+  const pulseDrop = (p) => p.pulse[5] - Math.max(...p.pulse.slice(0, 5));
+  const hasMap = (p) => (p.id === 'NS-2019' ? false : D.reports(MGR_ID).some((x) => x.id === p.id) ? true : NS.hashStr(p.id + 'cmap') % 100 < 85);
+  const hasOkr = (p, q) => { if (q < 3) return NS.hashStr(p.id + 'okr' + q) % 100 < (q === 1 ? 96 : 93); if (p.managerId === MGR_ID) return !['NS-2019', 'NS-1214'].includes(p.id); return NS.hashStr(p.id + 'okr3') % 100 < 72; };
+  const hpExits = (mid) => (mid === MGR_ID ? 0 : (NS.hashStr(mid + 'exit') % 100) < 68 ? 0 : (NS.hashStr(mid + 'exit') % 100) < 92 ? 1 : 2);
+  const enpsOf = (ppl) => { if (!ppl.length) return 0; const pr = ppl.filter((p) => p.enps >= 9).length, de = ppl.filter((p) => p.enps <= 6).length; return Math.round(((pr - de) / ppl.length) * 100); };
+  const GROWTH_ORG = { filled: 18, internal: 12 };
+  const seedHistory = () => ({
+    'NS-1207': [
+      { date: '2026-09-10', dur: 1740, blocks: ['Energy 7/10 — sleeping better since the on-call rota changed. Excited about the ADR review.', 'Token-rotation rollout blocked on the mobile team’s SDK release; I will chase Karthik. She is still carrying the last 10% of the migration herself.', 'Skill to master: delegating the last 10%. Agreed she hands the runbook work to Rohan and reviews rather than writes.'], action: 'Unblock the mobile SDK release; introduce Priya to the Platform staff-eng circle.' },
+      { date: '2026-08-27', dur: 1800, blocks: ['Back from leave, energy high. Asked about the promotion timeline — be transparent in Q4.', 'Nothing blocking; wants earlier visibility into roadmap changes.', 'Discussed P4 expectations: scope across teams, not just depth. She wants to lead the identity failover design review.'], action: 'Share the Q4 roadmap draft a week early.' },
+      { date: '2026-08-13', dur: 1620, blocks: ['Tired — two parallel projects. Agreed to drop one review rotation for a month.', 'Blocked on the audit-write removal from the hot path; needs a decision from Kavya.', 'Feedback given: PR descriptions are terse for remote teammates. Landed well.'], action: 'Get Kavya’s decision on the audit write by Friday.' },
+    ],
+    'NS-1209': [
+      { date: '2026-09-03', dur: 1860, blocks: ['Stretched thin since the P4 promotion — three design reviews a week. Energy 5/10.', 'Wants a decision on whether Identity owns the failover work or Cloud Infra does. Escalated to Elena’s staff meeting.', 'Growth: she wants to scale herself — agreed she assigns Lukas as a co-reviewer and steps back from two reviews.'], action: 'Bring the failover ownership question to the org staff meeting.' },
+      { date: '2026-08-27', dur: 1500, blocks: ['Good week. Remote setup in Bengaluru is working; asked to come to Mumbai for the Q4 planning offsite.', 'Waiting on me for headcount confirmation for the failover pod.', 'Mentoring Ananya is going well; suggested she also mentor Siddharth on system design.'], action: 'Confirm headcount for the failover pod.' },
+    ],
+    'NS-1208': [
+      { date: '2026-09-17', dur: 1680, blocks: ['Energy good; ran his first incident review and enjoyed it.', 'p95 latency work is at risk — the edge cache hit rate is stuck at 78%. He wants pairing time with Nikhil.', 'Skill to master: performance profiling. Agreed on a two-week pairing block with Nikhil.'], action: 'Book Nikhil and Rohan for pairing Tue/Thu afternoons.' },
+      { date: '2026-09-10', dur: 1800, blocks: ['Slightly anxious about the review cycle — first full cycle. Walked through the timeline.', 'Blocked on staging access for the load tests; Sam in IT is on it.', 'Wants to learn Go properly; pointed him at the internal course.'], action: 'Chase the staging access ticket.' },
+    ],
+  });
+  const seedProgress = () => ({
+    manager: { read: { overview: 1, q1: 1, q2: 1 }, tools: { scripts: 1, kpis: 1 } },
+    hrbp: { read: { overview: 1, q1: 1, q2: 1, q3: 1, q4: 1 }, tools: { scripts: 1, kpis: 1, adoption: 1, ladder: 1 } },
+    exec: { read: { overview: 1, q4: 1 }, tools: { kpis: 1 } },
+  });
+  const buildState = () => ({ v: 1, progress: seedProgress(), favs: { 's-deadline': 1, 'q3': 1 }, ninebox: 'Consistent Star', litmus: {}, drafts: {}, history: seedHistory(), last: { ...LAST_SEED }, crucible: null, skillFocus: { 'NS-1207': 'Delegating the last 10%', 'NS-1209': 'Scaling herself through others', 'NS-1208': 'Performance profiling', 'NS-1212': 'Reading production logs without fear' }, nudges: {}, activity: [] });
+  let S = store.get('state');
+  if (!S || S.v !== 1) { S = buildState(); }
+  const save = U.debounce(() => store.set('state', S), 200);
+  const saveNow = () => store.set('state', S);
+  const log = (msg) => { S.activity.unshift({ t: new Date().toISOString(), msg }); S.activity = S.activity.slice(0, 40); save(); };
+  const progressOf = (persona) => (S.progress[persona.id] || (S.progress[persona.id] = { read: {}, tools: {} }));
+  const markTool = (persona, tool) => { const pr = progressOf(persona); if (!pr.tools[tool]) { pr.tools[tool] = 1; save(); } };
+  const TOOLS = [['oneOnOne', '1:1 Runner', 'timer', '/one-on-one', 'Run a 30-minute 1:1', ['manager']], ['scripts', 'Script library', 'message-square', '/scripts', 'Don’t say / say this', ['manager', 'hrbp', 'exec']], ['crucible', 'The Crucible', 'flame', '/crucible', 'Leadership test', ['manager', 'hrbp', 'exec']], ['kpis', 'Culture KPIs', 'bar-chart', '/kpis', 'Six numbers that matter', ['manager', 'hrbp', 'exec']], ['ladder', 'Career ladder', 'layers', '/ladder', 'L1 – L4 mapped', ['manager', 'hrbp', 'exec']], ['adoption', 'Adoption', 'activity', '/adoption', 'Who uses the guide', ['hrbp']]];
+  const toolsFor = (persona) => TOOLS.filter((t) => t[5].includes(persona.id));
+  const readingStats = (persona) => { const pr = progressOf(persona); const read = CH.filter((c) => pr.read[c.id]).length; const tools = toolsFor(persona); const used = tools.filter((t) => pr.tools[t[0]]).length; const total = CH.length + tools.length; return { read, chapters: CH.length, used, tools: tools.length, pct: Math.round(((read + used) / total) * 100), next: CH.find((c) => !pr.read[c.id]) }; };
+
+  /* team helpers */
+  const teamOf = (mid) => D.reports(mid);
+  const meFor = (persona) => D.byId(persona.personId);
+  const lastOneOnOne = (pid) => S.last[pid] || null;
+  const dueInfo = (p) => { const last = lastOneOnOne(p.id); const cad = CADENCE_DAYS[p.oneOnOnes] || 14; if (!last) return { due: null, days: null, overdue: true, label: 'Never held' }; const due = U.addDays(last, cad); const days = U.daysBetween(TODAY_ISO, ISO(due)); return { last, due: ISO(due), days, overdue: days < 0, thisWeek: days <= 3, label: days < 0 ? `${Math.abs(days)}d overdue` : days === 0 ? 'Due today' : `Due ${F.date(due, 'short')}` }; };
+  const weekList = (mid) => { const team = teamOf(mid); const ones = team.map((p) => ({ p, d: dueInfo(p) })).filter((x) => x.d.overdue || x.d.thisWeek).sort((a, b) => (a.d.days ?? -99) - (b.d.days ?? -99)); const drops = team.map((p) => ({ p, drop: pulseDrop(p) })).filter((x) => x.drop <= -8).sort((a, b) => a.drop - b.drop); const goals = team.map((p) => ({ p, g: goalFor(p) })).filter((x) => x.g.status !== 'on').sort((a, b) => a.g.progress - b.g.progress); return { ones, drops, goals }; };
+  const quoteOfWeek = () => { const wk = Math.floor((TODAY - new Date('2026-01-05')) / (7 * 86400000)); return QUOTES[wk % QUOTES.length]; };
+
+  /* KPI engine — scope = { people:[...], managers:[...] } */
+  const kpiValues = (scope) => {
+    const ppl = scope.people, n = ppl.length || 1;
+    const hp = ppl.filter((p) => p.rating >= 4).length; const exits = U.sum(scope.managers, (m) => hpExits(m.id)) + ppl.filter((p) => p.rating >= 4 && p.status === 'Notice period').length;
+    const v = {
+      clarity: Math.round(U.pctOf(ppl.filter(hasMap).length, n)),
+      alignment: Math.round(U.pctOf(ppl.filter((p) => hasOkr(p, 3)).length, n)),
+      comms: Math.round(U.pctOf(ppl.filter((p) => p.oneOnOnes === 'weekly').length, n)),
+      retention: hp + exits ? U.round(U.pctOf(hp, hp + exits), 1) : 100,
+      enps: enpsOf(ppl),
+      growth: Math.round(U.pctOf(GROWTH_ORG.internal, GROWTH_ORG.filled)),
+    };
+    const extra = { clarity: { have: ppl.filter(hasMap).length, n }, alignment: { q: [1, 2, 3].map((q) => Math.round(U.pctOf(ppl.filter((p) => hasOkr(p, q)).length, n))), have: ppl.filter((p) => hasOkr(p, 3)).length, n }, comms: { weekly: ppl.filter((p) => p.oneOnOnes === 'weekly').length, cad: U.countBy(ppl, 'oneOnOnes'), n }, retention: { hp, exits }, enps: { pr: ppl.filter((p) => p.enps >= 9).length, de: ppl.filter((p) => p.enps <= 6).length, n }, growth: GROWTH_ORG };
+    return { v, extra };
+  };
+  const kpiStatus = (k, val) => { const a = k.target ? val / k.target : 1; return a >= 1 ? { label: 'On target', cls: 'ok', a } : a >= 0.9 ? { label: 'Close', cls: 'warn', a } : { label: 'Off target', cls: 'bad', a }; };
+  const kpiTrend = (k, cur, seedKey) => { const r = NS.rng(NS.hashStr(seedKey + k.id)); const out = []; let v = cur; for (let i = 0; i < 5; i++) { v = v - (2 + r() * 6) * (k.id === 'enps' ? 1.6 : 1) + (r() - 0.5) * 3; out.unshift(U.round(U.clamp(v, k.id === 'enps' ? -20 : 0, 100), 0)); } out.push(cur); return out; };
+  const fmtKpi = (k, v) => (k.id === 'enps' ? (v > 0 ? '+' : '') + Math.round(v) : (k.id === 'retention' ? F.num(v, v % 1 ? 1 : 0) : Math.round(v)) + '%');
+  const scopeFor = (persona, deptName) => { if (persona.id === 'manager') { const me = meFor(persona); return { label: `${me.team} team`, people: teamOf(me.id), managers: [me] }; } if (persona.id === 'exec') { const ppl = D.allReports('NS-1003'); return { label: 'Engineering org', people: ppl.filter((p) => !p.isManager || p.level.startsWith('P')), managers: ppl.filter((p) => p.isManager) }; } const ppl = deptName ? D.dept(deptName) : D.people.filter((p) => p.level !== 'E2'); return { label: deptName || 'Northstar Labs', people: ppl.filter((p) => !p.isManager || p.level.startsWith('P')), managers: ppl.filter((p) => p.isManager) }; };
+
+  /* adoption facts per manager (deterministic, Aditya bound to live progress) */
+  const MANAGERS = D.managers.filter((m) => D.reports(m.id).length >= 3 && m.level !== 'E2');
+  const adoptionOf = (m) => {
+    const r = NS.rng(NS.hashStr(m.id + 'adopt')); const team = D.reports(m.id);
+    const weekly = Math.round(U.pctOf(team.filter((p) => p.oneOnOnes === 'weekly').length, team.length)); const score = cadenceScore(team);
+    if (m.id === MGR_ID) { const pr = S.progress.manager; return { m, enrolled: true, read: Object.keys(pr.read).length, tools: Object.keys(pr.tools).length, lastActive: 1, crucible: S.crucible ? ARCHETYPES[S.crucible.archetype].name : null, weekly, score, team: team.length, cohort: 'Self-serve' }; }
+    const q = m.quality || 0.75; const enrolled = r() < 0.55 + q * 0.4; const read = enrolled ? Math.min(5, Math.max(1, Math.floor(r() * 3.4 + q * 3.2))) : 0; const tools = enrolled ? Math.min(5, Math.floor(r() * 2 + q * 3)) : 0;
+    const lastActive = enrolled ? Math.floor(r() * (read >= 4 ? 6 : 24)) : null; const cru = enrolled && r() < 0.45 ? ['The Commander', 'The Servant Leader', 'The Architect', 'The Balanced Realist'][Math.floor(r() * 4)] : null;
+    const cohort = m.tenure < 1.5 ? 'New-manager cohort' : score < 75 ? 'Q3 reset cohort' : 'Self-serve';
+    return { m, enrolled, read, tools, lastActive, crucible: cru, weekly, score, team: team.length, cohort };
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* 3. Shared UI pieces                                                 */
+  /* ------------------------------------------------------------------ */
+  const md = (s) => NS.esc(s).replace(/\*\*(.+?)\*\*/g, '<b>$1</b>').replace(/\*(.+?)\*/g, '<i>$1</i>').split(/\n\n+/).map((p) => `<p>${p.replace(/\n/g, '<br>')}</p>`).join('');
+  const plain = (s) => s.replace(/\*\*(.+?)\*\*/g, '$1').replace(/\*(.+?)\*/g, '$1');
+  const copyText = async (text, what) => { let ok = false; try { await navigator.clipboard.writeText(text); ok = true; } catch (e) { try { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); ok = document.execCommand('copy'); ta.remove(); } catch (x) { ok = false; } } NS.toast(ok ? 'Copied to clipboard' : 'Copy not available here', { desc: what, type: ok ? 'info' : 'warn' }); };
+  const cadBadge = (p) => NS.badge(CADENCE_LABEL[p.oneOnOnes] || p.oneOnOnes, p.oneOnOnes === 'weekly' ? 'ok' : p.oneOnOnes === 'biweekly' ? 'info' : 'warn');
+  const goalBadge = (g) => ({ on: NS.badge('On track', 'ok', true), risk: NS.badge('At risk', 'warn', true), behind: NS.badge('Behind', 'bad', true) }[g.status]);
+  const personLink = (p, sub, href) => `<a href="${href || NS.link('/one-on-one', { r: p.id })}" class="ns-person" style="text-decoration:none">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb">${NS.esc(sub || p.title)}</div></div></a>`;
+  const quarterCards = (persona, o = {}) => { const pr = progressOf(persona); return `<div class="qcards">${QUARTERS.map((q) => `<a class="qcard ${q.id === CURRENT_Q ? 'now' : ''}" href="${NS.link('/playbook/' + q.id)}">${q.id === CURRENT_Q ? `<span class="tag ns-badge brand">${ic('circle-dot', { size: 11 })} Now</span>` : ''}<div class="q">${q.q}</div><div class="nm">${q.name}</div><p>${q.line}</p><div class="flex items-center justify-between gap-2 mt-1"><span class="xs faint">${q.months}</span>${pr.read[q.id] ? `<span class="done">${ic('check')} Read</span>` : `<span class="xs faint">${readMinutes(chapterById(q.id))} min</span>`}</div></a>`).join('')}</div>`; };
+  const readingCard = (persona) => { const st = readingStats(persona); const pr = progressOf(persona); const tools = toolsFor(persona); return NS.card({ title: 'Your progress', sub: `${st.read} of ${st.chapters} chapters · ${st.used} of ${st.tools} tools used`, body: `<div class="flex gap-4 items-center wrap"><div class="flex-none">${NS.ring({ value: st.pct / 100, size: 96, thickness: 9, label: st.pct + '%', sub: 'complete' })}</div><div class="grow min-w-0"><div class="read-list">${CH.map((c) => `<a href="${NS.link('/playbook/' + c.id)}"><span class="st ${pr.read[c.id] ? 'done' : ''}">${pr.read[c.id] ? ic('check') : c.num}</span><span class="truncate">${c.label}</span></a>`).join('')}</div></div></div><div class="divider" style="margin:14px 0"></div><div class="flex gap-2 wrap">${tools.map((t) => `<a class="ns-badge ${pr.tools[t[0]] ? 'ok' : 'outline'}" href="${NS.link(t[3])}" style="text-decoration:none">${pr.tools[t[0]] ? ic('check', { size: 11 }) : ic(t[2], { size: 11 })} ${t[1]}</a>`).join('')}</div>` }); };
+  const toolShortcuts = (persona) => NS.card({ title: 'Tools', sub: 'Everything you use during the week', body: `<div class="tool-grid">${toolsFor(persona).map((t) => `<a class="tool" href="${NS.link(t[3])}"><span class="ns-icon-box">${ic(t[2])}</span><span class="min-w-0"><b class="truncate">${t[1]}</b><span>${t[4]}</span></span></a>`).join('')}</div>` });
+  const quoteCard = () => { const [q, by] = quoteOfWeek(); return `<div class="ns-card"><div class="ns-card-body"><div class="ns-eyebrow">Quote of the week</div><div class="quote-week">${q}</div><div class="sm muted mt-2">— ${by}</div></div></div>`; };
+  const focusCard = () => { const q = QUARTERS.find((x) => x.id === CURRENT_Q); const ch = chapterById(CURRENT_Q); const steps = ch.sections[0].blocks[0].items; return NS.card({ title: `This quarter’s focus · ${q.q} ${q.name}`, sub: q.line, actions: `<a class="ns-btn sm primary" href="${NS.link('/playbook/' + q.id)}">Open chapter ${ic('arrow-right')}</a>`, body: `<div class="pullq" style="margin:0 0 14px;font-size:18px">${q.phil}</div><div class="steps" style="margin:0">${steps.map((s, i) => `<div class="step" style="padding:10px 0"><span class="n">${i + 1}</span><div><b style="font-size:14px">${s[0]}</b><p style="font-size:13.5px">${s[1]}</p></div></div>`).join('')}</div>` }); };
+
+  /* ------------------------------------------------------------------ */
+  /* 4. Routes — home                                                    */
+  /* ------------------------------------------------------------------ */
+  const R = {};
+  const hero = (o) => `<div class="ns-hero"><div class="flex gap-2 wrap">${o.badges.map((b) => `<span class="ns-badge">${b}</span>`).join('')}</div><h1>${o.title}</h1><p>${o.body}</p><div class="flex gap-2 wrap mt-4">${o.actions}</div><svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2"><circle cx="300" cy="150" r="118"/><circle cx="300" cy="150" r="86"/><circle cx="300" cy="150" r="10" fill="rgba(255,255,255,.35)"/><path d="M300 32v20M300 248v20M182 150h20M398 150h20"/></g><path d="M300 150 L352 78 L318 158 Z" fill="rgba(255,255,255,.85)"/><path d="M300 150 L248 222 L282 142 Z" fill="rgba(255,255,255,.35)"/></svg></div>`;
+  R['/home'] = { title: 'Home', render: (c) => (c.persona.id === 'manager' ? homeManager(c) : c.persona.id === 'hrbp' ? homeHRBP(c) : homeExec(c)), mounted: (c, root) => { root.querySelectorAll('[data-nudge]').forEach((b) => b.onclick = () => nudge(b.dataset.nudge)); const el = root.querySelector('#homeKpiBars'); if (el) { const sc = scopeFor(c.persona); const kv = kpiValues(sc); NS.chart.bars(el, { labels: KPIS.map((k) => k.short), series: [{ name: 'Current', values: KPIS.map((k) => Math.round(kv.v[k.id])) }, { name: 'Target', values: KPIS.map((k) => k.target), color: 'var(--ink-4)' }], height: 200, yMax: 100, showValues: 'all', yFormat: (v) => String(v) }); } } };
+
+  const homeManager = (c) => {
+    const me = meFor(c.persona), team = teamOf(me.id), wk = weekList(me.id), st = readingStats(c.persona), sc = scopeFor(c.persona), kv = kpiValues(sc);
+    const onTarget = KPIS.filter((k) => kpiStatus(k, kv.v[k.id]).cls === 'ok').length; const weekly = team.filter((p) => p.oneOnOnes === 'weekly').length;
+    const q = QUARTERS.find((x) => x.id === CURRENT_Q);
+    return html`${hero({ badges: [`${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}`, `${ic('users', { size: 12 })} ${NS.esc(me.team)} · ${team.length} reports`, `${ic('compass', { size: 12 })} ${q.q} · ${q.name} quarter`], title: `Your week as a leader, ${me.first}`, body: `It’s ${q.q} — the ${q.name} quarter. <b>${q.phil}</b> This week you have <b>${wk.ones.length}</b> 1:1s due (${wk.ones.filter((x) => x.d.overdue).length} overdue), <b>${wk.drops.length}</b> people with a pulse drop and <b>${wk.goals.length}</b> goals off track. Thirty minutes each, listening 90% of the time, fixes most of it.`, actions: `<a class="ns-btn primary" href="${NS.link('/one-on-one', { r: wk.ones[0] ? wk.ones[0].p.id : '' })}">${ic('timer')} Start a 1:1</a><a class="ns-btn ghost" href="${NS.link('/playbook/' + (st.next ? st.next.id : CURRENT_Q))}">${st.next ? `Continue with ${st.next.label}` : 'Re-read Q3 · Review'} ${ic('arrow-right')}</a>` })}
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: '1:1s due this week', value: wk.ones.length, icon: 'timer', sub: `${wk.ones.filter((x) => x.d.overdue).length} overdue · ${team.length - wk.ones.length} on schedule` })}
+        ${NS.stat({ label: 'Weekly 1:1 cadence', value: Math.round(U.pctOf(weekly, team.length)), unit: '%', icon: 'message-square', sub: `${weekly} of ${team.length} reports weekly · target 100%` })}
+        ${NS.stat({ label: 'Culture KPIs on target', value: `${onTarget}/${KPIS.length}`, icon: 'bar-chart', sub: `${KPIS.filter((k) => kpiStatus(k, kv.v[k.id]).cls === 'warn').length} close · ${KPIS.filter((k) => kpiStatus(k, kv.v[k.id]).cls === 'bad').length} off target` })}
+        ${NS.stat({ label: 'Guide progress', value: st.pct, unit: '%', icon: 'book-open', sub: `${st.read}/${st.chapters} chapters · ${st.used}/${st.tools} tools` })}
+      </div>
+      <div class="ns-section-title"><h2>The year at a glance</h2><p class="hide-sm">One job per quarter · click to open the chapter</p></div>
+      ${quarterCards(c.persona)}
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${NS.card({ title: 'This week', sub: 'Built from your team’s cadence, pulse and goals', actions: `<a class="ns-btn xs secondary" href="${NS.link('/one-on-one')}">1:1 Runner</a>`, body: `<div class="ns-eyebrow">1:1s due · ${wk.ones.length}</div>${wk.ones.map(({ p, d }) => `<div class="week-item">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="t truncate">${NS.esc(p.name)} <span class="muted medium">· ${NS.esc(D.levelLabel(p.level))}</span></div><div class="s">${CADENCE_LABEL[p.oneOnOnes]} · last 1:1 ${F.date(d.last, 'short')} · <span class="${d.overdue ? 'bad-text semibold' : 'ok-text semibold'}">${d.label}</span></div></div><div class="act">${d.overdue ? `<span class="hide-sm">${NS.badge('Overdue', 'bad', true)}</span>` : ''}<a class="ns-btn xs primary" href="${NS.link('/one-on-one', { r: p.id })}">Run</a></div></div>`).join('') || '<div class="sm muted">Nothing due. Nice.</div>'}<div class="ns-eyebrow mt-4">Pulse drops · ${wk.drops.length}</div>${wk.drops.map(({ p, drop }) => `<div class="week-item">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="t truncate">${NS.esc(p.name)}</div><div class="s">Pulse ${p.pulse[5]} · <span class="bad-text semibold">${drop} pts</span> from the 6-month high · engagement ${p.engagement}</div></div><div class="act"><span style="width:84px">${NS.spark(p.pulse, { color: 'var(--bad)', height: 28 })}</span></div></div>`).join('')}<div class="ns-eyebrow mt-4">Goals off track · ${wk.goals.length}</div>${wk.goals.map(({ p, g }) => `<div class="week-item">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="t truncate">${NS.esc(g.title)}</div><div class="s">${NS.esc(p.first)} · ${g.progress}% complete</div></div><div class="act">${goalBadge(g)}</div></div>`).join('')}` })}
+          ${focusCard()}
+        </div>
+        <div class="lfg-side">
+          ${readingCard(c.persona)}
+          ${toolShortcuts(c.persona)}
+          ${quoteCard()}
+        </div>
+      </div>`;
+  };
+
+  const homeHRBP = (c) => {
+    const me = meFor(c.persona), st = readingStats(c.persona);
+    const ad = MANAGERS.map(adoptionOf); const enrolled = ad.filter((a) => a.enrolled); const avgRead = U.avg(enrolled, 'read');
+    const all = D.people.filter((p) => p.managerId); const weekly = Math.round(U.pctOf(all.filter((p) => p.oneOnOnes === 'weekly').length, all.length));
+    const laggards = ad.filter((a) => a.score < 75).sort((a, b) => a.score - b.score || b.team - a.team);
+    const q = QUARTERS.find((x) => x.id === CURRENT_Q);
+    return html`${hero({ badges: [`${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}`, `${ic('users', { size: 12 })} ${MANAGERS.length} people managers`, `${ic('compass', { size: 12 })} ${q.q} · ${q.name} quarter`], title: `Manager enablement, ${me.first}`, body: `<b>${enrolled.length}</b> of ${MANAGERS.length} people managers are using the guide and have read <b>${avgRead.toFixed(1)}</b> chapters on average. Company-wide, only <b>${weekly}%</b> of reports get a weekly 1:1 and the average 1:1 cadence score is <b>${cadenceScore(all)}%</b> — the Q3 audit flags <b>${laggards.length}</b> managers under the 75% line for a reset session.`, actions: `<a class="ns-btn primary" href="${NS.link('/adoption')}">${ic('activity')} Open adoption</a><a class="ns-btn ghost" href="${NS.link('/playbook/q3')}">Q3 · the feedback loop ${ic('arrow-right')}</a>` })}
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'Managers using the guide', value: enrolled.length, unit: `of ${MANAGERS.length}`, icon: 'book-open', sub: `${Math.round(U.pctOf(enrolled.length, MANAGERS.length))}% enrolled · ${enrolled.filter((a) => a.lastActive <= 7).length} active this week` })}
+        ${NS.stat({ label: 'Avg chapters read', value: avgRead.toFixed(1), unit: 'of 5', icon: 'list-checks', sub: `${enrolled.filter((a) => a.read === 5).length} managers finished all five` })}
+        ${NS.stat({ label: 'Weekly 1:1 cadence (org)', value: weekly, unit: '%', icon: 'message-square', sub: `${F.int(all.length)} reports · target 100%` })}
+        ${NS.stat({ label: 'Managers under 75%', value: laggards.length, icon: 'alert-triangle', sub: `1:1 cadence score · Q3 audit threshold` })}
+      </div>
+      <div class="ns-section-title"><h2>The year at a glance</h2><p>One job per quarter · click to open the chapter</p></div>
+      ${quarterCards(c.persona)}
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Managers to nudge', sub: '1:1 cadence score under 75% · weekly = 100, bi-weekly = 75, monthly = 40, rare = 10', actions: `<a class="ns-btn xs secondary" href="${NS.link('/adoption')}">All managers</a>`, bodyCls: 'flush', body: `<div style="padding:6px 20px">${laggards.slice(0, 7).map((a) => `<div class="ns-row">${personLink(a.m, `${a.m.team} · ${a.team} reports`, NS.link('/adoption', { q: a.m.name }))}<div class="grow"></div><div class="hide-sm">${a.enrolled ? NS.badge(`${a.read}/5 read`, a.read >= 3 ? 'ok' : 'neutral') : NS.badge('Not enrolled', 'warn')}</div><b class="tnum ${a.score < 50 ? 'bad-text' : 'warn-text'}" style="min-width:44px;text-align:right" data-tip="${a.weekly}% of reports weekly">${a.score}%</b><button class="ns-btn xs secondary" data-nudge="${a.m.id}">${ic('bell')}Nudge${S.nudges[a.m.id] ? ` (${S.nudges[a.m.id]})` : ''}</button></div>`).join('')}</div>` })}
+          ${focusCard()}
+        </div>
+        <div class="lfg-side">
+          ${readingCard(c.persona)}
+          ${toolShortcuts(c.persona)}
+          ${quoteCard()}
+        </div>
+      </div>`;
+  };
+
+  const homeExec = (c) => {
+    const me = meFor(c.persona), st = readingStats(c.persona), sc = scopeFor(c.persona), kv = kpiValues(sc);
+    const onTarget = KPIS.filter((k) => kpiStatus(k, kv.v[k.id]).cls === 'ok');
+    const q = QUARTERS.find((x) => x.id === CURRENT_Q);
+    return html`${hero({ badges: [`${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}`, `${ic('building', { size: 12 })} Engineering · ${F.int(sc.people.length + sc.managers.length)} people · ${sc.managers.length} managers`, `${ic('compass', { size: 12 })} ${q.q} · ${q.name} quarter`], title: `Your week as a leader, ${me.first}`, body: `Across Engineering, <b>${onTarget.length} of ${KPIS.length}</b> culture KPIs are on target. Weekly 1:1s sit at <b>${kv.v.comms}%</b> of reports and eNPS at <b>${fmtKpi(KPIS[4], kv.v.enps)}</b>. ${q.q} is the Review quarter: <b>${q.phil}</b>`, actions: `<a class="ns-btn primary" href="${NS.link('/kpis')}">${ic('bar-chart')} Culture KPIs</a><a class="ns-btn ghost" href="${NS.link('/playbook/' + (st.next ? st.next.id : CURRENT_Q))}">${st.next ? `Continue with ${st.next.label}` : 'Re-read Q3 · Review'} ${ic('arrow-right')}</a>` })}
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'Culture KPIs on target', value: `${onTarget.length}/${KPIS.length}`, icon: 'bar-chart', sub: onTarget.map((k) => k.name).join(' · ') || 'None yet' })}
+        ${NS.stat({ label: 'Weekly 1:1 cadence', value: kv.v.comms, unit: '%', icon: 'message-square', sub: `${kv.extra.comms.weekly} of ${F.int(kv.extra.comms.n)} reports · target 100%` })}
+        ${NS.stat({ label: 'eNPS · Engineering', value: fmtKpi(KPIS[4], kv.v.enps), icon: 'heart-pulse', sub: `${kv.extra.enps.pr} promoters · ${kv.extra.enps.de} detractors` })}
+        ${NS.stat({ label: 'Top-talent retention', value: fmtKpi(KPIS[3], kv.v.retention), icon: 'shield-check', sub: `${kv.extra.retention.hp} high performers · ${kv.extra.retention.exits} regretted exits (12 mo)` })}
+      </div>
+      <div class="ns-section-title"><h2>The year at a glance</h2><p>One job per quarter · click to open the chapter</p></div>
+      ${quarterCards(c.persona)}
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Culture KPIs · Engineering', sub: 'Current vs target · percentages and eNPS points share one 0–100 scale', actions: `<a class="ns-btn xs secondary" href="${NS.link('/kpis')}">Details</a>`, body: `<div id="homeKpiBars"></div><div class="kpi-mini mt-3">${KPIS.map((k) => { const s = kpiStatus(k, kv.v[k.id]); return `<div class="row"><span class="truncate">${k.name} <span class="faint">· target ${k.targetLabel}</span></span><b>${fmtKpi(k, kv.v[k.id])}</b>${NS.badge(s.label, s.cls, true)}</div>`; }).join('')}</div>` })}
+          ${focusCard()}
+        </div>
+        <div class="lfg-side">
+          ${readingCard(c.persona)}
+          ${toolShortcuts(c.persona)}
+          ${quoteCard()}
+        </div>
+      </div>`;
+  };
+
+  const nudge = (mid) => { const m = D.byId(mid); S.nudges[mid] = (S.nudges[mid] || 0) + 1; saveNow(); log(`Nudged ${m.name}`); NS.toast(`Nudge sent to ${m.first}`, { desc: 'A short note with the Q3 chapter link and a reset-session slot.', type: 'info' }); NS.refresh(); };
+
+  window.__LFG = { S, save, saveNow, log, R, html, TODAY, TODAY_ISO, ISO, MGR_ID, QUARTERS, CURRENT_Q, LADDER, rungFor, BLOCKS, GUARDRAILS, STARTERS, DONTS, EMAILS, emailById, SCRIPTS, CATS, NINE, KPIS, PILLARS, CH, chapterById, readMinutes, DILEMMAS, DIMS, ARCHETYPES, CADENCE_DAYS, CADENCE_LABEL, goalFor, pulseDrop, hasMap, hasOkr, enpsOf, progressOf, markTool, TOOLS, toolsFor, readingStats, teamOf, meFor, lastOneOnOne, dueInfo, weekList, kpiValues, kpiStatus, kpiTrend, fmtKpi, scopeFor, MANAGERS, adoptionOf, cadenceScore, md, plain, copyText, cadBadge, goalBadge, personLink, quarterCards, readingCard, toolShortcuts, quoteCard, nudge, hero, store };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__LFG, D = NSData, U = NS.util, F = NS.fmt, ic = NS.ic, html = P.html;
+  const { S, save, saveNow, log, R, QUARTERS, CURRENT_Q, LADDER, rungFor, BLOCKS, GUARDRAILS, STARTERS, DONTS, EMAILS, emailById, SCRIPTS, CATS, NINE, CH, chapterById, readMinutes, progressOf, markTool, readingStats, teamOf, meFor, md, plain, copyText, quarterCards, personLink } = P;
+
+  /* ------------------------------------------------------------------ */
+  /* Block renderers                                                     */
+  /* ------------------------------------------------------------------ */
+  const copyBtn = (key, label = 'Copy', cls = 'xs secondary') => `<button class="ns-btn ${cls}" data-copy="${key}">${ic('copy')}${label}</button>`;
+  const scriptCard = (s, o = {}) => `<div class="script" id="scr-${s.id}">${o.noTitle ? '' : ''}<div class="dont"><div class="lbl">${ic('x-circle')} ${s.dontLabel || 'Don’t say'}</div><q>${NS.esc(s.dont)}</q></div><div class="say"><div class="lbl">${ic('check-circle')} ${s.sayLabel || 'Say this'}</div><q>${NS.esc(s.say)}</q>${copyBtn('say:' + s.id, '', 'xs ghost cp')}</div></div>`;
+  const beforeCard = (s) => `<div class="compare" id="scr-${s.id}"><div class="bad"><b>${ic('frown')} Before · ${NS.esc(s.before.name)}</b><q class="ink2 md" style="display:block;font-style:italic;line-height:1.6">${NS.esc(s.before.text)}</q></div><div class="good" style="position:relative"><b>${ic('smile')} After · ${NS.esc(s.after.name)}</b><q class="ink md" style="display:block;font-style:italic;line-height:1.6">${NS.esc(s.after.text)}</q><span style="position:absolute;top:10px;right:10px">${copyBtn('after:' + s.id, '', 'xs ghost')}</span></div></div>`;
+  const emailCard = (e) => `<div class="email" id="email-${e.id}"><div class="email-head"><span>${ic('mail', { size: 14 })} Subject: <b>${NS.esc(e.subject)}</b></span>${copyBtn('email:' + e.id, 'Copy email')}</div><div class="email-body">${md(e.body)}</div></div>`;
+  const startersCard = () => `<div class="starters">${STARTERS.map((s) => `<div>${ic('message-circle')}<span>“${NS.esc(s)}”</span></div>`).join('')}</div>`;
+  const dontsCard = () => `<div class="traps">${DONTS.map(([t, b]) => `<div class="trap"><span class="ns-icon-box">${ic('x')}</span><div><b>${t}</b><p>${b}</p></div></div>`).join('')}</div>`;
+  const golden = () => `<div class="golden" style="margin:10px 0 18px"><div class="pct">90 / 10</div><p><b class="ink">Golden rule: listen 90%, talk 10%.</b> The employee should leave having talked for 27 of the 30 minutes. If you are talking, you are not learning.</p></div>`;
+  const blueprint = (short) => `<div class="blueprint">${BLOCKS.map((b) => `<div class="bp-block"><div class="tm">${b.time}<small>min · ${b.mins}m</small></div><div><b>${b.title} <span class="muted medium" style="font-size:13px">· ${b.alias}</span></b>${short ? `<div class="core">“${b.line}”</div>` : `<div class="core">“${b.core}”</div><div class="alts">${b.alts.map((a) => `<span>${a}</span>`).join('')}</div>`}</div></div>`).join('')}</div>`;
+  const guardrails = () => `<div class="guard">${GUARDRAILS.map((g) => `<div>${ic('x-circle')}<span>${g}</span></div>`).join('')}</div>`;
+  const ladderCards = (o = {}) => `<div class="ladder">${LADDER.map((l) => `<div class="rung ${l.id.toLowerCase()}"><div class="lv">${l.id}</div><div class="nm">${l.name.toUpperCase()}</div><p>${l.line}</p>${o.map !== false ? `<div class="map">${l.map}</div>` : ''}</div>`).join('')}</div>`;
+  const levelActions = () => `<div class="lv-actions">${LADDER.slice().reverse().map((l) => `<div class="lv-action"><div class="lv">${l.id} ${l.name.toUpperCase()}<small>${l.map.split(' · ')[0]}</small></div><p>${l.action}</p></div>`).join('')}</div>`;
+  const steps = (items) => `<div class="steps">${items.map((s, i) => `<div class="step"><span class="n">${i + 1}</span><div><b>${s[0]}${s[2] ? `<span class="when">${s[2]}</span>` : ''}</b><p>${s[1]}</p></div></div>`).join('')}</div>`;
+  const table = (b) => `<div class="ns-scroll-x"><table class="std-table"><thead><tr>${b.head.map((h) => `<th>${h}</th>`).join('')}</tr></thead><tbody>${b.rows.map((r) => `<tr>${r.map((cell, i) => `<td class="${b.cls === 'leak' ? (i === 1 ? 'leak' : i === 2 ? 'fixed' : '') : ''}">${cell}</td>`).join('')}</tr>`).join('')}</tbody></table></div>`;
+  const checklist = (b) => `<div class="lit" data-lit="${b.id}">${b.items.map((it, i) => `<label class="${S.litmus[b.id + i] ? 'on' : ''}"><span class="ns-check"><input type="checkbox" data-lit-i="${i}" ${S.litmus[b.id + i] ? 'checked' : ''}></span><span>${it}</span></label>`).join('')}</div>`;
+  const traps = (items) => `<div class="traps">${items.map(([t, b]) => `<div class="trap"><span class="ns-icon-box">${ic('alert-triangle')}</span><div><b>${t}</b><p>${b}</p></div></div>`).join('')}</div>`;
+  const compare = (b) => `<div class="compare"><div class="bad"><b>${ic('x-circle')} ${b.bad[0]}</b><ul>${b.bad[1].map((x) => `<li>${ic('x')}<span>${x}</span></li>`).join('')}</ul></div><div class="good"><b>${ic('check-circle')} ${b.good[0]}</b><ul>${b.good[1].map((x) => `<li>${ic('check')}<span>${x}</span></li>`).join('')}</ul></div></div>`;
+  const rhythm = (rows) => `<div class="rhythm">${rows.map(([d, t, dur, body]) => `<div><span class="day">${d}</span><div><b>${t}<small>${dur}</small></b><p>${body}</p></div></div>`).join('')}</div>`;
+  const board = () => `<div class="board"><div style="grid-column:1/-1;display:grid;grid-template-columns:1fr auto;gap:10px;align-items:end"><div><div class="k">Project Alpha · sprint 6 of 8</div><div class="v">75%</div></div><span class="xs faint">Start → Launch</span><div style="grid-column:1/-1">${NS.progress(75)}</div></div><div><div class="k">Morale</div><div class="v ok">High</div><span class="xs faint">Friday pulse · 8.6 / 10</span></div><div><div class="k">Bugs</div><div class="v ok">Low <small class="sm muted">(3)</small></div><span class="xs faint">All P3 or lower</span></div><div><div class="k">Blockers</div><div class="v warn">Needs action <small class="sm muted">(1)</small></div><span class="xs faint">Vendor API key · owner: you</span></div></div>`;
+  const vision = (items) => `<div class="vision">${items.map(([k, t, b]) => `<div><div class="k">${k}</div><b>${t}</b><p>${b}</p></div>`).join('')}</div>`;
+  const ninebox = () => { const sel = S.ninebox; return `<div class="nb" id="nb"><div></div>${NINE.cols.map((c) => `<div class="ax">${c} performance</div>`).join('')}${NINE.rows.map((r, ri) => `<div class="ax y">${r} potential</div>${NINE.cells[ri].map((label) => `<button type="button" data-cell="${NS.esc(label)}" class="${label === sel ? 'on' : ''}"><small>${label === sel ? 'Selected' : '&nbsp;'}</small>${label}</button>`).join('')}`).join('')}</div><div class="nb-note" id="nbNote">${ic('lightbulb')}<div><b>${NS.esc(sel)}</b> — ${NINE.notes[sel]}</div></div>`; };
+  const quote = (b) => `<div class="pullq">${b.text}${b.by ? `<small>— ${b.by}</small>` : ''}</div>`;
+  const renderBlock = (b, c) => {
+    switch (b.t) {
+      case 'p': return `<p class="${b.small ? 'small' : ''}">${b.text}</p>`;
+      case 'h3': return `<h3>${b.text}${b.sub ? ` <span class="sub">· ${b.sub}</span>` : ''}</h3>`;
+      case 'quarters': return quarterCards(c.persona) + '<div style="height:22px"></div>';
+      case 'golden': return golden();
+      case 'blueprint': return blueprint(b.short);
+      case 'guardrails': return guardrails();
+      case 'script': return scriptCard(SCRIPTS.find((s) => s.id === b.id));
+      case 'before': return beforeCard(SCRIPTS.find((s) => s.id === b.id));
+      case 'ladder': return ladderCards();
+      case 'levels': return levelActions();
+      case 'steps': return steps(b.items);
+      case 'table': return table(b);
+      case 'checklist': return checklist(b);
+      case 'traps': return traps(b.items);
+      case 'compare': return compare(b);
+      case 'email': return emailCard(emailById(b.id));
+      case 'rhythm': return rhythm(b.rows);
+      case 'board': return board();
+      case 'vision': return vision(b.items);
+      case 'ninebox': return ninebox();
+      case 'quote': return quote(b);
+      case 'starters': return startersCard();
+      case 'donts': return dontsCard();
+      default: return '';
+    }
+  };
+  const resolveCopy = (key) => { const [kind, id] = key.split(':'); if (kind === 'email') { const e = emailById(id); return [`Subject: ${e.subject}\n\n${plain(e.body)}`, `Email · ${e.subject}`]; } const s = SCRIPTS.find((x) => x.id === id); if (kind === 'say') return [s.say, 'Script · say this']; if (kind === 'after') return [s.after.text, `Script · ${s.after.name}`]; return ['', '']; };
+  const bindCopy = (root) => root.querySelectorAll('[data-copy]').forEach((b) => b.onclick = () => { const [text, what] = resolveCopy(b.dataset.copy); copyText(text, what); });
+
+  /* ------------------------------------------------------------------ */
+  /* Playbook chapters                                                   */
+  /* ------------------------------------------------------------------ */
+  const renderChapter = (ch, c) => {
+    const pr = progressOf(c.persona); const read = !!pr.read[ch.id]; const idx = CH.indexOf(ch); const prev = CH[idx - 1], next = CH[idx + 1]; const st = readingStats(c.persona);
+    return html`<div class="pb">
+      <aside class="pb-toc" id="toc"><div class="h">In this chapter</div>${ch.sections.map((s, i) => `<a href="${NS.link('/playbook/' + ch.id)}" data-sec="${s.id}" aria-current="${i === 0}">${s.title}</a>`).join('')}<div class="toc-foot"><div class="flex justify-between xs muted"><span>Playbook</span><b class="ink">${st.read}/${st.chapters} read</b></div>${NS.progress(Math.round(U.pctOf(st.read, st.chapters)), { cls: 'xs' })}<button class="ns-btn xs ${read ? 'soft' : 'primary'} block" data-mark>${read ? ic('check') + 'Read · mark unread' : ic('check') + 'Mark chapter read'}</button></div></aside>
+      <article class="pb-body">
+        <header class="pb-head">
+          <div class="ns-eyebrow">${ch.eyebrow}</div>
+          <h1>${ch.title}</h1>
+          <p class="lede">${ch.lede}</p>
+          <div class="pb-meta"><span class="ns-badge brand">${ch.badge}</span><span>${ic('clock', { size: 13 })} ${readMinutes(ch)} min read</span><span>·</span><span>${ch.sections.length} sections</span>${read ? `<span class="ns-badge ok">${ic('check', { size: 11 })} Read</span>` : ''}</div>
+          <div class="pb-phil"><div><div class="k">${ch.phil[0]}</div><div class="v">${ch.phil[1]}</div></div>${ch.goal ? `<div class="right"><div class="k">${ch.goal[0]}</div><div class="v" style="font-size:16px">${ch.goal[1]}</div></div>` : ''}</div>
+        </header>
+        <div class="prose">${ch.sections.map((s, i) => `<h2 id="sec-${s.id}" data-sec-h="${s.id}"><span class="num">${ch.num}.${i + 1}</span>${s.title}</h2>${s.blocks.map((b) => renderBlock(b, c)).join('')}`).join('')}</div>
+        <div class="pb-done ${read ? 'on' : ''}"><div class="flex gap-3 items-center"><span class="ns-icon-box ${read ? 'ok' : ''}">${ic(read ? 'check-circle' : 'book-open')}</span><div><b class="md">${read ? 'You marked this chapter as read' : 'Finished the chapter?'}</b><div class="sm muted">${read ? 'It counts toward your progress ring on Home.' : 'Marking it read updates your progress and the People team’s adoption view.'}</div></div></div><div class="flex gap-2 wrap"><button class="ns-btn ${read ? 'secondary' : 'primary'}" data-mark>${read ? 'Mark as unread' : ic('check') + 'Mark chapter read'}</button>${next ? `<a class="ns-btn secondary" href="${NS.link('/playbook/' + next.id)}">Next · ${next.label} ${ic('arrow-right')}</a>` : `<a class="ns-btn secondary" href="${NS.link('/crucible')}">Take the Crucible ${ic('arrow-right')}</a>`}</div></div>
+        <div class="pb-foot">${prev ? `<a href="${NS.link('/playbook/' + prev.id)}"><small>${ic('arrow-left', { size: 11 })} Previous</small><b>${prev.label}</b><span class="sm muted">${prev.title}</span></a>` : `<a href="${NS.link('/home')}"><small>${ic('arrow-left', { size: 11 })} Back</small><b>Home</b><span class="sm muted">Your week as a leader</span></a>`}${next ? `<a class="next" href="${NS.link('/playbook/' + next.id)}"><small>Next ${ic('arrow-right', { size: 11 })}</small><b>${next.label}</b><span class="sm muted">${next.title}</span></a>` : `<a class="next" href="${NS.link('/crucible')}"><small>Next ${ic('arrow-right', { size: 11 })}</small><b>The Crucible</b><span class="sm muted">Find your leadership archetype</span></a>`}</div>
+      </article></div>`;
+  };
+  const mountChapter = (ch, c, root) => {
+    bindCopy(root);
+    const toc = root.querySelector('#toc'); const heads = Array.from(root.querySelectorAll('[data-sec-h]'));
+    const setCur = (id) => toc.querySelectorAll('[data-sec]').forEach((a) => a.setAttribute('aria-current', a.dataset.sec === id));
+    toc.querySelectorAll('[data-sec]').forEach((a) => a.onclick = (e) => { e.preventDefault(); const h = root.querySelector(`#sec-${a.dataset.sec}`); if (h) { h.scrollIntoView({ behavior: 'smooth', block: 'start' }); setCur(a.dataset.sec); } });
+    if (window.__lfgScroll) window.removeEventListener('scroll', window.__lfgScroll);
+    let raf = 0; window.__lfgScroll = () => { if (raf) return; raf = requestAnimationFrame(() => { raf = 0; if (!root.isConnected) { window.removeEventListener('scroll', window.__lfgScroll); return; } const y = 140; let cur = heads[0]; heads.forEach((h) => { if (h.getBoundingClientRect().top <= y) cur = h; }); if (cur) setCur(cur.dataset.secH); }); };
+    window.addEventListener('scroll', window.__lfgScroll, { passive: true });
+    if (c.query.s) { const h = root.querySelector(`#sec-${c.query.s}`); if (h) setTimeout(() => h.scrollIntoView({ block: 'start' }), 30); }
+    root.querySelectorAll('[data-mark]').forEach((b) => b.onclick = () => { const pr = progressOf(c.persona); if (pr.read[ch.id]) { delete pr.read[ch.id]; NS.toast('Marked as unread', { type: 'info' }); } else { pr.read[ch.id] = 1; const st = readingStats(c.persona); log(`Read chapter “${ch.label}”`); NS.toast(`${ch.label} marked as read`, { desc: st.next ? `${st.read} of ${st.chapters} chapters · next: ${st.next.label}` : 'All five chapters read — nicely done.', action: st.next ? { label: 'Next chapter', onClick: () => NS.go('/playbook/' + st.next.id) } : null }); } saveNow(); NS.refresh(); });
+    root.querySelectorAll('[data-lit-i]').forEach((cb) => cb.onchange = () => { const key = cb.closest('[data-lit]').dataset.lit + cb.dataset.litI; S.litmus[key] = cb.checked; save(); cb.closest('label').classList.toggle('on', cb.checked); const on = Object.keys(S.litmus).filter((k) => k.startsWith('litmus') && S.litmus[k]).length; if (on === 3) NS.toast('Passes the litmus test', { desc: 'Post-it sized, understood, tied to the mission. Ship it.' }); });
+    const nb = root.querySelector('#nb'); if (nb) nb.querySelectorAll('[data-cell]').forEach((b) => b.onclick = () => { S.ninebox = b.dataset.cell; save(); nb.querySelectorAll('[data-cell]').forEach((x) => { x.classList.toggle('on', x === b); x.querySelector('small').innerHTML = x === b ? 'Selected' : '&nbsp;'; }); root.querySelector('#nbNote').innerHTML = `${ic('lightbulb')}<div><b>${NS.esc(S.ninebox)}</b> — ${NINE.notes[S.ninebox]}</div>`; });
+  };
+  CH.forEach((ch) => { R['/playbook/' + ch.id] = { title: ch.label, nav: 'pb-' + ch.id, crumbs: () => [{ label: 'Playbook', href: NS.link('/playbook/overview') }, { label: ch.label }], render: (c) => renderChapter(ch, c), mounted: (c, root) => mountChapter(ch, c, root) }; });
+  R['/playbook/:chapter'] = { title: 'Playbook', nav: 'pb-overview', render: () => NS.empty({ icon: 'book-open', title: 'Chapter not found', body: 'Taking you to the overview…' }), mounted: () => setTimeout(() => NS.go('/playbook/overview'), 400) };
+
+  /* ------------------------------------------------------------------ */
+  /* Script library                                                      */
+  /* ------------------------------------------------------------------ */
+  const CAT_LABEL = Object.fromEntries(CATS);
+  const allScripts = () => [...SCRIPTS.map((s) => ({ ...s, cats: [s.cat], kind: s.type })), ...EMAILS.map((e) => ({ ...e, kind: 'email' }))];
+  const scriptText = (s) => (s.kind === 'email' ? `${s.subject} ${plain(s.body)}` : s.kind === 'before' ? `${s.before.name} ${s.before.text} ${s.after.name} ${s.after.text}` : s.kind === 'starters' ? s.items.join(' ') : `${s.title} ${s.dont} ${s.say}`).toLowerCase();
+  R['/scripts'] = {
+    title: 'Script library',
+    render: (c) => {
+      const f = c.query.f || 'all', q = (c.query.q || '').trim(), fav = c.query.fav === '1';
+      const all = allScripts(); const counts = U.countBy(all.flatMap((s) => s.cats), (x) => x);
+      const list = all.filter((s) => (f === 'all' || s.cats.includes(f)) && (!fav || S.favs[s.id]) && (!q || scriptText(s).includes(q.toLowerCase())));
+      return html`${NS.pageHead({ eyebrow: 'Tool 2 · Real Talk', title: 'Script library', sub: 'Cheat codes for difficult conversations. Every “Don’t say / Say this” pair, the before-and-after personas and the copy-paste emails from the playbook — with a Copy button on each. Favourite the ones you actually use.', actions: `<a class="ns-chip" aria-pressed="${fav}" href="${NS.link('/scripts', { f, q, fav: fav ? '' : '1' })}">${ic('heart')} Favourites <span class="n">${Object.keys(S.favs).filter((k) => S.favs[k]).length}</span></a>` })}
+        <div class="ns-toolbar"><div class="ns-chips">${CATS.map(([k, l]) => `<a class="ns-chip" aria-pressed="${f === k}" href="${NS.link('/scripts', { f: k === 'all' ? '' : k, q, fav: fav ? '1' : '' })}">${l} <span class="n">${k === 'all' ? all.length : counts[k] || 0}</span></a>`).join('')}</div><div class="ns-input-wrap grow" style="max-width:320px;margin-left:auto">${ic('search')}<input class="ns-input" id="sq" value="${NS.esc(q)}" placeholder="Search scripts and emails…"></div></div>
+        ${list.length ? `<div class="ns-grid c2">${list.map((s) => scardHtml(s)).join('')}</div>` : NS.empty({ icon: 'search', title: 'No scripts match', body: fav ? 'You haven’t favourited anything in this category yet.' : 'Try another category or a shorter search.', action: `<a class="ns-btn sm secondary" href="${NS.link('/scripts')}">Clear filters</a>` })}`;
+    },
+    mounted: (c, root) => {
+      markTool(c.persona, 'scripts'); bindCopy(root);
+      const sq = root.querySelector('#sq'); if (sq) { sq.oninput = U.debounce(() => NS.go('/scripts', { f: c.query.f, q: sq.value, fav: c.query.fav }), 350); if (c.query.q) { sq.focus(); sq.setSelectionRange(sq.value.length, sq.value.length); } }
+      root.querySelectorAll('[data-fav]').forEach((b) => b.onclick = () => { const id = b.dataset.fav; S.favs[id] = !S.favs[id]; if (!S.favs[id]) delete S.favs[id]; saveNow(); b.setAttribute('aria-pressed', !!S.favs[id]); NS.toast(S.favs[id] ? 'Added to favourites' : 'Removed from favourites', { type: 'info' }); const chip = root.querySelector('.ns-page-actions .ns-chip .n'); if (chip) chip.textContent = Object.keys(S.favs).length; });
+    },
+  };
+  const scardHtml = (s) => { const ch = chapterById(s.chapter); const body = s.kind === 'email' ? emailCard(s) : s.kind === 'before' ? beforeCard(s) : s.kind === 'starters' ? startersCard() : scriptCard(s); const title = s.kind === 'email' ? s.title : s.kind === 'before' ? `${s.before.name} → ${s.after.name}` : s.title; return `<div class="ns-card scard"><button class="ns-btn xs ghost icon fav" data-fav="${s.id}" aria-pressed="${!!S.favs[s.id]}" aria-label="Favourite" data-tip="Favourite">${ic('heart')}</button><div class="ns-card-body"><div class="meta">${s.cats.map((k) => `<span class="ns-badge brand sq">${CAT_LABEL[k]}</span>`).join('')}<span class="ns-badge outline sq">${s.kind === 'email' ? 'Email' : s.kind === 'before' ? 'Before / after' : s.kind === 'starters' ? 'Questions' : 'Don’t say / say this'}</span><a class="xs muted" href="${NS.link('/playbook/' + ch.id)}" style="margin-left:auto">${ch.label} ${ic('arrow-right', { size: 10 })}</a></div><div class="md semibold mb-3">${NS.esc(title)}</div>${body}</div></div>`; };
+
+  /* ------------------------------------------------------------------ */
+  /* Career ladder                                                       */
+  /* ------------------------------------------------------------------ */
+  R['/ladder'] = {
+    title: 'Career ladder',
+    render: (c) => {
+      const isMgr = c.persona.id === 'manager'; const me = meFor(c.persona);
+      const pool = isMgr ? teamOf(me.id) : c.persona.id === 'exec' ? D.allReports('NS-1003') : D.people.filter((p) => p.level !== 'E2');
+      const byRung = LADDER.map((l) => ({ l, ppl: pool.filter((p) => rungFor(p.level).id === l.id) }));
+      return html`${NS.pageHead({ eyebrow: 'Tool 3 · Career ladder', title: 'Four rungs, one skill each', sub: `The Field Guide’s L1–L4 ladder mapped to Northstar’s P and M levels. ${isMgr ? 'Your Q1 job: identify where each person sits and give them one specific skill to master — that skill is saved here.' : `Where the ${isMgr ? 'team' : c.persona.id === 'exec' ? 'Engineering org' : 'company'} sits today, and what each rung needs from its manager.`}`, actions: `<a class="ns-btn secondary" href="../competency-portal/index.html" target="_blank" rel="noopener">${ic('external-link')}Competency Portal</a>` })}
+        ${ladderCards()}
+        <div class="ns-grid main-side mt-2">
+          <div class="grid gap-4">
+            ${byRung.slice().reverse().map(({ l, ppl }) => NS.card({ title: `<span class="brand-text">${l.id}</span> · ${l.name} <span class="muted medium">— ${l.line}</span>`, sub: l.map, actions: NS.badge(`${F.int(ppl.length)} ${ppl.length === 1 ? 'person' : 'people'} · ${Math.round(U.pctOf(ppl.length, pool.length))}%`, 'neutral'), body: `<div class="ns-grid c2" style="gap:14px"><div><div class="ns-eyebrow">Manager action</div><p class="md ink">${l.action}</p><div class="ns-eyebrow mt-3">What it looks like</div><ul class="sm ink2" style="margin:0;padding-left:18px;display:grid;gap:4px">${l.signals.map((s) => `<li>${s}</li>`).join('')}</ul></div><div><div class="ns-eyebrow">${isMgr ? 'On this rung in your team' : 'Who sits here'}</div>${ppl.length ? isMgr ? `<div class="grid gap-2">${ppl.map((p) => `<div class="flex items-center gap-3"><a href="${NS.link('/one-on-one', { r: p.id })}" style="display:contents">${NS.avatar(p, { size: 'sm' })}</a><div class="grow min-w-0"><div class="sm semibold truncate">${NS.esc(p.name)} <span class="muted medium">· ${p.level}</span></div><input class="ns-input skill-input mt-1" data-skill="${p.id}" value="${NS.esc(S.skillFocus[p.id] || '')}" placeholder="One skill to master this quarter…"></div></div>`).join('')}</div>` : `<div class="lfg-people">${ppl.slice(0, 14).map((p) => NS.avatar(p, { size: 'sm', tip: true })).join('')}${ppl.length > 14 ? `<span class="ns-badge">+${F.int(ppl.length - 14)}</span>` : ''}</div><div class="xs muted mt-2">${U.sortBy(Object.entries(U.countBy(ppl, 'dept')), (x) => -x[1]).slice(0, 4).map(([d, n]) => `${d} ${n}`).join(' · ')}</div>` : '<div class="sm muted">Nobody on this rung right now.</div>'}</div></div>` })).join('')}
+          </div>
+          <div class="lfg-side">
+            ${NS.card({ title: isMgr ? 'Your team on the ladder' : 'Distribution', sub: isMgr ? `${pool.length} reports` : `${F.int(pool.length)} people`, body: '<div id="ladderDonut"></div>' })}
+            ${NS.card({ title: 'Level mapping', body: `<div class="ns-dl">${LADDER.map((l) => `<dt>${l.id} ${l.name}</dt><dd>${l.map}</dd>`).join('')}</div><div class="ns-alert info mt-3">${ic('info')}<div><b>Why a second ladder?</b><p>The Competency Portal describes what each P/M level does; the Field Guide describes what its manager should do. Same people, two lenses.</p></div></div>` })}
+            ${isMgr ? NS.card({ title: 'Skill-to-master coverage', body: `${(() => { const n = pool.filter((p) => S.skillFocus[p.id]).length; return `<div class="flex items-center gap-3">${NS.ring({ value: n / pool.length, size: 72, thickness: 8, label: `${n}/${pool.length}` })}<div class="sm ink2">${n === pool.length ? 'Every report has one named skill. That is the Q1 job done.' : `${pool.length - n} people still need a named skill. Type it in and it is saved instantly.`}</div></div>`; })()}` }) : ''}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      markTool(c.persona, 'ladder');
+      const isMgr = c.persona.id === 'manager'; const me = meFor(c.persona);
+      const pool = isMgr ? teamOf(me.id) : c.persona.id === 'exec' ? D.allReports('NS-1003') : D.people.filter((p) => p.level !== 'E2');
+      NS.chart.donut(root.querySelector('#ladderDonut'), { items: LADDER.map((l, i) => ({ label: `${l.id} ${l.name}`, value: pool.filter((p) => rungFor(p.level).id === l.id).length, color: ['var(--viz-4)', 'var(--viz-1)', 'var(--viz-3)', 'var(--viz-7)'][i] })), size: 150, thickness: 18, center: { value: F.int(pool.length), label: 'people' }, legend: 'right' });
+      root.querySelectorAll('[data-skill]').forEach((i) => { i.onchange = () => { const v = i.value.trim(); if (v) S.skillFocus[i.dataset.skill] = v; else delete S.skillFocus[i.dataset.skill]; saveNow(); log(`Set skill focus for ${D.byId(i.dataset.skill).first}`); NS.toast('Skill to master saved', { desc: `${D.byId(i.dataset.skill).first} · ${v || 'cleared'}`, type: 'info' }); const card = root.querySelector('.lfg-side .ns-card:last-child'); if (card) { const n = pool.filter((p) => S.skillFocus[p.id]).length; card.querySelector('.ns-card-body').innerHTML = `<div class="flex items-center gap-3">${NS.ring({ value: n / pool.length, size: 72, thickness: 8, label: `${n}/${pool.length}` })}<div class="sm ink2">${n === pool.length ? 'Every report has one named skill. That is the Q1 job done.' : `${pool.length - n} people still need a named skill. Type it in and it is saved instantly.`}</div></div>`; } }; });
+    },
+  };
+
+  Object.assign(P, { scriptCard, beforeCard, emailCard, startersCard, dontsCard, golden, blueprint, guardrails, ladderCards, levelActions, steps, traps, bindCopy, resolveCopy });
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__LFG, D = NSData, U = NS.util, F = NS.fmt, ic = NS.ic, html = P.html;
+  const { S, save, saveNow, log, R, TODAY, TODAY_ISO, ISO, MGR_ID, QUARTERS, CURRENT_Q, LADDER, rungFor, BLOCKS, GUARDRAILS, DONTS, KPIS, PILLARS, CH, chapterById, DILEMMAS, DIMS, ARCHETYPES, CADENCE_DAYS, CADENCE_LABEL, goalFor, pulseDrop, hasMap, hasOkr, progressOf, markTool, readingStats, teamOf, meFor, dueInfo, weekList, kpiValues, kpiStatus, kpiTrend, fmtKpi, scopeFor, MANAGERS, adoptionOf, cadenceScore, copyText, cadBadge, goalBadge, personLink, nudge, golden, guardrails, dontsCard, EMAILS, plain } = P;
+  const downloadCsv = (name, rows) => { const csv = rows.map((r) => r.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 500); NS.toast('Export ready', { desc: name, type: 'info' }); };
+
+  /* ------------------------------------------------------------------ */
+  /* 1:1 Runner                                                          */
+  /* ------------------------------------------------------------------ */
+  const RUN = { pid: null, elapsed: 0, running: false, last: 0, notified: {} };
+  const TOTAL = 1800;
+  const fmtT = (s) => `${String(Math.floor(s / 60)).padStart(2, '0')}:${String(Math.floor(s % 60)).padStart(2, '0')}`;
+  const blockIdx = (s) => Math.min(2, Math.floor(s / 600));
+  const draftFor = (pid) => (S.drafts[pid] || (S.drafts[pid] = { blocks: ['', '', ''], action: '', started: null }));
+  const paint = () => {
+    const root = document.querySelector(`[data-runner-pid="${RUN.pid}"]`); if (!root) return;
+    const e = RUN.elapsed, bi = blockIdx(e);
+    const big = root.querySelector('#tBig'); if (big) { big.innerHTML = `${fmtT(Math.min(e, 5999))}<small>/ 30:00</small>`; big.classList.toggle('over', e > TOTAL); }
+    root.querySelectorAll('.segs i').forEach((i, k) => { i.style.width = `${U.clamp(((e - k * 600) / 600) * 100, 0, 100)}%`; });
+    root.querySelectorAll('.seg-lbls span').forEach((s, k) => s.classList.toggle('cur', k === bi && e > 0));
+    root.querySelectorAll('.block').forEach((b, k) => { b.classList.toggle('cur', e > 0 && k === bi); b.classList.toggle('done', e > 0 && k < bi); });
+    const rb = root.querySelector('[data-run]'); if (rb) rb.innerHTML = RUN.running ? `${ic('pause')} Pause` : e > 0 ? `${ic('play')} Resume` : `${ic('play')} Start 1:1`;
+    const st = root.querySelector('#tState'); if (st) st.textContent = RUN.running ? `Block ${bi + 1} · ${BLOCKS[bi].title}` : e > 0 ? 'Paused' : 'Ready when you are';
+  };
+  setInterval(() => { if (!RUN.running) return; const now = Date.now(); const prev = RUN.elapsed; RUN.elapsed += (now - RUN.last) / 1000; RUN.last = now; const bp = blockIdx(prev), bn = blockIdx(RUN.elapsed); if (bn !== bp && !RUN.notified['b' + bn]) { RUN.notified['b' + bn] = 1; NS.toast(`Block ${bn + 1} · ${BLOCKS[bn].title}`, { desc: BLOCKS[bn].line, type: 'info' }); } if (RUN.elapsed >= TOTAL && !RUN.notified.end) { RUN.notified.end = 1; NS.toast('30 minutes — time to wrap', { desc: 'Agree one action item, then finish the 1:1.', type: 'warn', duration: 6000 }); } paint(); }, 500);
+  const suggest = (p) => {
+    const d = pulseDrop(p), g = goalFor(p), rung = rungFor(p.level), out = [[], [], []];
+    if (d <= -8) out[0].push(`Pulse is down ${Math.abs(d)} points from its six-month high (${Math.max(...p.pulse.slice(0, 5))} → ${p.pulse[5]}). Ask what changed — don’t assume it’s work.`); else if (p.engagement >= 90) out[0].push(`Engagement is ${p.engagement}. Ask what is giving ${p.first} energy so you can protect it.`);
+    if (p.tenure < 1) out[0].push(`${p.first} is ${Math.round(p.tenure * 12)} months in. Check for safety: do they know it’s OK not to know?`);
+    out[1].push(`“${g.title}” is at ${g.progress}% and ${g.status === 'on' ? 'on track' : g.status === 'risk' ? 'at risk' : 'behind'}. ${g.status === 'on' ? 'What would make it boring to finish?' : 'What is the one pebble in the shoe?'}`);
+    if (p.remote) out[1].push(`Remote in ${p.city} — ask where they are waiting on Mumbai, and on you.`);
+    if (S.skillFocus[p.id]) out[2].push(`Skill to master: ${S.skillFocus[p.id]}. What did they do this week that moved it?`); else out[2].push('No skill-to-master set yet — leave this 1:1 with one.');
+    out[2].push(`${rung.id} ${rung.name}: ${rung.action}`);
+    if (p.riskBand === 'High') out[2].push(`Flight risk is High (${p.risk}) — ${p.riskDrivers[0] ? p.riskDrivers[0].label.toLowerCase() : 'multiple drivers'}. Talk about the path forward before someone else does.`);
+    else if (p.timeInLevel > 2.5 && p.track === 'IC') out[2].push(`${p.timeInLevel.toFixed(1)} years in level — is the next-level conversation overdue?`);
+    return out;
+  };
+  R['/one-on-one'] = {
+    title: '1:1 Runner', personas: ['manager'],
+    render: (c) => {
+      const me = meFor(c.persona), team = teamOf(me.id); const wk = weekList(me.id);
+      const pid = team.some((p) => p.id === c.query.r) ? c.query.r : (wk.ones[0] ? wk.ones[0].p.id : team[0].id); const p = D.byId(pid); const d = dueInfo(p); const g = goalFor(p); const rung = rungFor(p.level); const hist = S.history[pid] || []; const draft = draftFor(pid); const sug = suggest(p);
+      const other = RUN.running && RUN.pid && RUN.pid !== pid ? D.byId(RUN.pid) : null;
+      return html`${NS.pageHead({ eyebrow: 'Tool 1 · The weekly engine', title: '1:1 Runner', sub: 'Thirty minutes, three blocks, one action item. Pick a report, start the clock and let the prompts do the asking — your notes save as you type.', actions: `<span class="ns-badge ${wk.ones.length ? 'warn' : 'ok'} lg">${ic('timer', { size: 12 })} ${wk.ones.length} due this week · ${wk.ones.filter((x) => x.d.overdue).length} overdue</span>` })}
+        <div class="rep-pick mb-4">${U.sortBy(team, (x) => (dueInfo(x).days ?? -99)).map((x) => { const di = dueInfo(x); return `<a href="${NS.link('/one-on-one', { r: x.id })}" aria-current="${x.id === pid}" data-tip="${NS.esc(di.label)}">${NS.avatar(x, { size: 'xs' })}${NS.esc(x.first)}${di.overdue ? '<i class="dot"></i>' : ''}</a>`; }).join('')}</div>
+        ${other ? `<div class="ns-alert warn mb-4">${ic('timer')}<div><b>A 1:1 with ${NS.esc(other.name)} is still running (${fmtT(RUN.elapsed)})</b><p>Go back to finish it, or discard the timer. Notes are already saved.</p></div><div class="flex gap-2 ml-auto"><a class="ns-btn xs primary" href="${NS.link('/one-on-one', { r: other.id })}">Back to ${NS.esc(other.first)}</a><button class="ns-btn xs secondary" data-discard>Discard</button></div></div>` : ''}
+        <div class="ns-grid main-side" data-runner-pid="${pid}">
+          <div class="grid gap-4">
+            <div class="ns-card"><div class="ns-card-body"><div class="flex gap-4 items-start wrap"><a href="${NS.link('/one-on-one', { r: pid })}" style="display:contents">${NS.avatar(p, { size: 'xl' })}</a><div class="grow min-w-0"><div class="flex items-center gap-2 wrap"><b class="lg-text">${NS.esc(p.name)}</b>${cadBadge(p)}${d.overdue ? NS.badge(d.label, 'bad', true) : NS.badge(d.label, 'ok', true)}</div><div class="sm muted mt-1">${NS.esc(p.title)} · ${D.levelLabel(p.level)} · ${p.city}${p.remote ? ' · remote' : ''} · ${F.tenure(p.tenure)} tenure</div><div class="flex gap-4 wrap mt-3 sm"><span><span class="muted">Last 1:1</span> <b>${d.last ? F.date(d.last) : '—'}</b></span><span><span class="muted">Engagement</span> <b>${p.engagement}</b></span><span><span class="muted">Flight risk</span> ${NS.badge(p.riskBand, p.riskBand === 'High' ? 'bad' : p.riskBand === 'Medium' ? 'warn' : 'ok')}</span><span><span class="muted">Ladder</span> <b>${rung.id} ${rung.name}</b></span><span><span class="muted">1:1s logged</span> <b>${hist.length}</b></span></div></div><div class="rep-pulse"><div class="xs muted mb-1">Pulse · 6 months</div>${NS.spark(p.pulse, { color: pulseDrop(p) <= -8 ? 'var(--bad)' : 'var(--viz-3)', height: 36 })}<div class="xs faint mt-1">${p.pulse[0]} → <b class="ink">${p.pulse[5]}</b></div></div></div><div class="divider" style="margin:14px 0"></div><div class="flex items-center gap-3 wrap sm"><span class="muted">Q3 goal</span><span class="grow min-w-0 truncate semibold">${NS.esc(g.title)}</span>${goalBadge(g)}<span style="width:120px" class="hide-sm">${NS.progress(g.progress, { cls: g.status === 'behind' ? 'bad' : g.status === 'risk' ? 'warn' : '' })}</span><b class="tnum">${g.progress}%</b></div></div></div>
+            <div class="timer"><div class="flex items-center justify-between gap-3 wrap"><div><div class="ns-eyebrow" style="color:rgba(255,255,255,.75);margin:0 0 6px">1:1 with ${NS.esc(p.first)} · ${F.date(TODAY, 'long')}</div><div class="big" id="tBig">${fmtT(RUN.pid === pid ? RUN.elapsed : 0)}<small>/ 30:00</small></div><div class="sm mt-2" id="tState" style="opacity:.85">Ready when you are</div></div><div class="flex gap-2 wrap"><button class="ns-btn" data-run>${ic('play')} Start 1:1</button><button class="ns-btn ghost" data-skip data-tip="Jump to the next 10-minute block">${ic('chevrons-right')} Next block</button><button class="ns-btn ghost" data-reset>${ic('undo')} Reset</button><button class="ns-btn ghost" data-finish>${ic('check-circle')} Finish</button></div></div><div class="segs">${BLOCKS.map(() => '<div><i></i></div>').join('')}</div><div class="seg-lbls">${BLOCKS.map((b) => `<span>${b.time} · ${b.title}</span>`).join('')}</div></div>
+            ${BLOCKS.map((b, i) => `<div class="block"><div class="block-head"><span class="n">${b.n}</span><div class="grow min-w-0"><b>${b.title} <span class="muted medium" style="font-size:13px">· ${b.alias}</span></b><span class="s">${b.time} min · “${b.line}”</span></div><span class="ns-badge outline hide-sm">${b.mins} min</span></div><div class="block-body"><div class="prompt" data-use="${NS.esc(b.core)}">${ic('message-circle')}<span>“${b.core}”</span></div>${b.alts.map((a) => `<div class="prompt alt" data-use="${NS.esc(a)}">${ic('arrow-right')}<span>${a}</span></div>`).join('')}${sug[i].map((s) => `<div class="prompt data" data-use="${NS.esc(s)}">${ic('sparkles')}<span>${NS.esc(s)}</span></div>`).join('')}<label class="ns-field"><span class="ns-label">Notes <span class="opt">saved automatically · click a prompt to drop it in</span></span><textarea class="ns-textarea" data-note="${i}" placeholder="${['How are they really? Energy, sleep, what’s draining them…', 'Rocks moved, pebbles in the shoe, where they are waiting on you…', 'One skill, one piece of feedback, one thing to improve next week…'][i]}">${NS.esc(draft.blocks[i] || '')}</textarea></label></div></div>`).join('')}
+            <div class="ns-card"><div class="ns-card-body"><label class="ns-field"><span class="ns-label">One action item <span class="opt">what you will unblock before the next 1:1</span></span><input class="ns-input" data-action value="${NS.esc(draft.action || '')}" placeholder="e.g. Get Kavya’s decision on the audit write by Friday"></label></div></div>
+          </div>
+          <div class="lfg-side">
+            <div class="ns-card"><div class="ns-card-body">${golden()}<div class="ns-eyebrow">The guardrails</div>${guardrails()}<div class="ns-eyebrow">Do not do</div><div class="grid gap-2">${DONTS.map(([t, b]) => `<div class="sm"><b>${t}.</b> <span class="ink2">${b}</span></div>`).join('')}</div></div></div>
+            ${NS.card({ title: `History with ${NS.esc(p.first)}`, sub: hist.length ? `${hist.length} logged · every ${CADENCE_LABEL[p.oneOnOnes].toLowerCase()}` : 'No notes logged yet', body: hist.length ? `<div class="hist">${hist.slice(0, 4).map((h, i) => `<div class="hist-item pointer" data-hist="${i}"><div class="d"><b>${F.date(h.date)}</b><span>${Math.round(h.dur / 60)} min</span></div>${h.action ? `<p><b>Action</b>${NS.esc(h.action)}</p>` : ''}<p><b>Growth</b>${NS.esc((h.blocks[2] || '').slice(0, 110))}${(h.blocks[2] || '').length > 110 ? '…' : ''}</p></div>`).join('')}</div>` : `<div class="sm muted">Finish this 1:1 and the notes will show up here.</div>` })}
+            ${NS.card({ title: 'Team cadence', sub: 'Who is due when', bodyCls: 'flush', body: `<div style="padding:6px 20px">${U.sortBy(team, (x) => (dueInfo(x).days ?? -99)).map((x) => { const di = dueInfo(x); return `<div class="ns-row" style="padding:8px 0"><a href="${NS.link('/one-on-one', { r: x.id })}" class="ns-person" style="text-decoration:none">${NS.avatar(x, { size: 'xs' })}<div class="min-w-0"><div class="nm" style="font-size:13px">${NS.esc(x.first)} ${NS.esc(x.last)}</div><div class="sb">${CADENCE_LABEL[x.oneOnOnes]}</div></div></a><div class="grow"></div><span class="xs ${di.overdue ? 'bad-text semibold' : 'muted'}">${di.label}</span></div>`; }).join('')}</div>` })}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const me = meFor(c.persona), team = teamOf(me.id); const wrap = root.querySelector('[data-runner-pid]'); const pid = wrap.dataset.runnerPid; const p = D.byId(pid); const draft = draftFor(pid);
+      if (RUN.pid !== pid && !RUN.running) { RUN.pid = pid; RUN.elapsed = 0; RUN.notified = {}; }
+      paint();
+      root.querySelector('[data-run]').onclick = () => { if (RUN.pid !== pid) { if (RUN.running) { NS.toast(`Finish or discard the 1:1 with ${D.byId(RUN.pid).first} first`, { type: 'warn' }); return; } RUN.pid = pid; RUN.elapsed = 0; RUN.notified = {}; } RUN.running = !RUN.running; RUN.last = Date.now(); if (RUN.running && !draft.started) { draft.started = new Date().toISOString(); save(); markTool(c.persona, 'oneOnOne'); log(`Started a 1:1 with ${p.name}`); NS.toast(`1:1 with ${p.first} started`, { desc: 'Block 1 · Personal check-in. Listen 90%.', type: 'info' }); } paint(); };
+      root.querySelector('[data-skip]').onclick = () => { if (RUN.pid !== pid) return; RUN.elapsed = Math.min(TOTAL, (blockIdx(RUN.elapsed) + 1) * 600); RUN.last = Date.now(); const bi = blockIdx(RUN.elapsed); if (RUN.elapsed < TOTAL) NS.toast(`Block ${bi + 1} · ${BLOCKS[bi].title}`, { desc: BLOCKS[bi].line, type: 'info' }); paint(); };
+      root.querySelector('[data-reset]').onclick = () => { RUN.elapsed = 0; RUN.running = false; RUN.notified = {}; paint(); NS.toast('Timer reset', { type: 'info' }); };
+      const dis = root.querySelector('[data-discard]'); if (dis) dis.onclick = () => { RUN.running = false; RUN.elapsed = 0; RUN.pid = pid; RUN.notified = {}; NS.refresh(); };
+      root.querySelectorAll('[data-note]').forEach((t) => t.oninput = () => { draft.blocks[+t.dataset.note] = t.value; save(); });
+      const act = root.querySelector('[data-action]'); act.oninput = () => { draft.action = act.value; save(); };
+      root.querySelectorAll('[data-use]').forEach((pr) => pr.onclick = () => { const ta = pr.closest('.block-body').querySelector('textarea'); const q = pr.dataset.use; if (!ta.value.includes(q)) { ta.value = (ta.value ? ta.value.replace(/\s+$/, '') + '\n\n' : '') + `Q: ${q}\n`; ta.dispatchEvent(new Event('input')); ta.focus(); ta.setSelectionRange(ta.value.length, ta.value.length); } });
+      root.querySelectorAll('[data-hist]').forEach((h) => h.onclick = () => { const e = (S.history[pid] || [])[+h.dataset.hist]; NS.drawer({ eyebrow: `1:1 · ${F.date(e.date, 'full')}`, title: p.name, sub: `${Math.round(e.dur / 60)} minutes · ${CADENCE_LABEL[p.oneOnOnes]} cadence`, body: `<div class="grid gap-4">${BLOCKS.map((b, i) => `<div><div class="ns-eyebrow">${b.n}. ${b.title}</div><p class="md ink2" style="line-height:1.6">${NS.esc(e.blocks[i] || '—')}</p></div>`).join('')}${e.action ? `<div class="ns-alert brand">${ic('check-circle')}<div><b>Action item</b><p>${NS.esc(e.action)}</p></div></div>` : ''}</div>` }); });
+      root.querySelector('[data-finish]').onclick = () => {
+        const dur = RUN.pid === pid ? Math.round(RUN.elapsed) : 0; const filled = draft.blocks.filter((b) => b && b.trim()).length;
+        if (!dur && !filled) { NS.toast('Nothing to save yet', { desc: 'Start the timer or write a note first.', type: 'warn' }); return; }
+        const next = ISO(U.addDays(TODAY, CADENCE_DAYS[p.oneOnOnes] || 14));
+        NS.modal({ title: `Finish 1:1 with ${p.first}?`, sub: `${dur ? Math.max(1, Math.round(dur / 60)) + ' minutes on the clock' : 'No timer'} · ${filled} of 3 blocks have notes`, size: 'lg', body: `<div class="grid gap-3">${BLOCKS.map((b, i) => `<div class="flex gap-3 items-start"><span class="ns-badge ${draft.blocks[i] && draft.blocks[i].trim() ? 'ok' : 'neutral'} sq" style="min-width:26px;justify-content:center">${b.n}</span><div class="min-w-0"><b class="sm">${b.title}</b><p class="sm ink2" style="white-space:pre-wrap">${NS.esc(draft.blocks[i] && draft.blocks[i].trim() ? draft.blocks[i] : 'No notes')}</p></div></div>`).join('')}<div class="ns-alert ${draft.action ? 'brand' : 'warn'}">${ic(draft.action ? 'check-circle' : 'alert-triangle')}<div><b>${draft.action ? 'Action item' : 'No action item yet'}</b><p>${draft.action ? NS.esc(draft.action) : 'The guide’s rule: never leave without one thing you will unblock. You can still save.'}</p></div></div><div class="sm muted">Saving logs today’s 1:1, resets ${p.first}’s cadence and books the follow-up for <b class="ink">${F.date(next, 'long')}</b>.</div></div>`, actions: [{ label: 'Keep going' }, { label: 'Save & schedule follow-up', cls: 'primary', icon: 'calendar', onClick: () => { (S.history[pid] = S.history[pid] || []).unshift({ date: TODAY_ISO, dur: dur || 1500, blocks: draft.blocks.slice(), action: draft.action || '' }); S.last[pid] = TODAY_ISO; delete S.drafts[pid]; RUN.running = false; RUN.elapsed = 0; RUN.notified = {}; saveNow(); log(`Finished a 1:1 with ${p.name}`); NS.toast(`Follow-up with ${p.first} scheduled`, { desc: `${F.date(next, 'long')} · 30 min · recurring ${CADENCE_LABEL[p.oneOnOnes].toLowerCase()}`, action: { label: 'Next due', onClick: () => { const w = weekList(me.id); NS.go('/one-on-one', { r: w.ones[0] ? w.ones[0].p.id : pid }); } } }); NS.refresh(); } }] });
+      };
+      void team;
+    },
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* Culture KPIs                                                        */
+  /* ------------------------------------------------------------------ */
+  const kpiDetail = (k, kv) => { const x = kv.extra[k.id]; switch (k.id) { case 'clarity': return `${x.have} of ${F.int(x.n)} roles mapped`; case 'alignment': return `<span class="qmarks">${x.q.map((v, i) => `<i class="${i === 2 && v < 100 ? 'pend' : ''}" data-tip="Q${i + 1} · ${v}%">Q${i + 1}</i>`).join('')}</span> <span class="muted">Q3 ${x.have} of ${F.int(x.n)} set</span>`; case 'comms': return `${x.weekly} of ${F.int(x.n)} weekly · ${x.cad.biweekly || 0} bi-weekly · ${(x.cad.monthly || 0) + (x.cad.rare || 0)} monthly or rarer`; case 'retention': return `${x.hp} high performers · ${x.exits} regretted exit${x.exits === 1 ? '' : 's'} in 12 months${x.hp <= 10 ? ` <span class="dots" data-tip="${x.hp} kept · ${x.exits} lost">${U.range(x.hp).map(() => '<i></i>').join('')}${U.range(x.exits).map(() => '<i class="off"></i>').join('')}</span>` : ''}`; case 'enps': return `${x.pr} promoters · ${x.de} detractor${x.de === 1 ? '' : 's'} · ${F.int(x.n)} responses${x.n < 15 ? ' · small sample, treat as directional' : ''}`; case 'growth': return `${x.internal} of ${x.filled} leadership roles filled internally · org-wide, trailing 12 months`; default: return ''; } };
+  const kpiCard = (k, kv, seedKey) => { const v = kv.v[k.id], st = kpiStatus(k, v), ch = chapterById(k.chapter); return `<div class="ns-card"><div class="ns-card-body kpi-card"><div class="top"><div class="flex gap-3 items-center"><span class="ns-icon-box ${st.cls === 'ok' ? 'ok' : st.cls === 'warn' ? 'warn' : 'bad'}">${ic(k.icon)}</span><div><b class="md">${k.name}</b><div class="tgt">Target ${k.targetLabel}${k.orgOnly ? ' · org-level' : ''}</div></div></div>${NS.badge(st.label, st.cls, true)}</div><div class="flex items-end justify-between gap-3 wrap"><div class="val">${fmtKpi(k, v)}${k.id === 'enps' ? '<small>eNPS</small>' : ''}</div><div style="width:120px">${NS.spark(kpiTrend(k, v, seedKey), { color: st.cls === 'ok' ? 'var(--viz-3)' : st.cls === 'warn' ? 'var(--viz-4)' : 'var(--viz-8)', height: 34 })}<div class="xs faint right">6 quarters</div></div></div><div class="sm ink2">${kpiDetail(k, kv)}</div><div class="def">${k.def}</div><div class="why">${k.why}</div><div class="tip">${ic('lightbulb')}<span><b>How to move it:</b> ${k.tip} <a href="${NS.link('/playbook/' + ch.id)}">${ch.label}</a></span></div></div></div>`; };
+  R['/kpis'] = {
+    title: 'Culture KPIs',
+    render: (c) => {
+      const isHR = c.persona.id === 'hrbp'; const dept = isHR ? (c.query.dept || '') : ''; const sc = scopeFor(c.persona, dept || undefined); const kv = kpiValues(sc);
+      const seedKey = sc.label; const on = KPIS.filter((k) => kpiStatus(k, kv.v[k.id]).cls === 'ok').length;
+      return html`${NS.pageHead({ eyebrow: 'Numerical targets (KPIs)', title: 'Performance-driven culture blueprint', sub: `<b>Principle: what gets measured, gets managed.</b> Six numbers, each with a target, a definition and the chapter that moves it — computed for <b>${NS.esc(sc.label)}</b> (${F.int(sc.people.length)} people${sc.managers.length > 1 ? ` · ${sc.managers.length} managers` : ''}). ${on} of ${KPIS.length} on target.`, actions: `${isHR ? `<select class="ns-select" style="width:auto" id="deptSel"><option value="">Whole company</option>${D.departments.map((d) => `<option ${d.name === dept ? 'selected' : ''}>${d.name}</option>`).join('')}</select>` : ''}<button class="ns-btn secondary" data-export>${ic('download')}Export scorecard</button>` })}
+        <div class="pillars mb-4">${PILLARS.map(([t, b, i]) => `<div class="pillar"><span class="ns-icon-box">${ic(i)}</span><div><b>${t}</b><span>${b}</span></div></div>`).join('')}</div>
+        <div class="ns-grid c3">${KPIS.map((k) => kpiCard(k, kv, seedKey)).join('')}</div>
+        <div class="ns-grid c2 mt-4">
+          ${NS.card({ title: 'Current vs target', sub: 'Percentages and eNPS points share one 0–100 scale', body: '<div id="kpiBars"></div>' })}
+          ${NS.card({ title: 'Definitions', sub: 'The blueprint, verbatim', bodyCls: 'flush', body: `<div class="ns-table-wrap" style="border:0;border-radius:0"><table class="ns-table dense"><thead><tr><th>KPI</th><th>Target</th><th>Definition</th></tr></thead><tbody>${KPIS.map((k) => `<tr><td><b>${k.name}</b></td><td class="nowrap">${k.targetLabel}</td><td class="sm">${k.def}</td></tr>`).join('')}</tbody></table></div>` })}
+        </div>
+        ${c.persona.id !== 'manager' ? `<div class="ns-card mt-4"><div class="ns-card-head"><div><h3>Managers × KPIs</h3><p>Attainment against target for the ${Math.min(14, sc.managers.filter((m) => D.reports(m.id).length >= 5).length)} largest teams in ${NS.esc(sc.label)} · click a cell for the detail · Career Growth is measured at org level only</p></div></div><div class="ns-card-body heat-compact"><div id="kpiHeat"></div></div></div>` : `<div class="ns-ai mt-4"><div><div class="ns-ai-head">${ic('sparkles')} Where to spend your next 1:1 <span class="ns-badge">Generated</span></div><p>${kpiNarrative(kv, sc)}</p></div></div>`}`;
+    },
+    mounted: (c, root) => {
+      markTool(c.persona, 'kpis');
+      const isHR = c.persona.id === 'hrbp'; const dept = isHR ? (c.query.dept || '') : ''; const sc = scopeFor(c.persona, dept || undefined); const kv = kpiValues(sc);
+      NS.chart.bars(root.querySelector('#kpiBars'), { labels: KPIS.map((k) => k.short), series: [{ name: 'Current', values: KPIS.map((k) => Math.round(kv.v[k.id])) }, { name: 'Target', values: KPIS.map((k) => k.target), color: 'var(--ink-4)' }], height: 240, yMax: 100, showValues: 'all', yFormat: (v) => String(v) });
+      const sel = root.querySelector('#deptSel'); if (sel) sel.onchange = () => NS.go('/kpis', { dept: sel.value });
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`culture-kpis-${sc.label.replace(/\s+/g, '-').toLowerCase()}.csv`, [['KPI', 'Scope', 'Current', 'Target', 'Status', 'Definition'], ...KPIS.map((k) => [k.name, sc.label, fmtKpi(k, kv.v[k.id]), k.targetLabel, kpiStatus(k, kv.v[k.id]).label, k.def])]);
+      const heat = root.querySelector('#kpiHeat'); if (heat) { const cols = KPIS.filter((k) => !k.orgOnly); const mgrs = U.sortBy(sc.managers.filter((m) => D.reports(m.id).length >= 5), (m) => -D.reports(m.id).length).slice(0, 14); const vals = mgrs.map((m) => { const k2 = kpiValues({ people: D.reports(m.id), managers: [m] }); return cols.map((k) => Math.round(U.clamp((k2.v[k.id] / k.target) * 100, 0, 120))); }); NS.chart.heatmap(heat, { rows: mgrs.map((m) => `${m.name} · ${m.team}`), cols: cols.map((k) => k.short), values: vals, format: (v) => v + '%', min: 0, max: 120, valueLabel: 'Attainment', labelWidth: 'minmax(150px,auto)', colWidth: 56, onCell: (ri, ci) => { const m = mgrs[ri], k = cols[ci]; const k2 = kpiValues({ people: D.reports(m.id), managers: [m] }); NS.drawer({ eyebrow: k.name, title: m.name, sub: `${m.team} · ${D.reports(m.id).length} reports · ${m.city}`, body: `<div class="grid gap-4"><div class="flex items-end gap-3"><div class="kpi-card" style="display:block"><div class="val">${fmtKpi(k, k2.v[k.id])}</div></div><div class="sm muted">target ${k.targetLabel} · ${NS.badge(kpiStatus(k, k2.v[k.id]).label, kpiStatus(k, k2.v[k.id]).cls, true)}</div></div><div class="sm ink2">${kpiDetail(k, k2)}</div><p class="sm ink2">${k.def} ${k.why}</p><div class="ns-alert brand">${ic('lightbulb')}<div><b>How to move it</b><p>${k.tip}</p></div></div><div class="flex gap-2 wrap"><button class="ns-btn sm secondary" data-nudge-m="${m.id}">${ic('bell')}Nudge ${NS.esc(m.first)}</button><a class="ns-btn sm ghost" href="${NS.link('/playbook/' + k.chapter)}">${ic('book-open')}Open ${chapterById(k.chapter).label}</a></div></div>`, mounted: (body, api) => { body.querySelector('[data-nudge-m]').onclick = () => { api.close(); nudge(m.id); }; } }); } }); }
+    },
+  };
+  const kpiNarrative = (kv, sc) => { const off = KPIS.filter((k) => kpiStatus(k, kv.v[k.id]).cls !== 'ok'); const x = kv.extra; const bits = []; if (off.some((k) => k.id === 'comms')) bits.push(`${x.comms.n - x.comms.weekly} of your reports are not on a weekly cadence — moving them to weekly is the fastest single fix in this scorecard, and it is entirely in your control.`); if (off.some((k) => k.id === 'alignment')) bits.push(`${x.alignment.n - x.alignment.have} people still have no Q3 goal set; use block 2 of the next 1:1 to write it together.`); if (off.some((k) => k.id === 'clarity')) bits.push(`${x.clarity.n - x.clarity.have} role${x.clarity.n - x.clarity.have === 1 ? ' has' : 's have'} no competency map — a fifteen-minute exercise against the ladder.`); if (!bits.length) bits.push('Every team-level KPI is on target. Protect it: keep the cadence sacred and watch the pulse for the two people whose scores dipped this quarter.'); return bits.join(' ') + ` Retention of your ${x.retention.hp} high performers is ${fmtKpi(KPIS[3], kv.v.retention)} — the person to watch is whoever sits highest on the flight-risk list, not the loudest voice in standup.`; };
+
+  /* ------------------------------------------------------------------ */
+  /* The Crucible                                                        */
+  /* ------------------------------------------------------------------ */
+  const QUIZ = { phase: 'intro', i: 0, answers: [] };
+  const scoreAnswers = (answers) => { const sc = { ruthless: 0, peopleFirst: 0, strategic: 0, pragmatic: 0 }; answers.forEach((a, i) => { if (a == null) return; Object.entries(DILEMMAS[i].opts[a][1]).forEach(([k, v]) => { sc[k] += v; }); }); const order = ['ruthless', 'peopleFirst', 'strategic', 'pragmatic']; let best = 'pragmatic', bv = -1; order.forEach((k) => { if (sc[k] > bv) { bv = sc[k]; best = k; } }); if (bv <= 0) best = 'pragmatic'; return { scores: sc, archetype: best }; };
+  R['/crucible'] = {
+    title: 'The Crucible',
+    render: (c) => {
+      const last = S.crucible;
+      if (QUIZ.phase === 'intro') return html`<div class="cru-wrap"><div class="cru-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('flame', { size: 12 })} Leadership lab</span><span class="ns-badge">${DILEMMAS.length} dilemmas · ~6 minutes</span><span class="ns-badge">${ic('lock', { size: 12 })} Scored on this device</span></div><h1>Are you ready to face the mirror?</h1><p>You will be presented with <b>${DILEMMAS.length} high-stakes dilemmas</b>. There are no “right” answers, only trade-offs. Be honest — the scoring can only help if you tell the truth.</p><div class="flex gap-2 wrap mt-4"><button class="ns-btn primary lg" data-begin>${ic('play')} Begin assessment</button>${last ? `<button class="ns-btn ghost lg" data-view>View last result · ${ARCHETYPES[last.archetype].name}</button>` : ''}</div></div>
+        <div class="ns-grid c2 mt-4">
+          ${NS.card({ title: 'How it works', body: `<div class="steps" style="margin:0">${[['Seven scenarios', 'Toxic top performers, layoffs, a boss who is wrong, a launch-day bug. Four options each.'], ['Every choice scores', 'Each option nudges one or more of four decision patterns — nobody lands on “balanced” by default.'], ['Your archetype', 'The strongest pattern names your archetype; the radar shows the whole shape, not just the label.'], ['Then, the chapters', 'Each archetype gets strengths, blind spots and the three chapters that stretch it.']].map((s, i) => `<div class="step" style="padding:10px 0"><span class="n">${i + 1}</span><div><b style="font-size:14px">${s[0]}</b><p style="font-size:13.5px">${s[1]}</p></div></div>`).join('')}</div>` })}
+          <div class="grid gap-4">${NS.card({ title: 'The four archetypes', body: `<div class="grid gap-3">${Object.entries(ARCHETYPES).map(([k, a]) => `<div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic(a.icon)}</span><div><b class="sm">${a.name}</b><div class="xs muted">${a.desc}</div></div></div>`).join('')}</div>` })}<div class="ns-alert info">${ic('shield-check')}<div><b>Privacy notice</b><p>This test runs in your browser. Your responses are scored locally and only your latest result is kept on this device so you can revisit it — nothing is sent, tracked or stored anywhere else. It is a private tool for your personal reflection.</p></div></div></div>
+        </div></div>`;
+      if (QUIZ.phase === 'quiz') { const d = DILEMMAS[QUIZ.i]; const sel = QUIZ.answers[QUIZ.i]; return html`<div class="cru-wrap"><div class="flex items-center justify-between gap-3 mb-3 wrap"><div class="ns-eyebrow" style="margin:0">Scenario ${QUIZ.i + 1} / ${DILEMMAS.length}</div><button class="ns-btn xs ghost" data-quit>${ic('x')} Exit</button></div>${NS.progress(((QUIZ.i + (sel != null ? 1 : 0)) / DILEMMAS.length) * 100)}<div class="ns-card mt-4"><div class="ns-card-body"><div class="cru-q">${d.q}</div><div class="grid gap-2">${d.opts.map((o, k) => `<button class="cru-opt" data-opt="${k}" aria-pressed="${sel === k}"><span class="k">${'ABCD'[k]}</span><span>${o[0]}</span></button>`).join('')}</div><div class="flex items-center justify-between gap-3 mt-4 wrap"><button class="ns-btn secondary" data-back ${QUIZ.i === 0 ? 'disabled' : ''}>${ic('arrow-left')} Back</button><span class="sm muted" id="cruHint">${sel == null ? 'Pick the option closest to what you would actually do.' : 'You can change your answer before moving on.'}</span><button class="ns-btn primary" data-next ${sel == null ? 'disabled' : ''}>${QUIZ.i === DILEMMAS.length - 1 ? 'See my result' : 'Next'} ${ic('arrow-right')}</button></div></div></div></div>`; }
+      if (QUIZ.phase === 'loading') return html`<div class="cru-wrap"><div class="ns-card"><div class="ns-card-body loading"><div class="spin"></div><b class="lg-text">Scoring your decision patterns…</b><div class="sm muted">Weighing ${DILEMMAS.length} answers across four archetypes.</div></div></div></div>`;
+      const res = last; if (!res) { QUIZ.phase = 'intro'; return R['/crucible'].render(c); }
+      const a = ARCHETYPES[res.archetype]; const maxv = Math.max(...Object.values(res.scores), 1);
+      return html`<div class="cru-wrap"><div class="flex items-center justify-between gap-3 mb-3 wrap"><div class="ns-eyebrow" style="margin:0">Analysis complete · ${F.rel(res.at)}</div><div class="flex gap-2"><button class="ns-btn xs secondary" data-copy-res>${ic('copy')} Copy summary</button><button class="ns-btn xs primary" data-retake>${ic('refresh')} Retake test</button></div></div>
+        <div class="arch"><span class="em">${ic(a.icon)}</span><div><div class="ns-eyebrow" style="margin:0">Your leadership archetype</div><h2>${a.name}</h2><p>${a.desc}</p></div></div>
+        <div class="ns-grid c2 mt-4">
+          ${NS.card({ title: 'Decision pattern', sub: 'Points scored per archetype across the seven dilemmas', body: '<div id="cruRadar"></div>' })}
+          <div class="grid gap-4">${NS.card({ title: 'Strengths detected', body: `<div class="sr good">${a.strengths.map(([t, b]) => `<div>${ic('check-circle')}<span><b class="ink">${t}:</b> ${b}</span></div>`).join('')}</div>` })}${NS.card({ title: 'Blind spots', body: `<div class="sr risk">${a.risks.map(([t, b]) => `<div>${ic('alert-triangle')}<span><b class="ink">${t}:</b> ${b}</span></div>`).join('')}</div>` })}</div>
+        </div>
+        <div class="ns-grid c3 mt-4">
+          ${NS.card({ title: 'Recommended chapters', sub: 'The three that stretch this archetype', body: `<div class="read-list">${a.chapters.map((id) => { const ch = chapterById(id); return `<a href="${NS.link('/playbook/' + id)}"><span class="st ${progressOf(c.persona).read[id] ? 'done' : ''}">${progressOf(c.persona).read[id] ? ic('check') : ch.num}</span><span><b class="ink">${ch.label}</b><div class="xs muted">${ch.title}</div></span></a>`; }).join('')}</div>` })}
+          ${NS.card({ title: 'Recommended learning path', body: `<div class="grid gap-3"><div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic('book-open')}</span><div><b class="sm">Book</b><div class="sm ink2">“High Output Management” by Andy Grove</div></div></div><div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic('message-square')}</span><div><b class="sm">Skill</b><div class="sm ink2">The Radical Candor framework — care personally, challenge directly</div></div></div><div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic('timer')}</span><div><b class="sm">Practice</b><div class="sm ink2">Run the 1:1 Runner with the report you find hardest to listen to.</div></div></div></div>` })}
+          ${NS.card({ title: 'Immediate action', body: `<p class="sm ink2">Review the learning path above. Schedule a 30-minute block on your calendar labelled <b class="ink">“Strategy Reflection”</b> for this Friday.</p><button class="ns-btn sm primary mt-3" data-cal>${ic('calendar')} Add Friday block</button>` })}
+        </div>
+        ${NS.card({ title: 'Your answers', sub: 'What each choice signalled', cls: 'mt-4', body: `<div class="ans">${DILEMMAS.map((d, i) => { const k = res.answers[i]; const o = d.opts[k]; return `<div class="ans-item"><span class="n">${i + 1}</span><div class="min-w-0"><p class="q">${d.q}</p><div class="flex gap-2 items-start wrap"><span class="ns-badge solid sq">${'ABCD'[k]}</span><span class="sm ink grow" style="min-width:200px">${o[0]}</span><span class="flex gap-1 wrap">${Object.entries(o[1]).map(([dim, v]) => `<span class="ns-badge ${dim === res.archetype ? 'brand' : 'neutral'} sq">${ARCHETYPES[dim].name.replace('The ', '')} +${v}</span>`).join('')}</span></div></div></div>`; }).join('')}</div>` })}
+        <div class="xs faint mt-3">Max points on any axis in this run: ${maxv}. Archetype = the strongest pattern; ties resolve Commander → Servant → Architect → Realist.</div></div>`;
+    },
+    mounted: (c, root) => {
+      markTool(c.persona, 'crucible');
+      const on = (sel, fn) => { const el = root.querySelector(sel); if (el) el.onclick = fn; };
+      on('[data-begin]', () => { QUIZ.phase = 'quiz'; QUIZ.i = 0; QUIZ.answers = []; NS.refresh(); });
+      on('[data-view]', () => { QUIZ.phase = 'result'; NS.refresh(); });
+      on('[data-quit]', () => { QUIZ.phase = 'intro'; NS.refresh(); });
+      root.querySelectorAll('[data-opt]').forEach((b) => b.onclick = () => { QUIZ.answers[QUIZ.i] = +b.dataset.opt; root.querySelectorAll('[data-opt]').forEach((x) => x.setAttribute('aria-pressed', x === b)); const nx = root.querySelector('[data-next]'); nx.disabled = false; const hint = root.querySelector('#cruHint'); if (hint) hint.textContent = 'You can change your answer before moving on.'; root.querySelector('.ns-progress i').style.width = `${((QUIZ.i + 1) / DILEMMAS.length) * 100}%`; });
+      on('[data-back]', () => { if (QUIZ.i > 0) { QUIZ.i--; NS.refresh(); } });
+      on('[data-next]', () => { if (QUIZ.answers[QUIZ.i] == null) return; if (QUIZ.i < DILEMMAS.length - 1) { QUIZ.i++; NS.refresh(); window.scrollTo({ top: 0 }); return; } QUIZ.phase = 'loading'; NS.refresh(); setTimeout(() => { const r = scoreAnswers(QUIZ.answers); S.crucible = { answers: QUIZ.answers.slice(), scores: r.scores, archetype: r.archetype, at: new Date().toISOString(), persona: c.persona.id }; saveNow(); log(`Completed the Crucible · ${ARCHETYPES[r.archetype].name}`); QUIZ.phase = 'result'; NS.refresh(); NS.toast(`Analysis complete · ${ARCHETYPES[r.archetype].name}`, { desc: 'Your result is saved on this device.' }); }, 1700); });
+      on('[data-retake]', () => { QUIZ.phase = 'quiz'; QUIZ.i = 0; QUIZ.answers = []; NS.refresh(); });
+      on('[data-cal]', () => NS.toast('Friday block added', { desc: '“Strategy Reflection” · Friday 16:00–16:30 · private', type: 'info' }));
+      on('[data-copy-res]', () => { const r = S.crucible, a = ARCHETYPES[r.archetype]; copyText(`The Crucible · ${a.name}\n${a.desc}\n\nScores: ${DIMS.map(([k, l]) => `${l} ${r.scores[k]}`).join(' · ')}\nStrengths: ${a.strengths.map((s) => s[0]).join(', ')}\nBlind spots: ${a.risks.map((s) => s[0]).join(', ')}\nRecommended chapters: ${a.chapters.map((id) => chapterById(id).label).join(', ')}`, 'Crucible summary'); });
+      const el = root.querySelector('#cruRadar'); if (el && S.crucible) { const sc = S.crucible.scores; const mx = Math.max(6, ...Object.values(sc)); NS.chart.radar(el, { axes: DIMS.map((d) => d[1]), series: [{ name: 'Your pattern', values: DIMS.map((d) => sc[d[0]]), color: 'var(--viz-4)' }], max: mx, rings: 3, size: 300, legend: false }); }
+    },
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* Adoption (HRBP)                                                     */
+  /* ------------------------------------------------------------------ */
+  const adoptStatus = (a) => (!a.enrolled ? { label: 'Not enrolled', cls: 'neutral' } : a.lastActive <= 7 ? { label: 'Active', cls: 'ok' } : a.lastActive <= 21 ? { label: 'Quiet', cls: 'warn' } : { label: 'Lapsed', cls: 'bad' });
+  R['/adoption'] = {
+    title: 'Adoption', personas: ['hrbp'],
+    render: (c) => {
+      const ad = MANAGERS.map(adoptionOf); const en = ad.filter((a) => a.enrolled); const active = en.filter((a) => a.lastActive <= 7).length;
+      const cohorts = ['New-manager cohort', 'Q3 reset cohort', 'Self-serve'].map((name) => { const ms = ad.filter((a) => a.cohort === name); const enr = ms.filter((a) => a.enrolled); return { name, n: ms.length, enrolled: enr.length, pct: ms.length ? Math.round(U.avg(ms, (a) => a.read) / 5 * 100) : 0, desc: name === 'New-manager cohort' ? 'Managers under 18 months in role · guided by L&D' : name === 'Q3 reset cohort' ? '1:1 cadence score under 75% · reset session booked' : 'Everyone else · reads at their own pace' }; });
+      return html`${NS.pageHead({ eyebrow: 'People team', title: 'Guide adoption', sub: `Who is using the Field Guide, how far they have read, and whether it shows up in their 1:1 cadence. ${MANAGERS.length} people managers with three or more reports.`, actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export CSV</button><button class="ns-btn primary" data-nudge-lapsed>${ic('megaphone')}Nudge lapsed managers</button>` })}
+        <div class="ns-stats mb-4">
+          ${NS.stat({ label: 'Enrolled', value: en.length, unit: `of ${MANAGERS.length}`, icon: 'book-open', sub: `${Math.round(U.pctOf(en.length, MANAGERS.length))}% of people managers`, spark: [22, 31, 38, 44, 51, 57, 62, en.length] })}
+          ${NS.stat({ label: 'Active this week', value: active, icon: 'activity', sub: `${Math.round(U.pctOf(active, en.length))}% of enrolled` })}
+          ${NS.stat({ label: 'Avg chapters read', value: U.avg(en, 'read').toFixed(1), unit: 'of 5', icon: 'list-checks', sub: `${en.filter((a) => a.read === 5).length} finished the playbook` })}
+          ${NS.stat({ label: 'Crucible completions', value: en.filter((a) => a.crucible).length, icon: 'flame', sub: (() => { const cb = U.countBy(en.filter((a) => a.crucible), 'crucible'); const top = U.sortBy(Object.entries(cb), (x) => -x[1])[0]; return top ? `Most common: ${top[0]}` : 'None yet'; })() })}
+        </div>
+        <div class="ns-grid c2">
+          ${NS.card({ title: 'Weekly active managers', sub: 'Last eight weeks · chapters marked read per week', body: '<div id="adoptLine"></div>' })}
+          ${NS.card({ title: 'Chapter completion', sub: 'Share of enrolled managers who have read each chapter', body: '<div id="adoptChapters"></div>' })}
+        </div>
+        <div class="ns-grid c3 mt-4">${cohorts.map((co) => `<div class="ns-card"><div class="ns-card-body cohort">${NS.ring({ value: co.pct / 100, size: 76, thickness: 8, label: co.pct + '%', color: co.pct >= 60 ? 'var(--viz-3)' : 'var(--viz-4)' })}<div class="min-w-0"><b>${co.name}</b><span>${co.n} managers · ${co.enrolled} enrolled</span><div class="xs muted mt-1">${co.desc}</div></div></div></div>`).join('')}</div>
+        <div class="ns-toolbar mt-4"><div class="ns-input-wrap grow" style="max-width:340px">${ic('search')}<input class="ns-input" id="aq" value="${NS.esc(c.query.q || '')}" placeholder="Search managers, teams…"></div><select class="ns-select" style="width:auto" id="aDept"><option value="">All departments</option>${D.departments.map((d) => `<option>${d.name}</option>`).join('')}</select><div class="ns-chips" id="aStatus">${[['', 'All'], ['Active', 'Active'], ['Quiet', 'Quiet'], ['Lapsed', 'Lapsed'], ['Not enrolled', 'Not enrolled']].map(([v, l]) => `<button class="ns-chip" data-st="${v}" aria-pressed="${!v}">${l}</button>`).join('')}</div></div>
+        <div id="adoptTable"></div>`;
+    },
+    mounted: (c, root) => {
+      markTool(c.persona, 'adoption');
+      const ad = MANAGERS.map(adoptionOf); const en = ad.filter((a) => a.enrolled); const active = en.filter((a) => a.lastActive <= 7).length;
+      NS.chart.line(root.querySelector('#adoptLine'), { labels: ['Aug 3', 'Aug 10', 'Aug 17', 'Aug 24', 'Aug 31', 'Sep 7', 'Sep 14', 'Sep 21'], series: [{ name: 'Active managers', values: [31, 34, 38, 41, 45, 47, 52, active] }, { name: 'Chapters marked read', values: [40, 52, 61, 58, 70, 74, 81, 77] }], height: 220, yMin: 0, endLabels: true });
+      NS.chart.hbars(root.querySelector('#adoptChapters'), { items: CH.map((ch, i) => ({ label: ch.label, value: Math.round(U.pctOf(en.filter((a) => a.read > i).length, en.length)), sub: `${en.filter((a) => a.read > i).length} managers` })), max: 100, format: (v) => v + '%', valueLabel: 'Read' });
+      const tbl = NS.table(root.querySelector('#adoptTable'), { rows: ad, rowKey: 'id', pageSize: 12, sort: { key: 'score' }, searchKeys: [(a) => a.m.name, (a) => a.m.team, (a) => a.m.dept], search: c.query.q || '', columns: [
+        { key: 'name', label: 'Manager', render: (a) => personLink(a.m, `${a.m.team} · ${a.m.dept} · ${a.team} reports`, NS.link('/kpis')), sort: (a) => a.m.name },
+        { key: 'read', label: 'Chapters', render: (a) => `<div style="min-width:96px"><div class="flex justify-between xs muted"><span>${a.read}/5</span><span>${a.tools} tools</span></div>${NS.progress((a.read / 5) * 100, { cls: 'xs mt-1' })}</div>`, sort: (a) => a.read },
+        { key: 'score', label: '1:1 cadence', align: 'right', render: (a) => `<b class="${a.score >= 75 ? 'ok-text' : a.score >= 50 ? 'warn-text' : 'bad-text'}" data-tip="${a.weekly}% of reports weekly">${a.score}%</b>`, sort: (a) => a.score },
+        { key: 'crucible', label: 'Crucible', render: (a) => (a.crucible ? `<span class="ns-badge brand sq">${a.crucible.replace('The ', '')}</span>` : '<span class="faint">—</span>'), sort: (a) => a.crucible || '' },
+        { key: 'last', label: 'Last active', render: (a) => (a.lastActive == null ? '<span class="faint">—</span>' : a.lastActive === 0 ? 'Today' : `${a.lastActive}d ago`), sort: (a) => (a.lastActive == null ? 999 : a.lastActive) },
+        { key: 'status', label: 'Status', render: (a) => { const s = adoptStatus(a); return NS.badge(s.label, s.cls, true); }, sort: (a) => ['Active', 'Quiet', 'Lapsed', 'Not enrolled'].indexOf(adoptStatus(a).label) },
+        { key: 'act', label: '', sort: false, align: 'right', render: (a) => `<button class="ns-btn xs ${adoptStatus(a).cls === 'ok' ? 'ghost' : 'secondary'}" data-nudge="${a.m.id}" data-tip="Nudge ${NS.esc(a.m.first)}">${ic('bell')}${S.nudges[a.m.id] ? S.nudges[a.m.id] : ''}</button>` },
+      ], dense: true, empty: { icon: 'search', title: 'No managers match', body: 'Try another department or status.' } });
+      let st = '', dept = '';
+      const apply = () => tbl.setFilter((a) => (!dept || a.m.dept === dept) && (!st || adoptStatus(a).label === st));
+      root.querySelector('#aq').oninput = (e) => tbl.setSearch(e.target.value);
+      root.querySelector('#aDept').onchange = (e) => { dept = e.target.value; apply(); };
+      root.querySelectorAll('#aStatus .ns-chip').forEach((ch) => ch.onclick = () => { st = ch.dataset.st; root.querySelectorAll('#aStatus .ns-chip').forEach((x) => x.setAttribute('aria-pressed', x === ch)); apply(); });
+      root.addEventListener('click', (e) => { const b = e.target.closest('[data-nudge]'); if (b) nudge(b.dataset.nudge); });
+      root.querySelector('[data-export]').onclick = () => downloadCsv('field-guide-adoption.csv', [['Manager', 'Team', 'Department', 'Reports', 'Chapters read', 'Tools used', '1:1 cadence score', 'Weekly 1:1 %', 'Crucible', 'Last active (days)', 'Status'], ...tbl.rows().map((a) => [a.m.name, a.m.team, a.m.dept, a.team, a.read, a.tools, a.score, a.weekly, a.crucible || '', a.lastActive == null ? '' : a.lastActive, adoptStatus(a).label])]);
+      root.querySelector('[data-nudge-lapsed]').onclick = async () => { const ids = ad.filter((a) => adoptStatus(a).label === 'Lapsed').map((a) => a.m.id); if (!ids.length) { NS.toast('Nobody is lapsed', { type: 'info' }); return; } if (await NS.confirm({ title: `Nudge ${ids.length} lapsed managers?`, body: 'One digest each with their unread chapters, their team’s 1:1 cadence and a link to the Q3 reset session.', confirmLabel: 'Send nudges' })) { ids.forEach((id) => S.nudges[id] = (S.nudges[id] || 0) + 1); saveNow(); log(`Nudged ${ids.length} lapsed managers`); NS.toast(`Nudges sent to ${ids.length} managers`, { type: 'info' }); tbl.refresh(); } };
+    },
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* Boot                                                                */
+  /* ------------------------------------------------------------------ */
+  const personas = [
+    { ...D.personas.manager, note: 'Playbook + tools for your team' },
+    { ...D.personas.hrbp, note: 'Playbook + adoption analytics' },
+    { ...D.personas.exec, note: 'Playbook + org-level KPIs' },
+  ];
+  const dueCount = () => weekList(MGR_ID).ones.length;
+  NS.app({
+    id: 'leaders-field-guide', name: 'The Leader’s Field Guide', sub: 'Northstar Labs', brand: 'amber', version: '3.0',
+    mark: ic('compass', { size: 20 }),
+    about: { tagline: 'The operating manual for managers who want a high-performance team without the stress.', description: 'A manager playbook organised around the year — Q1 strategy, Q2 execution, Q3 review, Q4 planning — with the tools wrapped around it: a 30-minute 1:1 runner that saves notes per report, a script library with copy-paste emails, six culture KPIs computed from the team, a career ladder mapped to Northstar levels, the Crucible leadership test and, for the People team, adoption analytics across every manager.', highlights: [{ icon: 'book-open', title: 'Five readable chapters', body: 'Tables, traps, scripts and emails from the guide, in a long-form layout with progress tracking.' }, { icon: 'timer', title: '1:1 Runner', body: 'Three 10-minute blocks, data-aware prompts, notes and history per report.' }, { icon: 'bar-chart', title: 'Culture KPIs', body: 'Six targets computed for a team, a department or the company — plus a managers × KPIs heatmap.' }, { icon: 'flame', title: 'The Crucible', body: 'Seven dilemmas, four archetypes, every option scored.' }] },
+    personas, defaultPersona: 'manager',
+    nav: (persona) => {
+      const pr = progressOf(persona);
+      const playbook = { group: 'Playbook', items: CH.map((ch) => ({ id: 'pb-' + ch.id, label: ch.label, icon: ch.id === 'overview' ? 'book-open' : QUARTERS.find((q) => q.id === ch.id).icon, route: '/playbook/' + ch.id, badge: pr.read[ch.id] ? '✓' : '' })) };
+      const tools = persona.id === 'manager' ? [{ id: 'one-on-one', label: '1:1 Runner', icon: 'timer', badge: dueCount() || '' }, { id: 'scripts', label: 'Script library', icon: 'message-square' }, { id: 'kpis', label: 'Culture KPIs', icon: 'bar-chart' }, { id: 'ladder', label: 'Career ladder', icon: 'layers' }]
+        : [{ id: 'kpis', label: 'Culture KPIs', icon: 'bar-chart' }, { id: 'scripts', label: 'Script library', icon: 'message-square' }, { id: 'ladder', label: 'Career ladder', icon: 'layers' }];
+      const out = [{ group: '', items: [{ id: 'home', label: 'Home', icon: 'home' }] }, playbook, { group: 'Tools', items: tools }, { group: 'Leadership lab', items: [{ id: 'crucible', label: 'The Crucible', icon: 'flame', badge: S.crucible ? 'Done' : '' }] }];
+      if (persona.id === 'hrbp') out.push({ group: 'People team', items: [{ id: 'adoption', label: 'Adoption', icon: 'activity', badge: MANAGERS.map(adoptionOf).filter((a) => adoptStatus(a).label === 'Lapsed').length || '' }] });
+      return out;
+    },
+    promo: (persona) => { const st = readingStats(persona); return { title: st.next ? 'Keep reading' : 'Playbook complete', body: st.next ? `${st.read} of ${st.chapters} chapters read · next up: ${st.next.label}` : `All ${st.chapters} chapters read · ${st.used} of ${st.tools} tools used`, progress: st.pct, cta: st.next ? { label: 'Continue', route: '/playbook/' + st.next.id } : { label: 'Take the Crucible', route: '/crucible' } }; },
+    notifications: [{ icon: 'calendar', title: 'Q3 calibration prep starts Oct 5', body: 'Manager reviews open on 5 Oct — read the Q4 chapter on the 9-box and rating scripts first.', time: 'Today', route: '/playbook/q4' }, { icon: 'timer', title: '1:1 with Kavya overdue', body: 'Last held 3 Sep · weekly cadence. Reschedule, never cancel.', time: 'Today', route: '/one-on-one?r=NS-1209' }, { icon: 'message-square', title: 'New script added: mid-year reset', body: 'The Mid-Year Reset email and the Drifter → Builder script are in the library.', time: 'Yesterday', route: '/scripts?f=reset' }],
+    routes: R, default: '/home',
+    commands: (persona) => [
+      ...(persona.id === 'manager' ? [{ label: 'Start a 1:1', icon: 'timer', group: 'Actions', run: () => { const w = weekList(MGR_ID); NS.go('/one-on-one', { r: w.ones[0] ? w.ones[0].p.id : '' }); } }] : []),
+      { label: 'Take the Crucible', icon: 'flame', group: 'Actions', run: () => { QUIZ.phase = 'quiz'; QUIZ.i = 0; QUIZ.answers = []; NS.go('/crucible'); } },
+      { label: 'Copy the “Quick update on how we work” email', icon: 'copy', group: 'Actions', run: () => { const e = EMAILS[0]; copyText(`Subject: ${e.subject}\n\n${plain(e.body)}`, `Email · ${e.subject}`); } },
+      { label: 'Export the KPI scorecard', icon: 'download', group: 'Actions', run: () => NS.go('/kpis') },
+      { label: 'Mark all chapters read', icon: 'check-circle', group: 'Playbook', run: () => { const pr = progressOf(persona); CH.forEach((ch) => pr.read[ch.id] = 1); saveNow(); NS.toast('All chapters marked read'); NS.refresh(); } },
+      { label: 'Reset my reading progress', icon: 'undo', group: 'Playbook', run: () => { S.progress[persona.id] = { read: {}, tools: {} }; saveNow(); NS.toast('Reading progress reset', { type: 'info' }); NS.refresh(); } },
+    ],
+    search: (q) => { if (q.length < 2) return []; const ql = q.toLowerCase(); const out = []; CH.forEach((ch) => ch.sections.forEach((s) => { if (s.title.toLowerCase().includes(ql) || ch.title.toLowerCase().includes(ql)) out.push({ group: 'Playbook', label: s.title, hint: ch.label, run: () => NS.go('/playbook/' + ch.id, { s: s.id }) }); })); P.SCRIPTS.forEach((s) => { const txt = `${s.title || ''} ${s.dont || ''} ${s.say || ''} ${s.before ? s.before.name + ' ' + s.after.name : ''}`.toLowerCase(); if (txt.includes(ql)) out.push({ group: 'Scripts', label: s.title || `${s.before.name} → ${s.after.name}`, hint: 'Script library', run: () => NS.go('/scripts', { q }) }); }); EMAILS.forEach((e) => { if (e.subject.toLowerCase().includes(ql)) out.push({ group: 'Scripts', label: e.subject, hint: 'Email', run: () => NS.go('/scripts', { f: 'emails', q }) }); }); const ppl = NS.persona.id === 'manager' ? teamOf(MGR_ID) : MANAGERS; ppl.filter((p) => p.name.toLowerCase().includes(ql)).slice(0, 5).forEach((p) => out.push({ group: 'People', label: p.name, hint: p.title, avatar: NS.avatar(p, { size: 'xs' }), run: () => (NS.persona.id === 'manager' ? NS.go('/one-on-one', { r: p.id }) : NS.persona.id === 'hrbp' ? NS.go('/adoption', { q: p.name }) : NS.go('/kpis')) })); return out.slice(0, 10); },
+    onReset: () => P.store.clear(),
+  });
+})();
+</script>
+</body>
+</html>
