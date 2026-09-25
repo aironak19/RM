@@ -1,0 +1,1112 @@
+<!doctype html>
+<html lang="en" data-brand="lime">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Workforce Planner · Northstar Labs</title>
+<meta name="description" content="Workforce Planner — headcount, budget and org-design scenarios for Northstar Labs. Concept prototype with illustrative data, designed by Ronak Mehta.">
+<meta name="theme-color" content="#65A30D">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%2365A30D'/%3E%3Crect x='14' y='11' width='20' height='26' rx='3.5' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Cpath d='M18 17h12' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='19' cy='25' r='1.8' fill='%23fff'/%3E%3Ccircle cx='24' cy='25' r='1.8' fill='%23fff'/%3E%3Ccircle cx='29' cy='25' r='1.8' fill='%23fff'/%3E%3Ccircle cx='19' cy='31' r='1.8' fill='%23fff'/%3E%3Ccircle cx='24' cy='31' r='1.8' fill='%23fff'/%3E%3Ccircle cx='29' cy='31' r='1.8' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/ns.css">
+<script src="../shared/ns.js"></script>
+<script src="../shared/ns-data.js"></script>
+<style>
+  .tnum,.num{font-variant-numeric:tabular-nums}
+  .wp-bridge{display:flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:var(--r-lg);background:var(--surface);overflow:hidden;box-shadow:var(--shadow-xs)}
+  .wp-bridge > div{flex:1 1 110px;padding:12px 16px;border-right:1px solid var(--line-2);min-width:0}
+  .wp-bridge > div:last-child{border-right:0;background:var(--brand-soft)}
+  .wp-bridge span{display:block;font-size:10.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-3)}
+  .wp-bridge b{display:block;font-size:20px;font-variant-numeric:tabular-nums;margin-top:3px;color:var(--ink)}
+  .wp-bridge small{font-size:11.5px;color:var(--ink-3)}
+  .pg{font-size:13px}
+  .pg th,.pg td{padding:9px 10px}
+  .pg th{font-size:10.5px}
+  .pg thead tr.grp th{background:var(--surface-3);text-align:center;border-bottom:1px solid var(--line);color:var(--ink-2)}
+  .pg .unit{position:sticky;left:0;z-index:2;background:var(--surface);min-width:210px;max-width:260px}
+  .pg thead .unit{z-index:3;background:var(--surface-2)}
+  .pg thead tr.grp .unit{background:var(--surface-3)}
+  .pg tbody tr:hover td.unit{background:var(--surface-2)}
+  .pg .qs{border-left:1px solid var(--line)}
+  .pg .ed{cursor:text;border-radius:6px;transition:background var(--dur)}
+  .pg .ed:hover{box-shadow:inset 0 0 0 1.5px var(--brand-line,var(--brand))}
+  .pg .ed.edited{background:var(--brand-soft);color:var(--brand-text);font-weight:600}
+  .pg .ed input{width:58px;height:28px;text-align:right;font:inherit;font-variant-numeric:tabular-nums;border:1.5px solid var(--brand);border-radius:6px;background:var(--surface);color:var(--ink);padding:0 6px;outline:none;box-shadow:var(--focus)}
+  .pg tr.child td{background:var(--surface-2)}
+  .pg tr.child td.unit{padding-left:44px}
+  .pg tr.tot td{font-weight:700;color:var(--ink);background:var(--surface-2);border-top:1.5px solid var(--line-strong)}
+  .pg .sub{display:block;font-size:10.5px;color:var(--ink-4);font-weight:500;line-height:1.2}
+  .pg .xb{width:22px;height:22px;border-radius:6px;display:inline-grid;place-items:center;color:var(--ink-3);margin-right:6px;vertical-align:middle}
+  .pg .xb:hover{background:var(--surface-3);color:var(--ink)}
+  .pg .xb svg{width:14px;height:14px;transition:transform var(--dur)}
+  .pg .xb[aria-expanded="true"] svg{transform:rotate(90deg)}
+  .pg .lk{color:var(--ink-4)}
+  .pg .vp{color:var(--viz-div-pos);font-weight:600}.pg .vn{color:var(--bad);font-weight:600}
+  .dv{display:grid;gap:9px}
+  .dv-row{display:grid;grid-template-columns:minmax(96px,30%) minmax(0,1fr) 46px;gap:12px;align-items:center;font-size:12.5px;border-radius:8px}
+  .dv-track{position:relative;height:14px}
+  .dv-axis{position:absolute;left:50%;top:-4px;bottom:-4px;width:1px;background:var(--viz-axis)}
+  .dv-track i{position:absolute;top:2px;height:10px}
+  .dv-track i.pos{left:50%;background:var(--viz-div-pos);border-radius:0 3px 3px 0}
+  .dv-track i.neg{right:50%;background:var(--viz-div-neg);border-radius:3px 0 0 3px}
+  .dv-v{text-align:right;font-weight:600;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .dv-scale{display:grid;grid-template-columns:minmax(96px,30%) minmax(0,1fr) 46px;gap:12px;font-size:11px;color:var(--ink-4);margin-top:6px}
+  .dv-scale div{display:flex;justify-content:space-between}
+  .dec{display:flex;gap:12px;align-items:flex-start;padding:12px 0;border-bottom:1px solid var(--line-2)}
+  .dec:last-child{border-bottom:0;padding-bottom:0}.dec:first-child{padding-top:0}
+  .dec .t{font-weight:600;font-size:13px;color:var(--ink);line-height:1.35}.dec .s{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .pchip{display:inline-flex;align-items:center;gap:4px;font-size:11.5px;padding:3px 8px;border-radius:7px;background:var(--surface-3);color:var(--ink-2);font-variant-numeric:tabular-nums;white-space:nowrap}
+  .pchip b{color:var(--ink);font-weight:600}
+  .sc-card{display:grid;gap:14px;align-content:start}
+  .ns-card.is-base{border-color:var(--brand);box-shadow:0 0 0 1px var(--brand),var(--shadow-xs)}
+  .sc-kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+  .sc-kpis div{padding:10px 12px;border-radius:10px;background:var(--surface-2);min-width:0}
+  .sc-kpis span{font-size:11.5px;color:var(--ink-3);display:block}
+  .sc-kpis b{display:block;font-size:17px;font-variant-numeric:tabular-nums;color:var(--ink);margin-top:2px}
+  .sl{display:grid;gap:7px;padding:12px 0;border-bottom:1px solid var(--line-2)}
+  .sl .row{display:flex;justify-content:space-between;gap:10px;font-size:13px;color:var(--ink-2);font-weight:500}
+  .sl output{font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink)}
+  .sl p{font-size:11.5px;color:var(--ink-4)}
+  .rule{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:12px;align-items:center;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+  .rule:last-child{border-bottom:0}
+  .rule .ns-icon-box{width:30px;height:30px;border-radius:9px}
+  .pyr{display:grid;gap:6px}
+  .pyr-row{display:grid;grid-template-columns:minmax(0,1fr) 104px minmax(0,1fr);gap:8px;align-items:center;font-size:11.5px;font-variant-numeric:tabular-nums}
+  .pyr-row .l{display:flex;justify-content:flex-end;align-items:center;gap:6px;color:var(--ink-3)}
+  .pyr-row .r{display:flex;align-items:center;gap:6px;color:var(--ink-3)}
+  .pyr-row i{height:14px;display:block;min-width:2px}
+  .pyr-row .l i{background:var(--viz-1);border-radius:3px 0 0 3px}.pyr-row .r i{background:var(--viz-2);border-radius:0 3px 3px 0}
+  .pyr-row .mid{text-align:center;color:var(--ink-2);font-weight:600}
+  .kv{display:flex;justify-content:space-between;gap:10px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line-2)}
+  .kv:last-child{border-bottom:0}.kv span{color:var(--ink-3)}.kv b{font-variant-numeric:tabular-nums;color:var(--ink);text-align:right}
+  .cost-box{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+  .cost-box div{padding:10px 12px;background:var(--surface-2);border-radius:10px;min-width:0}
+  .cost-box span{display:block;font-size:11px;color:var(--ink-3)}.cost-box b{display:block;font-size:16px;font-variant-numeric:tabular-nums;margin-top:2px}
+  .case{font-size:13px;color:var(--ink-2);background:var(--surface-2);border-left:3px solid var(--brand);padding:10px 12px;border-radius:0 10px 10px 0}
+  .scen-strip{display:flex;gap:10px;align-items:center;flex-wrap:wrap;padding:10px 14px;border-radius:12px;background:var(--warn-bg);border:1px solid var(--warn-line);font-size:13px;margin-bottom:14px}
+  .gap-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;padding:12px 0;border-bottom:1px solid var(--line-2);align-items:center}
+  .gap-row:last-child{border-bottom:0}
+  .cell-note{font-size:11px;color:var(--ink-4)}
+  .legend-sq{display:inline-block;width:10px;height:10px;border-radius:3px;vertical-align:-1px;margin-right:6px}
+  @media (max-width:720px){.cost-box{grid-template-columns:1fr 1fr}.pg .unit{min-width:150px}.dv-row,.dv-scale{grid-template-columns:minmax(80px,34%) minmax(0,1fr) 40px;gap:8px}.pyr-row{grid-template-columns:minmax(0,1fr) 84px minmax(0,1fr)}}
+  @media print{.pg .unit{position:static}}
+</style>
+</head>
+<body>
+<script>
+(function () {
+  'use strict';
+  const D = NSData, U = NS.util, F = NS.fmt, raw = NS.raw, ic = NS.ic; const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const store = NS.store('workforce-planner');
+  const esc = NS.esc;
+  const TODAY = new Date('2026-09-24T10:00:00');
+  const TODAY_ISO = '2026-09-24';
+  const PEOPLE = D.people;
+  const QS = ['Q1', 'Q2', 'Q3', 'Q4'];
+  const DEPTS = ['Engineering', 'Product', 'Design', 'Sales', 'Customer Success', 'Marketing', 'People', 'Finance', 'Legal & Compliance', 'IT & Workplace', 'Executive'];
+  const PORTFOLIO = ['Engineering', 'Product', 'Design'];
+  const INDIA = new Set(['MUM', 'BLR', 'PUN']);
+  const SHORT = { 'Core Services': 'Core Services', 'Infrastructure & SRE': 'Infra & SRE', 'Developer Experience': 'Dev Experience', 'Quality Engineering': 'Quality Eng.', 'Product Management': 'Product Mgmt', 'Product Operations': 'Product Ops', 'Customer Success': 'Cust. Success', 'Legal & Compliance': 'Legal', 'IT & Workplace': 'IT & Workplace', 'Engineering Leadership': 'Eng. leadership', 'Revenue Leadership': 'Revenue leadership' };
+  const short = (s) => SHORT[s] || s;
+  const m$ = (n, d) => F.money(n, { compact: true, d: d ?? 1 });
+  const sgn = (n, f) => (n === 0 || n == null ? (f ? f(0) : '0') : (n > 0 ? '+' : '−') + (f ? f(Math.abs(n)) : F.int(Math.abs(n))));
+  const clone = (o) => JSON.parse(JSON.stringify(o));
+  const iso = (d) => new Date(d).toISOString().slice(0, 10);
+  // largest-remainder allocation: integers that sum exactly to `total`
+  const alloc = (total, weights) => {
+    const n = weights.length; if (!n) return [];
+    const sign = total < 0 ? -1 : 1, T = Math.abs(Math.round(total)), W = U.sum(weights.map((w) => Math.max(0, w)));
+    const out = weights.map(() => 0); if (!T) return out; if (!W) { out[0] = T * sign; return out; }
+    const r0 = weights.map((w) => (Math.max(0, w) / W) * T), fl = r0.map((v) => Math.floor(v + 1e-9)); let rem = T - U.sum(fl);
+    const order = r0.map((v, i) => [v - fl[i], i]).sort((a, b) => b[0] - a[0] || a[1] - b[1]);
+    for (let k = 0; k < rem; k++) fl[order[k % n][1]]++;
+    return fl.map((v) => v * sign);
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* 1. Domain — cost model, org units, the FY26 plan                    */
+  /* ------------------------------------------------------------------ */
+  // function multipliers recovered from the band structure (band mid = level mid × function × location tier)
+  const FN = {};
+  D.departments.forEach((d) => { const ps = PEOPLE.filter((p) => p.dept === d.name && p.track !== 'E'); FN[d.name] = U.round(U.median(ps.map((p) => p.band.mid / (D.levelMap[p.level].mid * D.locMap[p.location].tier))), 2); });
+  FN.Executive = 1;
+  const bandMid = (level, dept, loc) => Math.round((D.levelMap[level].mid * (FN[dept] || 0.9) * D.locMap[loc].tier) / 500) * 500;
+  const HIRE_MIX = { P1: 0.15, P2: 0.4, P3: 0.35, P4: 0.1 }; // typical level mix of a new role
+  const hireMid = (dept, loc) => U.sum(Object.entries(HIRE_MIX).map(([l, w]) => w * bandMid(l, dept, loc)));
+
+  const deptDef = (name) => D.departments.find((d) => d.name === name);
+  const UNITS = Object.entries(U.groupBy(PEOPLE, (p) => p.dept + '|' + p.org)).map(([key, ps]) => { const [dept, org] = key.split('|'); return { key, dept, org, people: ps, hc: ps.length, lead: /Leadership$/.test(org) || org === 'Executive' }; });
+  const orgIdx = (u) => { if (u.lead) return -1; const d = deptDef(u.dept); return d ? d.orgs.findIndex((o) => o.name === u.org) : 0; };
+  UNITS.sort((a, b) => DEPTS.indexOf(a.dept) - DEPTS.indexOf(b.dept) || orgIdx(a) - orgIdx(b));
+  const UBY = Object.fromEntries(UNITS.map((u) => [u.key, u]));
+  UNITS.forEach((u) => {
+    const ps = u.people;
+    u.teams = U.uniq(ps.map((p) => p.team)).filter((t) => !/Leadership$|^Office of/.test(t));
+    u.locShare = {}; ps.forEach((p) => { u.locShare[p.location] = (u.locShare[p.location] || 0) + 1 / u.hc; });
+    u.india = ps.filter((p) => INDIA.has(p.location)).length; u.indiaShare = u.india / u.hc;
+    const core = ps.filter((p) => p.track === 'IC' && ['P1', 'P2', 'P3', 'P4'].includes(p.level));
+    u.avgIC = core.length ? U.avg(core, 'salary') : U.avg(ps, 'salary');
+    u.p3 = (ps.filter((p) => p.level === 'P3')[0] ? U.avg(ps.filter((p) => p.level === 'P3'), 'salary') : u.avgIC);
+    u.contractors = ps.filter((p) => p.type === 'Contract').length;
+    u.salFTE = U.sum(ps.filter((p) => p.type !== 'Contract'), 'salary'); u.salCon = U.sum(ps.filter((p) => p.type === 'Contract'), 'salary');
+    u.mgrs = ps.filter((p) => p.directs > 0);
+    const locs = Object.keys(u.locShare);
+    const blend = (ls, fb) => { const tot = U.sum(ls.map((l) => u.locShare[l])); return tot ? U.sum(ls.map((l) => (u.locShare[l] / tot) * hireMid(u.dept, l))) : hireMid(u.dept, fb); };
+    u.costIN = blend(locs.filter((l) => INDIA.has(l)), 'BLR'); u.costOUT = blend(locs.filter((l) => !INDIA.has(l)), 'AUS');
+  });
+
+  // FY26 plan by department: [full-year net adds, YTD planned net (Q1–Q3), YTD actual net]
+  const DEPT_PLAN = { Engineering: [96, 50, 44], Product: [9, 5, 5], Design: [6, 2, 3], Sales: [24, 11, 14], 'Customer Success': [14, 8, 8], Marketing: [6, 4, 3], People: [5, 3, 2], Finance: [4, 2, 2], 'Legal & Compliance': [2, 2, 0], 'IT & Workplace': [3, 2, 1], Executive: [0, 0, 0] };
+  const ORG_GROWTH = { 'Data & ML': 1.7, Security: 1.35, 'Infrastructure & SRE': 1.1, Platform: 1.0, 'Core Services': 0.75, Frontend: 0.85, Mobile: 0.6, 'Developer Experience': 0.8, 'Quality Engineering': 0.55, 'Product Management': 1.25, 'Product Operations': 0.6 };
+  const ORG_EXEC = { 'Data & ML': 1.2, Platform: 0.6, Security: 0.78, 'Core Services': 1.15, 'Quality Engineering': 1.25, Mobile: 0.95, Frontend: 1.02, 'Infrastructure & SRE': 1.0, 'Developer Experience': 1.08 };
+  DEPTS.forEach((d) => {
+    const us = UNITS.filter((u) => u.dept === d && !u.lead); const [fy, yp, ya] = DEPT_PLAN[d];
+    const w = us.map((u) => u.hc * (ORG_GROWTH[u.org] || 1));
+    const a1 = alloc(fy, w), a2 = alloc(yp, w), a3 = alloc(ya, us.map((u, i) => w[i] * (ORG_EXEC[u.org] || 1)));
+    us.forEach((u, i) => { u.fy = a1[i]; u.ytdPlan = a2[i]; u.ytdAct = a3[i]; });
+  });
+  UNITS.forEach((u) => { if (u.fy == null) u.fy = u.ytdPlan = u.ytdAct = 0; u.opening = u.hc - u.ytdAct; u.target = u.opening + u.fy; });
+  // quarterly split with exact company totals (company actuals match the monthly headcount series)
+  const PLAN_Q = [24, 30, 35], ACT_Q = [31, 21, 30];
+  const splitQ = (tots, key) => { const rem = UNITS.map((u) => u[key]); const out = UNITS.map(() => []); tots.forEach((T, qi) => { const a = qi === tots.length - 1 ? rem.slice() : alloc(T, rem); a.forEach((v, i) => { out[i][qi] = v; rem[i] -= v; }); }); return out; };
+  const pQ = splitQ(PLAN_Q, 'ytdPlan'), aQ = splitQ(ACT_Q, 'ytdAct');
+  const rs = NS.rng(2611);
+  UNITS.forEach((u, i) => {
+    u.plan = []; u.act = []; let hp = u.opening, ha = u.opening;
+    for (let q = 0; q < 3; q++) {
+      const pn = pQ[i][q], an = aQ[i][q];
+      const px = u.lead ? 0 : Math.round(hp * 0.02), pb = Math.round(px * 0.85);
+      const ex = u.lead ? 0 : ha * [0.019, 0.022, 0.018][q]; const ax = Math.floor(ex) + (rs() < ex % 1 ? 1 : 0); const ab = Math.max(0, ax - (rs() < 0.22 ? 1 : 0));
+      u.plan.push({ h: pn - pb + px, b: pb, x: px }); u.act.push({ h: an - ab + ax, b: ab, x: ax });
+      hp += pn; ha += an;
+    }
+  });
+  const netOf = (c) => c.h + c.b - c.x;
+  const SETTINGS0 = { attr: 8, merit: 3.5, backfill: 85, lead: 52, basis: 'mid', oncost: 24, margin: 30, mgrShare: 6, fyStart: '2026-01-01', fyEnd: '2026-12-31' };
+  // Q4 plan: exits from the attrition assumption, backfills at the company backfill ratio, new roles close the gap to the EOY target
+  const deriveQ4 = (st, q4, edited = {}) => {
+    const out = q4 ? clone(q4) : {};
+    UNITS.forEach((u) => { const c = out[u.key] || (out[u.key] = { h: 0, b: 0, x: 0 }); if (!edited[u.key + ':x']) c.x = u.lead ? 0 : Math.round((u.hc * st.attr) / 400); });
+    const free = UNITS.filter((u) => !u.lead && !edited[u.key + ':b']), fixedB = U.sum(UNITS.filter((u) => edited[u.key + ':b']), (u) => out[u.key].b);
+    const bT = Math.max(0, Math.round((U.sum(UNITS, (u) => out[u.key].x) * st.backfill) / 100) - fixedB), bA = alloc(bT, free.map((u) => out[u.key].x));
+    free.forEach((u, i) => { out[u.key].b = bA[i]; });
+    if (!q4) UNITS.forEach((u) => { const c = out[u.key]; c.h = Math.max(0, u.fy - u.ytdAct - c.b + c.x); });
+    return out;
+  };
+
+  /* people-programs budget (FY26, $3.6M) */
+  const PROGRAMS = [
+    { id: 'rr', name: 'Rewards & recognition', short: 'Rewards', budget: 1100000, ytd: 790000, fc: 330000, w: [6, 7, 8, 9, 8, 9, 10, 9, 10, 9, 9, 17], owner: 'NS-1930', note: 'Spot awards, service anniversaries and the year-end recognition awards.' },
+    { id: 'ld', name: 'Learning & development', short: 'L&D', budget: 900000, ytd: 756000, fc: 190000, w: [5, 7, 9, 10, 11, 10, 8, 11, 13, 8, 8, 4], owner: null, team: 'Learning & Development', note: 'Leadership programme, technical certifications and the learning platform licence.' },
+    { id: 'ops', name: 'People Ops & HRIS', short: 'People Ops', budget: 600000, ytd: 462000, fc: 120000, w: [22, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6, 6], owner: 'NS-1910', note: 'HRIS licences (annual, paid in January), payroll integrations and analytics modules.' },
+    { id: 'rec', name: 'Recruiting tools & events', short: 'Recruiting', budget: 500000, ytd: 318000, fc: 150000, w: [10, 8, 9, 7, 8, 6, 7, 9, 10, 12, 10, 8], owner: 'NS-1919', note: 'ATS seats, sourcing tools, campus and community events.' },
+    { id: 'well', name: 'Wellbeing', short: 'Wellbeing', budget: 300000, ytd: 201000, fc: 96000, w: [9, 8, 8, 8, 8, 8, 8, 8, 9, 8, 8, 8], owner: 'NS-1901', note: 'Employee assistance programme, wellness stipends and mental-health first aiders.' },
+    { id: 'cul', name: 'Engagement & culture', short: 'Culture', budget: 200000, ytd: 149000, fc: 60000, w: [5, 5, 6, 8, 7, 12, 7, 6, 10, 6, 6, 18], owner: 'NS-1901', note: 'Offsites, celebrations across 12 offices and the engagement survey platform.' },
+  ];
+  PROGRAMS.forEach((p) => { const a = alloc(p.ytd / 1000, p.w.slice(0, 9)).map((v) => v * 1000), f = alloc(p.fc / 1000, p.w.slice(9)).map((v) => v * 1000); p.monthly = a.concat(f); if (!p.owner) { const t = D.teams.find((x) => x.name === p.team); p.owner = t ? t.managerId : 'NS-1901'; } });
+  const COMMITMENTS = [
+    { prog: 'ld', title: 'Leadership programme · cohort 3 (24 managers)', amount: 64000, date: '2026-10-14', status: 'Contracted' },
+    { prog: 'rr', title: 'Year-end recognition awards', amount: 185000, date: '2026-12-10', status: 'Planned' },
+    { prog: 'ld', title: 'Cloud & security certification vouchers', amount: 48000, date: '2026-10-31', status: 'Planned' },
+    { prog: 'rec', title: 'Campus season · four university events', amount: 42000, date: '2026-10-20', status: 'Contracted' },
+    { prog: 'ops', title: 'HRIS analytics module go-live', amount: 38000, date: '2026-11-03', status: 'PO raised' },
+    { prog: 'well', title: 'Employee assistance programme renewal', amount: 36000, date: '2026-11-30', status: 'Contracted' },
+    { prog: 'cul', title: 'Year-end celebrations · 12 offices', amount: 34000, date: '2026-12-12', status: 'Planned' },
+    { prog: 'rec', title: 'ATS seat expansion (+15 hiring managers)', amount: 22000, date: '2026-10-05', status: 'PO raised' },
+  ];
+
+  /* headcount requests (seeded; approved + unfilled = open requisitions) */
+  const RSTAT = { Draft: 'neutral', 'Under review': 'warn', Approved: 'brand', Declined: 'bad', Filled: 'ok' };
+  const ENG_ROLE = { backend: 'Backend Engineer', data: 'Data Engineer', frontend: 'Frontend Engineer', mobile: 'Mobile Engineer', infra: 'Site Reliability Engineer', security: 'Security Engineer', devex: 'Developer Productivity Engineer', qa: 'QA Automation Engineer' };
+  const CASES = {
+    backend: ['Second on-call pod for {t}; the team runs a 1-in-4 pager rotation with 38% more API traffic than in January.', 'Own multi-region failover for {t} ahead of the FY27 enterprise SLA (99.95%).'],
+    data: ['Scale {t} for the Applied AI launch — nightly batch windows already use 92% of the budget.', 'Data-quality ownership for tier-1 tables in {t}; three incidents this quarter traced to schema drift.'],
+    frontend: ['{t} carries the console redesign and the onboarding revamp in the same quarter with one engineer per surface.', 'WCAG 2.2 AA conformance for {t} before the public-sector tender in FY27 Q1.'],
+    mobile: ['Offline sync for {t} slipped a quarter; a second senior engineer de-risks the FY27 Q1 release.', '{t} release trains move to weekly and need a dedicated release owner.'],
+    infra: ['{t} supports 42 services with 9 engineers; toil is 46% of sprint capacity.', 'Cost engineering for {t}: cloud spend grew 22% against 11% revenue growth.'],
+    security: ['SOC 2 Type II scope now covers EU data residency; {t} needs a control owner.', '{t} has 11 tier-1 services without a current threat model.'],
+    devex: ['{t}: median CI time is 31 minutes against a 15-minute FY27 target.', 'Ephemeral preview environments on every PR — {t} has no owner for the preview stack.'],
+    qa: ['{t} automates the remaining 40% of critical journeys before release trains go weekly.', 'Performance testing for the FY27 Q1 scale event is unstaffed in {t}.'],
+    product: ['{t} has one PM across three squads; discovery dropped to four interviews a quarter.', 'FY27 pricing & packaging needs a dedicated owner in {t}.'],
+    design: ['{t} supports 11 squads with 7 designers; research requests wait five weeks.', 'Design-system adoption has stalled at 71% — {t} needs a systems designer.'],
+    sales: ['{t} carries 38 named accounts per AE against a target of 25; pipeline coverage is 2.4×.', 'New territory for {t} after the partner launch — 60 qualified accounts are unassigned.'],
+    cs: ['{t} book size is 31 accounts per CSM against a target of 22, with two at-risk Q4 renewals.', 'Follow-the-sun coverage for {t}; APAC first response is 7.5 hours.'],
+    marketing: ['{t} runs three launches in Q4 with one owner; enablement assets slipped twice.', 'Pipeline attribution in {t} is manual — needs a marketing-ops analyst.'],
+    people: ['{t} ratio is 1:180 against a 1:120 target after Engineering growth.', 'FY27 cycle readiness: {t} needs an HRIS analyst for the performance-module go-live.'],
+    ta: ['{t} carries 28 open reqs with 9 recruiters; time to fill is 52 days against 45.'],
+    finance: ['Month-end close in {t} takes 9 days; the FY27 target is 5.', 'Revenue recognition for multi-year deals needs a specialist in {t}.'],
+    legal: ['Contract turnaround in {t} is 11 days against a 5-day target; 70% of volume is NDAs and order forms.'],
+    it: ['{t} runs one IT engineer per 180 employees; device compliance is 93% against 99%.'],
+  };
+  const teamInfo = (name) => D.teams.find((t) => t.name === name);
+  const roleTitle = (level, dept, team) => { const t = teamInfo(team); if (dept === 'Engineering' && t) { if (level.startsWith('M')) return `Engineering Manager, ${team}`; const pre = { P1: 'Associate ', P2: '', P3: 'Senior ', P4: 'Principal ', P5: 'Staff ' }[level] ?? ''; return pre + (ENG_ROLE[t.skillKey] || 'Software Engineer'); } return D.titleFor(level, dept, team); };
+  const approverFor = (dept) => (dept === 'Engineering' ? 'NS-1003' : 'NS-1006');
+  const seedRequests = (q4) => {
+    const r = NS.rng(8842), out = [];
+    const plannable = UNITS.filter((u) => !u.lead && u.teams.length);
+    const mk = (o) => { const ti = teamInfo(o.team); const u = UBY[ti.dept + '|' + ti.org]; return { dept: ti.dept, org: ti.org, unit: u.key, requester: o.requester || ti.managerId, approver: approverFor(ti.dept), trail: [], type: 'New role', title: o.title || roleTitle(o.level, ti.dept, o.team), ...o }; };
+    const lvl = () => { const x = r(); return x < 0.07 ? 'P1' : x < 0.42 ? 'P2' : x < 0.82 ? 'P3' : x < 0.97 ? 'P4' : 'M3'; };
+    const locIn = (team) => { const ps = PEOPLE.filter((p) => p.team === team && p.track === 'IC'); return ps.length ? ps[Math.floor(r() * ps.length)].location : 'AUS'; };
+    const add = (status, u, created) => { const team = u.teams[Math.floor(r() * u.teams.length)]; const level = lvl(); const ti = teamInfo(team); const cs = CASES[ti.skillKey] || CASES.backend; return mk({ status, team, level, loc: locIn(team), created, type: r() < 0.24 ? 'Backfill' : 'New role', summary: cs[Math.floor(r() * cs.length)].replace('{t}', team) }); };
+    const stages = []; [['Offer accepted', 5], ['Offer out', 4], ['Interviewing', 11], ['Sourcing', 8]].forEach(([s, n]) => { for (let i = 0; i < n; i++) stages.push(s); });
+    for (let i = stages.length - 1; i > 0; i--) { const j = Math.floor(r() * (i + 1)); [stages[i], stages[j]] = [stages[j], stages[i]]; }
+    const ap = alloc(28, plannable.map((u) => q4[u.key].h)); let si = 0;
+    plannable.forEach((u, i) => { for (let k = 0; k < ap[i]; k++) { const q = add('Approved', u, iso(U.addDays('2026-07-01', Math.floor(r() * 68)))); q.stage = stages[si++]; q.candidates = { Sourcing: 6 + Math.floor(r() * 10), Interviewing: 3 + Math.floor(r() * 5), 'Offer out': 1, 'Offer accepted': 1 }[q.stage]; out.push(q); } });
+    const fl = alloc(12, plannable.map((u) => u.ytdAct + u.act[2].h * 0.2));
+    plannable.forEach((u, i) => { for (let k = 0; k < fl[i]; k++) { const q = add('Filled', u, iso(U.addDays('2026-03-02', Math.floor(r() * 100)))); const hire = PEOPLE.filter((p) => p.team === q.team && p.tenure < 0.45)[0]; q.filledBy = hire ? hire.id : null; q.filledAt = hire ? hire.hireDate : iso(U.addDays(q.created, 55)); out.push(q); } });
+    // hand-written live cases
+    [
+      { status: 'Under review', team: 'ML Platform', title: 'Senior ML Platform Engineer', level: 'P3', loc: 'BLR', created: '2026-09-16', summary: 'GPU scheduling and model-serving capacity for the Applied AI launches; ML Platform supports four product teams with a 1-in-3 on-call.', why: 'Two FY27 Q1 launches depend on shared GPU pools that today are managed by hand. Without a dedicated owner, Applied AI will run its own serving stack — duplicating spend.', risk: 'Launch dates for smart search and forecasting slip by one quarter; estimated $1.2M ARR at risk.', alt: 'Contractor for six months (−$38K vs hire, no on-call ownership); re-prioritise Recommendations (declined by product).' },
+      { status: 'Under review', team: 'Application Security', level: 'P4', loc: 'BER', created: '2026-09-18', summary: 'Principal security engineer to own SOC 2 Type II controls for the EU data-residency region.', why: 'The EU region goes live in FY27 Q1 and moves 14 controls into audit scope. AppSec has no principal-level owner in Europe.', risk: 'Audit exceptions on the first EU report; two enterprise deals in Germany are contingent on the certificate.', alt: 'Extend the external audit firm (~$95K/yr, advisory only).' },
+      { status: 'Under review', team: 'SRE', level: 'P2', loc: 'PUN', created: '2026-09-19', summary: 'Third SRE in Pune to complete a follow-the-sun on-call rotation for tier-1 services.', why: 'APAC incidents are handled by the Austin rotation overnight; 31% of pages this quarter fired outside Americas hours.', risk: 'Burn-out risk in the Austin rotation (engagement 61, down 9 pts).', alt: 'Paid on-call stipend for Europe (partial coverage only).' },
+      { status: 'Under review', team: 'Enterprise Sales — Europe', level: 'P4', loc: 'LON', created: '2026-09-15', summary: 'Enterprise AE for the DACH territory opened by the new EU data-residency region.', why: '60 qualified accounts in DACH are unassigned; partners sourced $2.1M of pipeline there in Q3.', risk: 'Pipeline ages out to competitors; partner commitments at risk.', alt: 'Split the territory across two UK AEs (coverage 45 accounts each).' },
+      { status: 'Under review', team: 'Customer Success Management', level: 'P3', loc: 'MUM', created: '2026-09-17', summary: 'Senior CSM for APAC enterprise renewals — book size is 31 accounts against a target of 22.', why: 'Seven APAC enterprise renewals land in FY27 H1 ($3.4M ARR); health scores for three are amber.', risk: 'Gross revenue retention in APAC falls below 90%.', alt: 'Move two accounts to the scaled CS motion.' },
+      { status: 'Draft', team: 'Billing Platform', level: 'M3', loc: 'MUM', created: '2026-09-22', requester: 'NS-1902', summary: 'Engineering manager to split Billing Platform into two teams — the current manager has 15+ direct reports.', why: 'Span of control of 15 is double the 6–8 design target; 1:1 cadence has slipped to monthly and engagement in the team is the lowest in Platform.', risk: 'Attrition among senior engineers; delivery of usage-based billing slips.', alt: 'Appoint a team lead from within (lower cost, but no people-management capacity).' },
+      { status: 'Draft', team: 'Identity & Access', level: 'P3', loc: 'MUM', created: '2026-09-23', requester: 'NS-1902', summary: 'Senior backend engineer for a second on-call rotation on the Identity service.', why: 'Token rotation shipped; the team now carries OAuth 2.1 migration support for 140 customer integrations.', risk: 'On-call load stays at 1-in-4; two engineers flagged as flight risks.', alt: 'Borrow one engineer from Developer APIs for Q4.' },
+      { status: 'Draft', team: 'Data Pipelines', level: 'P2', loc: 'PUN', created: '2026-09-24', requester: 'NS-1902', summary: 'Data engineer to migrate the remaining nightly batch jobs to streaming.', why: '14 of 20 event types are migrated; the last six block the freshness SLA for Analytics Platform.', risk: 'Freshness SLA (< 5 min) missed for tier-1 dashboards.', alt: 'Contractor for the migration only (four months).' },
+      { status: 'Declined', team: 'Growth Engineering', level: 'P3', loc: 'SJC', created: '2026-08-12', summary: 'Senior frontend engineer for experimentation tooling.', reason: 'Frontend is at its Q4 plan; re-submit against the FY27 plan with the experimentation roadmap.' },
+      { status: 'Declined', team: 'Events & Field', level: 'P2', loc: 'NYC', created: '2026-08-26', summary: 'Field marketing manager for North American user groups.', reason: 'Fund through agency support in Q4; revisit once FY27 events calendar is final.' },
+      { status: 'Declined', team: 'Documentation', level: 'P2', loc: 'AUS', created: '2026-09-02', summary: 'Technical writer for API reference docs.', reason: 'Placed in Bengaluru instead at 34% of the cost — see the re-submitted request.' },
+    ].forEach((o) => out.push(mk(o)));
+    out.sort((a, b) => (a.created > b.created ? 1 : a.created < b.created ? -1 : 0));
+    out.forEach((q, i) => {
+      q.id = 'HC-26-' + String(i + 1).padStart(3, '0');
+      const hrbp = PORTFOLIO.includes(q.dept) ? 'NS-1902' : 'NS-1901', d = (n) => iso(U.addDays(q.created, n));
+      q.trail = [{ date: q.created, who: q.requester, what: q.status === 'Draft' ? 'Draft created' : 'Request submitted' }];
+      if (q.status !== 'Draft') { q.trail.push({ date: d(2), who: hrbp, what: 'HRBP review', note: 'Checked against plan capacity and the org-design rules.' }); q.trail.push({ date: d(3), who: 'NS-1930', what: 'Finance check', note: 'Cost validated at band midpoint for the location.' }); }
+      if (q.status === 'Approved' || q.status === 'Filled') { q.trail.push({ date: d(6), who: q.approver, what: 'Approved', note: 'Within the committed FY26 plan.' }); q.trail.push({ date: d(8), who: 'NS-1919', what: 'Requisition opened', note: 'Assigned to recruiting.' }); }
+      if (q.status === 'Filled') q.trail.push({ date: q.filledAt, who: 'NS-1920', what: 'Offer accepted · filled' });
+      if (q.status === 'Declined') q.trail.push({ date: d(6), who: q.approver, what: 'Declined', note: q.reason });
+      if (!q.why) { q.why = `${q.summary} The role is ${q.type === 'Backfill' ? 'a like-for-like backfill of a Q3 leaver' : 'part of the unit’s Q4 plan'}.`; q.risk = 'Delivery commitments for the unit slip into FY27; load shifts to an already-stretched team.'; q.alt = 'Contractor cover or re-prioritisation of the roadmap were considered and rejected by the hiring manager.'; }
+    });
+    return out;
+  };
+
+  /* scenarios */
+  const SCEN0 = () => [
+    { id: 'base', name: 'Base plan', desc: 'The committed FY26 plan: Q4 hires as planned, backfills at the assumption rate, current location mix.', hire: 100, backfill: 100, attr: 8, merit: 3.5, conv: 0, offshore: null, span: null, owner: 'NS-1902', seeded: true },
+    { id: 'freeze', name: 'Hiring freeze (Q4)', desc: 'Only offers already out land in Q4; backfills limited to critical roles; merit held at 3.0%.', hire: 10, backfill: 50, attr: 8, merit: 3.0, conv: 0, offshore: null, span: null, owner: 'NS-1003', shared: '2026-09-23', seeded: true },
+    { id: 'accel', name: 'Accelerated growth', desc: '+15% Q4 hires to pull FY27 platform and AI roles forward; every exit is backfilled.', hire: 115, backfill: 115, attr: 8, merit: 3.5, conv: 0, offshore: null, span: null, owner: 'NS-1006', seeded: true },
+    { id: 'eff', name: 'Efficiency', desc: 'Convert 60% of contractors, place 60% of new hiring in the India hubs and appoint team leads to bring spans toward 7.', hire: 90, backfill: 85, attr: 8, merit: 3.5, conv: 60, offshore: 60, span: 7, owner: 'NS-1930', seeded: true },
+  ];
+
+  /* ------------------------------------------------------------------ */
+  /* 2. State — seeded then persisted                                    */
+  /* ------------------------------------------------------------------ */
+  const build = () => {
+    const st = { v: 1, settings: { ...SETTINGS0 }, q4: {}, edited: {}, scenarios: SCEN0(), baseId: 'base', budget: { adj: { rec: -15000, rr: 15000 }, moves: [{ id: 'mv1', from: 'rec', to: 'rr', amount: 15000, reason: 'Spot-award pool for the Q2 platform migration, funded from unused campus-event budget.', by: 'NS-1930', date: '2026-06-18' }] }, orgActions: {}, skillActions: {}, activity: [] };
+    st.q4 = deriveQ4(st.settings);
+    st.requests = seedRequests(st.q4);
+    st.commits = [{ v: 1, date: '2026-01-09', by: 'NS-1006', note: 'Board-approved FY26 plan · EOY 1,138', eoy: 1138 }, { v: 2, date: '2026-07-03', by: 'NS-1930', note: 'Mid-year re-plan · 38 FY27 platform & AI roles pulled into Q4', eoy: 1138 }, { v: 3, date: '2026-09-22', by: 'NS-1902', note: 'Q3 re-forecast · Q4 net adds set to 87 to absorb the 7-hire YTD shortfall', eoy: 1138 }];
+    st.committed = { q4: clone(st.q4), edited: {} };
+    st.nextReq = st.requests.length + 1;
+    return st;
+  };
+  let S = store.get('state');
+  if (!S || S.v !== 1) S = build();
+  const save = U.debounce(() => store.set('state', S), 200);
+  const saveNow = () => store.set('state', S);
+  const log = (msg) => { S.activity.unshift({ t: new Date().toISOString(), msg }); S.activity = S.activity.slice(0, 30); save(); };
+
+  /* ------------------------------------------------------------------ */
+  /* 3. Engines — scope, cost, scenario model, org metrics               */
+  /* ------------------------------------------------------------------ */
+  const scopeOf = (persona) => (persona.id === 'exec' ? { id: 'eng', label: 'Engineering', depts: ['Engineering'], rows: 'org' } : persona.id === 'hrbp' ? { id: 'portfolio', label: 'Engineering, Product & Design', depts: PORTFOLIO, rows: 'dept' } : { id: 'company', label: 'Northstar Labs', depts: DEPTS, rows: 'dept' });
+  const unitsIn = (sc) => UNITS.filter((u) => sc.depts.includes(u.dept));
+  const planUnits = (us) => us.filter((u) => !u.lead);
+  const costMult = () => (S.settings.basis === 'loaded' ? 1 + S.settings.oncost / 100 : 1);
+  const payNow = (us) => U.sum(us, (u) => u.salFTE + u.salCon * (1 + S.settings.margin / 100)) * costMult();
+  const newCost = (u, shift = 0) => { const s = U.clamp(u.indiaShare + shift, 0, 1); return (s * u.costIN + (1 - s) * u.costOUT) * costMult(); };
+  const backCost = (u) => u.avgIC * 1.03 * costMult();
+  const exitCost = (u) => u.avgIC * costMult();
+  const dRun = (u, c, shift = 0) => c.h * newCost(u, shift) + c.b * backCost(u) - c.x * exitCost(u);
+  const reqsIn = (us) => { const ks = new Set(us.map((u) => u.key)); return S.requests.filter((q) => ks.has(q.unit)); };
+  const openReqs = (us) => reqsIn(us).filter((q) => q.status === 'Approved');
+  const baseOff = (us) => { const w = U.sum(us, (u) => S.q4[u.key].h); return w ? (U.sum(us, (u) => S.q4[u.key].h * u.indiaShare) / w) * 100 : (U.sum(us, 'india') / U.sum(us, 'hc')) * 100; };
+  const agg = (us) => {
+    const o = { hc: U.sum(us, 'hc'), opening: U.sum(us, 'opening'), target: U.sum(us, 'target'), fy: U.sum(us, 'fy'), ytdPlan: U.sum(us, 'ytdPlan'), ytdAct: U.sum(us, 'ytdAct') };
+    o.plan = [0, 1, 2].map((q) => ({ h: U.sum(us, (u) => u.plan[q].h), b: U.sum(us, (u) => u.plan[q].b), x: U.sum(us, (u) => u.plan[q].x) }));
+    o.act = [0, 1, 2].map((q) => ({ h: U.sum(us, (u) => u.act[q].h), b: U.sum(us, (u) => u.act[q].b), x: U.sum(us, (u) => u.act[q].x) }));
+    o.q4 = { h: U.sum(us, (u) => S.q4[u.key].h), b: U.sum(us, (u) => S.q4[u.key].b), x: U.sum(us, (u) => S.q4[u.key].x) };
+    o.q4net = netOf(o.q4); o.eoy = o.hc + o.q4net; o.attain = o.ytdPlan ? o.ytdAct / o.ytdPlan : 1;
+    o.planNow = o.opening + o.ytdPlan; o.fcEoy = o.hc + Math.round(o.q4net * U.clamp(o.attain, 0.6, 1.05));
+    o.dRun = U.sum(us, (u) => dRun(u, S.q4[u.key])); o.pay = payNow(us); o.payEoy = o.pay + o.dRun;
+    const mg = us.flatMap((u) => u.mgrs); o.mgrs = mg.length; o.span = mg.length ? U.sum(mg, 'directs') / mg.length : 0;
+    o.india = U.sum(us, 'india'); o.contractors = U.sum(us, 'contractors'); o.open = openReqs(us).length;
+    return o;
+  };
+  const scen = (id) => S.scenarios.find((x) => x.id === id) || S.scenarios[0];
+  const run = (sc, us) => {
+    const st = S.settings, cells = us.map((u) => S.q4[u.key]);
+    const N = U.sum(cells, 'h'), B = U.sum(cells, 'b'), X = U.sum(cells, 'x'), af = sc.attr / st.attr;
+    const nT = Math.round((N * sc.hire) / 100), xT = Math.round(X * af), bT = Math.round(((B * af) * sc.backfill) / 100);
+    const nU = alloc(nT, cells.map((c) => c.h)), xU = alloc(xT, cells.map((c) => c.x)), bU = alloc(bT, cells.map((c) => c.b));
+    const b0 = baseOff(us), off = sc.offshore == null ? b0 : sc.offshore, shift = (off - b0) / 100;
+    const rows = us.map((u, i) => { const c = { h: nU[i], b: bU[i], x: xU[i] }; return { u, c, net: netOf(c), d: dRun(u, c, shift) }; });
+    const hcNow = U.sum(us, 'hc'), eoy = hcNow + nT + bT - xT;
+    const mg = us.flatMap((u) => u.mgrs), directs = U.sum(mg, 'directs');
+    const newMgrs = Math.round((nT * st.mgrShare) / 100);
+    const cand = sc.span ? U.sum(mg.filter((m) => m.track === 'M' && m.directs >= sc.span + 3), (m) => Math.ceil(m.directs / sc.span) - 1) : 0;
+    const leads = sc.span ? Math.min(cand, Math.max(0, Math.ceil((directs + nT + bT - xT) / sc.span) - mg.length - newMgrs)) : 0;
+    const p3 = U.sum(us, (u) => u.p3 * u.hc) / (hcNow || 1);
+    const leadCost = leads * p3 * 0.08 * costMult();
+    const conv = U.sum(us, 'salCon') * (sc.conv / 100) * (st.margin / 100) * costMult();
+    const now = payNow(us), dPay = U.sum(rows, 'd'), eoyPay = now + dPay + leadCost - conv, fy27 = eoyPay * (1 + sc.merit / 100);
+    const eng = rows.filter((r) => r.u.dept === 'Engineering'), engHC = U.sum(eng, (r) => r.u.hc + r.net), engPay = U.sum(eng, (r) => payNow([r.u]) + r.d);
+    const indiaEoy = U.sum(us, 'india') + U.sum(rows, (r) => r.c.h * U.clamp(r.u.indiaShare + shift, 0, 1) + (r.c.b - r.c.x) * r.u.indiaShare);
+    const open = openReqs(us).length;
+    const cons = U.sum(us, 'contractors');
+    return { sc, rows, N: nT, B: bT, X: xT, net: nT + bT - xT, eoy, hcNow, now, dPay, leads, leadCost, conv, eoyPay, fy27, meritCost: (eoyPay * sc.merit) / 100, cpe: engHC ? engPay / engHC : 0, span: (directs + nT + bT - xT) / Math.max(1, mg.length + leads + newMgrs), spanNow: mg.length ? directs / mg.length : 0, india: (indiaEoy / eoy) * 100, off, unfilled: Math.max(0, open - nT), open, conShare: ((cons * (1 - sc.conv / 100)) / eoy) * 100, converted: Math.round((cons * sc.conv) / 100) };
+  };
+  const scenParams = (sc, us) => [['Hires', sc.hire + '%'], ['Backfill', sc.backfill + '%'], ['Attrition', F.num(sc.attr, 1) + '%'], ['Merit', F.num(sc.merit, 1) + '%'], ['Conversion', sc.conv + '%'], ['Offshore', F.num(sc.offshore == null ? baseOff(us) : sc.offshore, 0) + '%'], ['Span', sc.span ? String(sc.span) : 'as-is']];
+
+  // org metrics for a set of people
+  const depthCache = {}; const layerOf = (p) => (depthCache[p.id] ??= D.chain(p.id).length + 1);
+  const LADDER = [['Executive', (l) => l.track === 'E'], ['Director+', (l) => ['M5', 'M6', 'P5.5', 'P6'].includes(l.code)], ['Sr leadership', (l) => ['M4', 'M4.5', 'P5'].includes(l.code)], ['Lead', (l) => ['M2', 'M3', 'P4', 'P4.5'].includes(l.code)], ['Senior', (l) => ['M1', 'P3'].includes(l.code)], ['Mid', (l) => l.code === 'P2'], ['Entry', (l) => ['P0', 'P1'].includes(l.code)]];
+  const orgMetrics = (ps) => {
+    const mg = ps.filter((p) => p.directs > 0), ics = ps.filter((p) => !(p.directs > 0));
+    const bucket = (s) => (s <= 3 ? 0 : s <= 6 ? 1 : s <= 9 ? 2 : 3);
+    const spans = [0, 0, 0, 0]; mg.forEach((m) => spans[bucket(m.directs)]++);
+    const layers = {}; ps.forEach((p) => { const l = layerOf(p); layers[l] = (layers[l] || 0) + 1; });
+    const icTrack = ps.filter((p) => p.track === 'IC'), senior = icTrack.filter((p) => D.levelMap[p.level].order >= 3);
+    const pyr = LADDER.map(([label, f]) => ({ label, ic: ps.filter((p) => p.track === 'IC' && f(D.levelMap[p.level])).length, m: ps.filter((p) => p.track !== 'IC' && f(D.levelMap[p.level])).length }));
+    return { n: ps.length, mg, ics, spans, avgSpan: mg.length ? U.sum(mg, 'directs') / mg.length : 0, layers, maxLayer: Math.max(...Object.keys(layers).map(Number)), ratio: mg.length ? ics.length / mg.length : 0, seniorShare: icTrack.length ? (senior.length / icTrack.length) * 100 : 0, narrow: mg.filter((m) => m.directs < 4), wide: mg.filter((m) => m.directs > 10), pyr, byCountry: U.countBy(ps, 'country') };
+  };
+  const recFor = (m) => (m.track === 'E' ? { t: 'Executive office — exempt from span rules', a: 'Review', k: 'exempt' } : m.directs < 4 ? (m.isDirector ? { t: `Merge ${m.org} leadership with an adjacent org or add a second-line manager’s scope`, a: 'Plan merge', k: 'merge' } : { t: 'Widen scope or fold the team into a sibling team', a: 'Plan merge', k: 'merge' }) : m.directs >= 15 ? { t: `Split into two teams — hire an engineering manager (≈${m.directs >> 1} reports each)`, a: 'Draft EM request', k: 'split' } : { t: 'Appoint a team lead from senior ICs to take 1:1s for half the team', a: 'Plan team lead', k: 'lead' });
+
+  // capability families (skills → families)
+  const FAM = [
+    ['dist', 'Distributed systems', ['Go', 'Java', 'gRPC', 'Kafka', 'Redis', 'Distributed systems', 'System design']],
+    ['cloud', 'Cloud & platform', ['Kubernetes', 'AWS', 'GCP', 'Terraform', 'Linux', 'Networking']],
+    ['data', 'Data engineering', ['Python', 'Spark', 'Airflow', 'dbt', 'Snowflake', 'SQL', 'Data modelling', 'PostgreSQL']],
+    ['ml', 'ML & AI', ['ML Ops', 'PyTorch', 'Feature stores']],
+    ['web', 'Web & mobile', ['TypeScript', 'React', 'Next.js', 'GraphQL', 'Testing Library', 'Web performance', 'Swift', 'Kotlin', 'SwiftUI', 'Jetpack Compose', 'Mobile CI', 'Offline sync', 'Design systems', 'Accessibility']],
+    ['sre', 'Reliability & SRE', ['Observability', 'Incident response', 'SLOs']],
+    ['sec', 'Security', ['AppSec', 'Threat modelling', 'IAM', 'SOC 2', 'Pen testing', 'Cloud security', 'Zero trust']],
+    ['devx', 'Dev productivity & QA', ['Bazel', 'CI/CD', 'Developer tooling', 'Monorepos', 'Internal platforms', 'Test automation', 'Playwright', 'Performance testing', 'Release management']],
+    ['prod', 'Product & design', ['Roadmapping', 'Discovery', 'Analytics', 'Pricing', 'PRDs', 'Experimentation', 'Figma', 'Prototyping', 'UX research', 'Motion']],
+    ['gtm', 'Go-to-market', ['Enterprise sales', 'MEDDIC', 'Negotiation', 'Territory planning', 'CRM hygiene', 'Demos', 'Onboarding', 'Renewals', 'Escalations', 'Health scoring', 'Technical support', 'Solutions', 'Positioning', 'Demand gen', 'Content', 'SEO', 'Events', 'Marketing ops']],
+    ['corp', 'Corporate functions', ['FP&A', 'Forecasting', 'GAAP', 'NetSuite', 'Procurement', 'SaaS metrics', 'Contracts', 'Privacy', 'GDPR', 'Employment law', 'Compliance', 'HRBP', 'Org design', 'Talent management', 'Comp & benefits', 'HRIS', 'Employee relations', 'L&D design', 'People analytics', 'Sourcing', 'Structured interviewing', 'Offer negotiation', 'Employer brand', 'ATS admin', 'Endpoint management', 'SSO/IdP', 'Helpdesk', 'Workplace tech']],
+  ];
+  const SKILL_FAM = {}; FAM.forEach(([k, , list]) => list.forEach((s) => { if (!SKILL_FAM[s]) SKILL_FAM[s] = k; }));
+  // FY27 demand tilt by family (strategy: AI, security, reliability up; generalist backend and web slightly down)
+  const TILT = { ml: 0.18, sec: 0.14, sre: 0.12, cloud: 0.06, data: 0.04, dist: -0.06, web: -0.05, devx: 0.02, prod: 0.03, gtm: 0.05, corp: -0.06 };
+  const SEED_DEMAND = { 'Data & ML': { ml: 6 }, Security: { sec: 3, cloud: 2 }, 'Infrastructure & SRE': { sre: 3, sec: 1 }, Platform: { sec: 2 }, 'Core Services': { ml: 2 }, Frontend: { ml: 1 }, 'Product Management': { ml: 1 }, Sales: { gtm: 2 } };
+  // supply = people holding ≥1 skill in the family, grown by the unit's planned Q4 net adds at today's mix; demand = supply × (1 + tilt) + named FY27 roles
+  const capability = (us, famKeys) => us.map((u) => {
+    const cur = {}; famKeys.forEach((k) => (cur[k] = 0));
+    u.people.forEach((p) => { U.uniq((p.skills || []).map((s) => SKILL_FAM[s]).filter(Boolean)).forEach((f) => { if (f in cur) cur[f]++; }); });
+    const g = u.hc ? (u.hc + netOf(S.q4[u.key])) / u.hc : 1, sup = {}, dem = {};
+    famKeys.forEach((k) => { sup[k] = Math.round(cur[k] * g); dem[k] = Math.round(sup[k] * (1 + (TILT[k] || 0)) + ((SEED_DEMAND[u.org] || {})[k] || 0)); });
+    return { u, cur, sup, dem };
+  });
+
+  /* ------------------------------------------------------------------ */
+  /* 4. Shared UI pieces                                                 */
+  /* ------------------------------------------------------------------ */
+  const person = (id) => D.byId(id);
+  const who = (id, sub) => { const p = person(id); return p ? `<span class="flex items-center gap-2 min-w-0">${NS.avatar(p, { size: 'xs' })}<span class="min-w-0"><span class="truncate" style="display:block">${esc(p.name)}</span>${sub ? `<span class="xs faint truncate" style="display:block">${esc(sub)}</span>` : ''}</span></span>` : '—'; };
+  const statusBadge = (s) => NS.badge(s, RSTAT[s] || 'neutral', true);
+  const reqCost = (q) => bandMid(q.level, q.dept, q.loc) * costMult();
+  const divBars = (el, o) => {
+    const max = o.max || Math.max(1, ...o.items.map((d) => Math.abs(d.value)));
+    el.innerHTML = `<div class="dv">${o.items.map((d, i) => `<div class="dv-row ${o.onItem ? 'pointer' : ''}" data-i="${i}"><div class="min-w-0"><div class="truncate ink medium">${esc(d.label)}</div>${d.sub ? `<div class="faint xs truncate">${esc(d.sub)}</div>` : ''}</div><div class="dv-track"><span class="dv-axis"></span>${d.value ? `<i class="${d.value < 0 ? 'neg' : 'pos'}" style="width:${((Math.abs(d.value) / max) * 50).toFixed(1)}%"></i>` : ''}</div><div class="dv-v">${o.format(d.value)}</div></div>`).join('')}</div><div class="dv-scale"><span></span><div><span>−${o.format(max).replace(/^[+−]/, '')}</span><span>0</span><span>+${o.format(max).replace(/^[+−]/, '')}</span></div><span></span></div><div class="ns-legend mt-2"><span><i style="background:var(--viz-div-neg)"></i>${esc(o.negLabel)}</span><span><i style="background:var(--viz-div-pos)"></i>${esc(o.posLabel)}</span></div>`;
+    el.querySelectorAll('.dv-row').forEach((r) => { const d = o.items[+r.dataset.i]; r.addEventListener('mouseenter', () => { const b = r.getBoundingClientRect(); NS.viztip.show(`<b>${esc(d.label)}</b>${d.tip || `<div class="r"><span>${esc(o.valueLabel || 'Value')}</span><span>${o.format(d.value)}</span></div>`}`, b.left + b.width / 2, b.top); }); r.addEventListener('mouseleave', NS.viztip.hide); if (o.onItem) r.addEventListener('click', () => o.onItem(d)); });
+  };
+  const pyramid = (el, rows) => {
+    const max = Math.max(1, ...rows.map((r) => Math.max(r.ic, r.m)));
+    el.innerHTML = `<div class="pyr"><div class="pyr-row xs"><div class="l semibold">Individual contributors</div><div></div><div class="r semibold">Managers</div></div>${rows.map((r, i) => `<div class="pyr-row" data-i="${i}"><div class="l"><span>${r.ic || ''}</span><i style="width:${((r.ic / max) * 100).toFixed(1)}%"></i></div><div class="mid">${esc(r.label)}</div><div class="r"><i style="width:${((r.m / max) * 100).toFixed(1)}%"></i><span>${r.m || ''}</span></div></div>`).join('')}</div><div class="ns-legend mt-3 justify-center"><span><i style="background:var(--viz-1)"></i>IC track</span><span><i style="background:var(--viz-2)"></i>Manager & exec track</span></div>`;
+    el.querySelectorAll('.pyr-row[data-i]').forEach((r) => { const d = rows[+r.dataset.i]; r.addEventListener('mouseenter', () => { const b = r.getBoundingClientRect(); NS.viztip.show(`<b>${esc(d.label)}</b><div class="r"><span><i style="background:var(--viz-1)"></i>IC</span><span>${d.ic}</span></div><div class="r"><span><i style="background:var(--viz-2)"></i>Manager</span><span>${d.m}</span></div>`, b.left + b.width / 2, b.top); }); r.addEventListener('mouseleave', NS.viztip.hide); });
+  };
+  const downloadCsv = (name, rows) => { const csv = rows.map((r) => r.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 500); NS.toast('Export ready', { desc: name, type: 'info' }); };
+  const aiNote = (title, text, extra) => `<div class="ns-ai"><div><div class="ns-ai-head">${NS.icon('sparkles')} ${esc(title)} <span class="ns-badge">Generated</span></div><p>${text}</p>${extra || ''}</div></div>`;
+  const changedCells = () => { let n = 0; UNITS.forEach((u) => { const a = S.q4[u.key], b = S.committed.q4[u.key]; ['h', 'b', 'x'].forEach((k) => { if (a[k] !== b[k]) n++; }); }); return n; };
+  const monthLabels = ['Dec ’25', 'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec ’26'];
+  const trajectory = (us) => {
+    const A = agg(us), hs = D.series.headcount, co = hs.slice(hs.length - 10); co[9] = PEOPLE.length;
+    const qEnd = [0, 3, 6, 9], aNet = A.act.map(netOf), pNet = A.plan.map(netOf).concat([A.fy - A.ytdPlan]);
+    const actual = [A.opening]; let base = A.opening;
+    for (let q = 0; q < 3; q++) { const s = qEnd[q], e = qEnd[q + 1]; for (let m = s + 1; m <= e; m++) { const f = (co[m] - co[s]) / ((co[e] - co[s]) || 1); actual[m] = base + Math.round(f * aNet[q]); } base += aNet[q]; }
+    const plan = [A.opening]; let pb = A.opening;
+    for (let q = 0; q < 4; q++) { for (let k = 1; k <= 3; k++) plan[q * 3 + k] = Math.round(pb + (pNet[q] * k) / 3); pb += pNet[q]; }
+    const fc = monthLabels.map((_, i) => (i < 9 ? null : i === 9 ? actual[9] : Math.round(actual[9] + ((A.fcEoy - actual[9]) * (i - 9)) / 3)));
+    return { labels: monthLabels, actual: actual.concat([null, null, null]), plan, fc, A };
+  };
+  const fmtInt = (v) => (v == null ? '—' : F.int(v));
+
+  window.__WP = { D, U, F, raw, ic, html, esc, store, TODAY, TODAY_ISO, QS, DEPTS, PORTFOLIO, INDIA, SHORT, short, m$, sgn, clone, iso, alloc, FN, bandMid, UNITS, UBY, netOf, SETTINGS0, deriveQ4, PROGRAMS, COMMITMENTS, RSTAT, CASES, teamInfo, roleTitle, approverFor, SCEN0, get S() { return S; }, set S(v) { S = v; }, save, saveNow, log, scopeOf, unitsIn, planUnits, costMult, payNow, newCost, backCost, exitCost, dRun, reqsIn, openReqs, baseOff, agg, scen, run, scenParams, orgMetrics, layerOf, recFor, FAM, capability, person, who, statusBadge, reqCost, divBars, pyramid, downloadCsv, aiNote, changedCells, trajectory, monthLabels, fmtInt, R: {} };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__WP; const S = P.S;
+  const { D, U, F, raw, ic, html, esc, TODAY, TODAY_ISO, DEPTS, short, m$, sgn, clone, alloc, UNITS, UBY, netOf, PROGRAMS, scopeOf, unitsIn, planUnits, agg, run, scen, dRun, reqsIn, who, reqCost, divBars, downloadCsv, aiNote, changedCells, trajectory, fmtInt, orgMetrics, save, log, R } = P;
+  const K = { h: 'hires', b: 'backfills', x: 'exits' };
+
+  /* shared: budget totals, horizontal stacked bars */
+  const budgetTotals = () => { const rows = PROGRAMS.map((p) => { const b = p.budget + (S.budget.adj[p.id] || 0); return { p, b, spent: p.ytd, fc: p.ytd + p.fc, left: b - p.ytd - p.fc }; }); return { rows, budget: U.sum(rows, 'b'), spent: U.sum(rows, 'spent'), fc: U.sum(rows, 'fc'), ytdBudget: (U.sum(rows, 'b') * 9) / 12 }; };
+  const stackBars = (el, o) => {
+    const max = Math.max(1, ...o.items.map((d) => U.sum(d.parts)));
+    el.innerHTML = `<div class="ns-legend" style="margin:0 0 12px">${o.keys.map((k) => `<span><i style="background:${k.color}"></i>${esc(k.name)}</span>`).join('')}</div><div class="grid" style="gap:9px">${o.items.map((d, i) => `<div class="hbar-row" data-i="${i}" style="display:grid;grid-template-columns:minmax(90px,30%) 1fr 34px;gap:12px;align-items:center;font-size:12.5px"><div class="truncate ink medium">${esc(d.label)}</div><div style="display:flex;height:12px;border-radius:4px;overflow:hidden;background:var(--surface-3)">${d.parts.map((v, k) => (v ? `<i style="width:${((v / max) * 100).toFixed(2)}%;background:${o.keys[k].color};${k ? 'border-left:1.5px solid var(--surface)' : ''}"></i>` : '')).join('')}</div><div class="tnum semibold ink right">${U.sum(d.parts)}</div></div>`).join('')}</div>`;
+    el.querySelectorAll('.hbar-row').forEach((r) => { const d = o.items[+r.dataset.i]; r.addEventListener('mouseenter', () => { const b = r.getBoundingClientRect(); NS.viztip.show(`<b>${esc(d.label)}</b>${o.keys.map((k, j) => `<div class="r"><span><i style="background:${k.color}"></i>${esc(k.name)}</span><span>${d.parts[j]}</span></div>`).join('')}`, b.left + b.width / 2, b.top); }); r.addEventListener('mouseleave', NS.viztip.hide); });
+  };
+  const reqDeadline = () => U.addDays(S.settings.fyEnd, -S.settings.lead);
+  const coverage = (u) => { const rq = S.requests.filter((q) => q.unit === u.key); const offers = rq.filter((q) => q.status === 'Approved' && /Offer/.test(q.stage)).length, open = rq.filter((q) => q.status === 'Approved' && !/Offer/.test(q.stage)).length, rev = rq.filter((q) => q.status === 'Under review' || q.status === 'Draft').length; const need = S.q4[u.key].h + S.q4[u.key].b; return { offers, open, rev, gap: Math.max(0, need - offers - open - rev), need }; };
+  P.budgetTotals = budgetTotals; P.stackBars = stackBars; P.coverage = coverage; P.reqDeadline = reqDeadline;
+
+  /* HOME ------------------------------------------------------------- */
+  const decisions = (c, us, A) => {
+    const out = [], pid = c.persona.id, rq = reqsIn(us);
+    const pend = rq.filter((q) => q.status === 'Under review'), drafts = rq.filter((q) => q.status === 'Draft');
+    const reqItem = (q) => ({ icon: 'user-plus', cls: 'warn', t: `${q.title} · ${q.team}`, s: `${q.id} · ${D.locMap[q.loc].city} · ${m$(reqCost(q))} a year · waiting ${U.daysBetween(q.created, TODAY_ISO)} days`, a: 'Review', href: NS.link('/requests', { id: q.id }) });
+    if (pid === 'exec') pend.filter((q) => q.approver === 'NS-1003').forEach((q) => out.push(reqItem(q)));
+    if (pid === 'cpo') pend.forEach((q) => out.push(reqItem(q)));
+    if (pid === 'hrbp') { drafts.slice(0, 2).forEach((q) => out.push({ icon: 'file-text', cls: 'info', t: `Submit draft: ${q.title}`, s: `${q.id} · ${q.team} · ${m$(reqCost(q))} a year`, a: 'Open', href: NS.link('/requests', { id: q.id }) })); if (pend.length) out.push({ icon: 'clock', cls: 'warn', t: `${pend.length} requests are with approvers`, s: pend.map((q) => q.id).join(' · '), a: 'Track', href: NS.link('/requests', { status: 'Under review' }) }); }
+    const gapN = U.sum(planUnits(us), (u) => coverage(u).gap);
+    if (pid !== 'rewards' && gapN) out.push({ icon: 'hourglass', cls: 'warn', t: `${gapN} Q4 roles have no requisition yet`, s: `Reqs must open by ${F.date(reqDeadline(), 'short')} to start in FY26 at a ${S.settings.lead}-day lead time`, a: 'Plan', href: NS.link('/plan') });
+    const dev = planUnits(us).map((u) => ({ u, v: u.ytdAct - u.ytdPlan })).filter((x) => Math.abs(x.v) >= 2).sort((a, b) => a.v - b.v);
+    dev.slice(0, pid === 'rewards' ? 1 : 3).forEach((x) => out.push({ icon: x.v < 0 ? 'trending-down' : 'trending-up', cls: x.v < 0 ? 'bad' : 'info', t: `${short(x.u.org)} is ${Math.abs(x.v)} ${x.v < 0 ? 'behind' : 'ahead of'} its YTD plan`, s: `${x.u.ytdAct} of ${x.u.ytdPlan} net adds landed · Q4 plan ${sgn(netOf(S.q4[x.u.key]))}`, a: 'Open plan', href: NS.link('/plan', { focus: x.u.key }) }));
+    if (pid === 'cpo' || pid === 'rewards') budgetTotals().rows.filter((r) => r.left < 0).forEach((r) => out.push({ icon: 'wallet', cls: 'bad', t: `${r.p.name} forecast ${m$(-r.left, 0)} over budget`, s: `${Math.round((r.spent / r.b) * 100)}% consumed with 25% of the year left`, a: 'Reallocate', href: NS.link('/budget') }));
+    if (pid === 'rewards') out.push({ icon: 'percent', cls: 'info', t: `Merit at ${F.num(S.settings.merit, 1)}% adds ${m$(A.payEoy * S.settings.merit / 100)} to FY27`, s: 'Each 0.5 pt of merit is ' + m$(A.payEoy * 0.005) + ' of run-rate', a: 'Assumptions', href: NS.link('/settings') });
+    if (pid !== 'rewards') { const wide = us.flatMap((u) => u.mgrs).filter((m) => m.directs >= 15); if (wide.length) out.push({ icon: 'network', cls: 'warn', t: `${wide.length} managers run teams of 15 or more`, s: wide.slice(0, 3).map((m) => `${m.first} (${m.directs})`).join(' · ') + (wide.length > 3 ? ' …' : ''), a: 'Org design', href: NS.link('/org') }); }
+    return out;
+  };
+  const decisionList = (items) => (items.length ? `<div>${items.map((d) => `<div class="dec"><span class="ns-icon-box sm ${d.cls}">${NS.icon(d.icon)}</span><div class="grow min-w-0"><div class="t">${esc(d.t)}</div><div class="s">${esc(d.s)}</div></div><a class="ns-btn xs secondary flex-none" href="${d.href}">${esc(d.a)}</a></div>`).join('')}</div>` : NS.empty({ icon: 'check-circle', title: 'Nothing needs you', body: 'Every request is decided and every unit is within two hires of plan.' }));
+
+  const homeHero = (c, A, us) => {
+    const me = D.byId(c.persona.personId), pid = c.persona.id, pct = Math.round(A.attain * 100), gapN = U.sum(planUnits(us), (u) => coverage(u).gap), sc = scopeOf(c.persona);
+    const text = pid === 'rewards' ? `Payroll run-rate is <b>${m$(A.pay)}</b> and reaches <b>${m$(A.payEoy)}</b> by year-end on the committed plan; FY27 opens at <b>${m$(A.payEoy * (1 + S.settings.merit / 100))}</b> with ${F.num(S.settings.merit, 1)}% merit. People-programs spend is ${Math.round((budgetTotals().spent / budgetTotals().budget) * 100)}% of budget with 75% of the year gone.`
+      : `${pid === 'cpo' ? 'Northstar Labs has' : pid === 'exec' ? 'Engineering has' : 'Your portfolio has'} landed <b>${A.ytdAct} of ${A.ytdPlan}</b> planned net adds (${pct}%). Q4 needs <b>${sgn(A.q4net)}</b> net to reach the EOY target of <b>${F.int(A.target)}</b> — at this year’s pace the forecast lands at ${F.int(A.fcEoy)}. ${gapN ? `${gapN} Q4 roles still have no requisition.` : ''}`;
+    const title = pid === 'rewards' ? `Cost & budget, ${me.first}` : pid === 'cpo' ? `Company plan, ${me.first}` : pid === 'exec' ? `Engineering plan, ${me.first}` : `${NS.greeting()}, ${me.first}`;
+    return `<div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${NS.icon('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${NS.icon('users', { size: 12 })} ${esc(sc.label)} · ${F.int(A.hc)} people</span><span class="ns-badge">${NS.icon('git-branch', { size: 12 })} Plan v${S.commits[S.commits.length - 1].v}${changedCells() ? ' · draft edits' : ''}</span></div>
+      <h1>${esc(title)}</h1><p>${text}</p>
+      <div class="flex gap-2 wrap mt-4">${pid === 'rewards' ? `<a class="ns-btn primary" href="${NS.link('/budget')}">Open budget ${NS.icon('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/scenarios')}">Cost scenarios</a>` : pid === 'exec' ? `<a class="ns-btn primary" href="${NS.link('/requests', { status: 'Under review' })}">Review approvals ${NS.icon('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/plan')}">Planning grid</a>` : `<a class="ns-btn primary" href="${NS.link('/plan')}">Open planning grid ${NS.icon('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/scenarios')}">Compare scenarios</a>`}</div>
+      <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><g fill="rgba(255,255,255,.16)">${[40, 62, 58, 84, 96, 118, 132, 150].map((h, i) => `<rect x="${150 + i * 28}" y="${250 - h}" width="18" height="${h}" rx="4"/>`).join('')}</g><path d="M150 205 C220 190 260 160 380 92" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="3" stroke-dasharray="7 6" stroke-linecap="round"/><circle cx="380" cy="92" r="7" fill="#fff"/></svg></div>`;
+  };
+  const home = (c) => {
+    const sc = scopeOf(c.persona), us = unitsIn(sc), A = agg(us), pid = c.persona.id, bt = budgetTotals();
+    const rq = reqsIn(us), pend = rq.filter((q) => q.status === 'Under review'), mine = pend.filter((q) => q.approver === D.byId(c.persona.personId).id);
+    const t = trajectory(us); const cum = t.actual.slice(0, 10).map((v) => v - A.opening);
+    const wide = us.flatMap((u) => u.mgrs).filter((m) => m.directs > 10).length;
+    const tabs = pid === 'cpo' || pid === 'rewards' ? NS.tabs([{ id: 'overview', label: 'Overview', icon: 'dashboard' }, { id: 'board', label: 'Board view', icon: 'clipboard-list' }], c.query.view || 'overview', { key: 'view' }) : '';
+    return html`${raw(tabs ? `<div class="mb-4">${tabs}</div>` : '')}${raw(homeHero(c, A, us))}
+      <div class="ns-stats mt-4">
+        ${raw(NS.stat({ label: 'Headcount now', value: F.int(A.hc), delta: NS.delta(A.hc - A.planNow, { fmt: (n) => F.int(n), d: 0 }), sub: `Plan at Sep 30: ${F.int(A.planNow)} · EOY target ${F.int(A.target)}` }))}
+        ${raw(NS.stat({ label: 'Net adds YTD', value: A.ytdAct, unit: `of ${A.ytdPlan} planned`, sub: `${Math.round(A.attain * 100)}% of plan landed · Q1–Q3`, spark: cum }))}
+        ${raw(NS.stat({ label: 'Payroll run-rate', value: m$(A.pay), icon: 'banknote', sub: `→ ${m$(A.payEoy)} at EOY on plan (${sgn(A.dRun, (n) => m$(n))})` }))}
+        ${raw(pid === 'exec' ? NS.stat({ label: 'Awaiting your approval', value: mine.length, unit: mine.length === 1 ? 'request' : 'requests', icon: 'inbox', sub: `${m$(U.sum(mine, (q) => reqCost(q)))} annual cost · oldest ${mine.length ? U.daysBetween(mine[0].created, TODAY_ISO) : 0} days` }) : NS.stat({ label: 'Programs budget spent', value: m$(bt.spent, 2), unit: `of ${m$(bt.ytdBudget, 2)} YTD`, icon: 'wallet', sub: `${Math.round((bt.spent / bt.budget) * 100)}% of ${m$(bt.budget)} · 75% of year elapsed` }))}
+        ${raw(NS.stat({ label: 'Open requisitions', value: A.open, icon: 'briefcase', sub: `${pend.length} in approval · ${rq.filter((q) => q.status === 'Draft').length} drafts` }))}
+        ${raw(NS.stat({ label: 'Avg span of control', value: F.num(A.span, 1), icon: 'network', sub: `Target 6–8 · ${wide} managers above 10` }))}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Headcount trajectory', sub: `${sc.label} · actual by month vs the FY26 plan, with a forecast at ${Math.round(A.attain * 100)}% attainment`, actions: `<span class="ns-badge ${A.fcEoy >= A.target ? 'ok' : 'warn'}">Forecast ${F.int(A.fcEoy)} · ${sgn(A.fcEoy - A.target)} vs target</span>`, body: '<div id="hcTraj"></div>' }))}
+          <div class="ns-grid c2">
+            ${raw(NS.card({ title: `Plan variance by ${pid === 'cpo' || pid === 'rewards' ? 'department' : 'org'}`, sub: 'YTD net adds, actual minus plan', body: '<div id="varBars"></div>' }))}
+            ${raw(pid === 'cpo' || pid === 'rewards' ? NS.card({ title: 'Budget by program', sub: `People programs · ${m$(bt.budget)} FY26`, actions: `<a class="ns-btn xs ghost" href="${NS.link('/budget')}">Budget</a>`, body: '<div id="homeSide"></div>' }) : NS.card({ title: 'Q4 hiring coverage', sub: 'Planned Q4 hires and backfills by requisition status', actions: `<a class="ns-btn xs ghost" href="${NS.link('/requests')}">Requests</a>`, body: '<div id="homeSide"></div>' }))}
+          </div>
+        </div>
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Decisions needed', sub: 'Ranked by cost of waiting', body: decisionList(decisions(c, us, A)) }))}
+          ${raw(aiNote('Planning note', aiText(c, us, A)))}
+          ${raw(NS.card({ title: 'FY26 bridge', sub: 'Net headcount movement', body: `<div>${[['Opening · Jan 1', F.int(A.opening)], ...[0, 1, 2].map((q) => [`Q${q + 1} actual`, `${sgn(netOf(A.act[q]))} <span class="faint">(plan ${sgn(netOf(A.plan[q]))})</span>`]), ['Q4 plan', sgn(A.q4net)], ['EOY on plan', `<span class="brand-text">${F.int(A.eoy)}</span>`]].map(([k, v]) => `<div class="kv"><span>${k}</span><b>${v}</b></div>`).join('')}</div>` }))}
+        </div>
+      </div>`;
+  };
+  const aiText = (c, us, A) => {
+    const pid = c.persona.id, base = run(scen('base'), us), fr = run(scen('freeze'), us);
+    const dev = planUnits(us).map((u) => ({ u, v: u.ytdAct - u.ytdPlan })).sort((a, b) => a.v - b.v), worst = dev[0], best = dev[dev.length - 1];
+    const cov = planUnits(us).map((u) => ({ u, ...coverage(u) })).sort((a, b) => b.gap - a.gap)[0];
+    if (pid === 'rewards') return `Q4 adds ${m$(base.dPay)} of run-rate: ${base.N} new roles at an average ${m$(U.sum(base.rows, (r) => r.c.h * P.newCost(r.u)) / Math.max(1, base.N), 0)} and ${base.B} backfills. The India hubs carry ${F.num(base.off, 0)}% of new hiring; every 10 points shifted there saves roughly ${m$((run({ ...scen('base'), offshore: base.off + 10 }, us).fy27 - base.fy27) * -1)} a year. A Q4 freeze would take ${m$(base.fy27 - fr.fy27)} out of the FY27 opening run-rate but leaves ${fr.unfilled} open reqs unfilled.`;
+    return `${esc(short(worst.u.org))} explains most of the shortfall (${sgn(worst.v)} vs plan) — its Q4 plan now carries ${sgn(netOf(S.q4[worst.u.key]))} net, the steepest catch-up in the ${pid === 'cpo' ? 'company' : 'scope'}. ${best.v > 0 ? `${esc(short(best.u.org))} is ${sgn(best.v)} ahead; consider releasing one Q4 role to fund the gap. ` : ''}${cov && cov.gap ? `${esc(short(cov.u.org))} has the largest requisition gap (${cov.gap} of ${cov.need} Q4 roles not opened); at a ${S.settings.lead}-day lead time, anything opened after ${F.date(reqDeadline(), 'short')} starts in FY27.` : ''}`;
+  };
+  const homeMounted = (c, root) => {
+    const sc = scopeOf(c.persona), us = unitsIn(sc), pid = c.persona.id, t = trajectory(us);
+    NS.chart.line(root.querySelector('#hcTraj'), { labels: t.labels, series: [{ name: 'Actual', values: t.actual, color: 'var(--viz-1)' }, { name: 'FY26 plan', values: t.plan, color: 'var(--ink-4)' }, { name: 'Forecast', values: t.fc, color: 'var(--viz-1)', dashed: true }], yFormat: fmtInt, height: 250, legend: 'top', markers: [{ i: 9, label: 'Today' }] });
+    const byDept = pid === 'cpo' || pid === 'rewards';
+    const groups = byDept ? DEPTS.filter((d) => d !== 'Executive').map((d) => ({ label: d, us: UNITS.filter((u) => u.dept === d) })) : planUnits(us).map((u) => ({ label: u.org, us: [u] }));
+    divBars(root.querySelector('#varBars'), { items: groups.map((g) => { const a = U.sum(g.us, 'ytdAct'), p = U.sum(g.us, 'ytdPlan'); return { label: g.label, value: a - p, sub: `${a} of ${p} landed`, key: g.us[0].key, tip: `<div class="r"><span>Actual net adds</span><span>${a}</span></div><div class="r"><span>Planned YTD</span><span>${p}</span></div><div class="r"><span>Q4 plan</span><span>${sgn(U.sum(g.us, (u) => netOf(S.q4[u.key])))}</span></div>` }; }).sort((a, b) => a.value - b.value), format: (v) => sgn(v), negLabel: 'Behind plan', posLabel: 'Ahead of plan', onItem: (d) => NS.go('/plan', { focus: d.key }) });
+    const side = root.querySelector('#homeSide');
+    if (byDept) { const bt = budgetTotals(); NS.chart.bars(side, { labels: bt.rows.map((r) => r.p.short), series: [{ name: 'Spent YTD', values: bt.rows.map((r) => r.spent) }, { name: 'Remaining', values: bt.rows.map((r) => Math.max(0, r.b - r.spent)), color: 'var(--viz-seq-200)' }], stacked: true, yFormat: (v) => m$(v), height: 230, legend: 'top' }); }
+    else stackBars(side, { keys: [{ name: 'Offer out / accepted', color: 'var(--viz-1)' }, { name: 'Open req', color: 'var(--viz-3)' }, { name: 'In approval', color: 'var(--viz-4)' }, { name: 'No req yet', color: 'var(--surface-4)' }], items: planUnits(us).map((u) => { const v = coverage(u); return { label: short(u.org), parts: [v.offers, v.open, v.rev, v.gap] }; }).filter((d) => U.sum(d.parts)) });
+  };
+
+  /* BOARD VIEW (CPO / finance partner) ------------------------------- */
+  const board = (c) => {
+    const A = agg(UNITS), base = run(scen('base'), UNITS), bt = budgetTotals(), om = orgMetrics(D.people);
+    const rows = DEPTS.map((d) => { const us = UNITS.filter((u) => u.dept === d), a = agg(us); return { d, a }; });
+    return html`<div class="mb-4">${raw(NS.tabs([{ id: 'overview', label: 'Overview', icon: 'dashboard' }, { id: 'board', label: 'Board view', icon: 'clipboard-list' }], 'board', { key: 'view' }))}</div>
+      ${raw(NS.pageHead({ eyebrow: 'Board pack · FY26 Q3', title: 'Workforce plan — board view', sub: `Prepared ${F.date(TODAY)} from plan v${S.commits[S.commits.length - 1].v}. Headcount includes ${A.contractors} contractors; costs are ${S.settings.basis === 'loaded' ? 'fully loaded' : 'base salary at band midpoint'}.`, actions: `<button class="ns-btn secondary" data-print>${ic('printer')}Print</button><button class="ns-btn primary" data-board-csv>${ic('download')}Export board pack</button>` }))}
+      <div class="ns-stats">
+        ${raw(NS.stat({ label: 'EOY headcount', value: F.int(A.eoy), unit: 'on plan', icon: 'users', sub: `Forecast ${F.int(A.fcEoy)} (${sgn(A.fcEoy - A.target)}) · opened FY26 at ${F.int(A.opening)}` }))}
+        ${raw(NS.stat({ label: 'FY27 opening run-rate', value: m$(base.fy27), icon: 'banknote', sub: `Payroll today ${m$(A.pay)} · +${F.num(S.settings.merit, 1)}% merit` }))}
+        ${raw(NS.stat({ label: 'People-programs budget', value: m$(bt.fc, 2), unit: `of ${m$(bt.budget)}`, icon: 'wallet', sub: `Forecast ${sgn(bt.fc - bt.budget, (n) => m$(n, 0))} vs budget` }))}
+        ${raw(NS.stat({ label: 'Org shape', value: F.num(om.avgSpan, 1), unit: 'avg span', icon: 'network', sub: `${om.maxLayer} layers · ${F.num(om.seniorShare, 0)}% senior ICs` }))}
+      </div>
+      ${raw(NS.card({ cls: 'mt-4', title: 'Headcount & cost by department', sub: 'FY26 plan vs actual; run-rate at today’s salaries', bodyCls: 'flush', body: `<div class="ns-table-wrap"><table class="ns-table dense"><thead><tr><th>Department</th><th class="num">Opening</th><th class="num">Now</th><th class="num">YTD net · plan</th><th class="num">YTD net · actual</th><th class="num">EOY target</th><th class="num">EOY forecast</th><th class="num">vs target</th><th class="num">Run-rate</th><th class="num">Cost / head</th></tr></thead><tbody>${rows.map(({ d, a }) => `<tr><td><b>${esc(d)}</b></td><td class="num">${F.int(a.opening)}</td><td class="num">${F.int(a.hc)}</td><td class="num">${sgn(a.ytdPlan)}</td><td class="num">${sgn(a.ytdAct)}</td><td class="num">${F.int(a.target)}</td><td class="num">${F.int(a.fcEoy)}</td><td class="num ${a.fcEoy < a.target ? 'bad-text' : 'muted'}">${sgn(a.fcEoy - a.target)}</td><td class="num">${m$(a.pay)}</td><td class="num">${m$(a.pay / a.hc, 0)}</td></tr>`).join('')}<tr><td><b>Northstar Labs</b></td><td class="num"><b>${F.int(A.opening)}</b></td><td class="num"><b>${F.int(A.hc)}</b></td><td class="num"><b>${sgn(A.ytdPlan)}</b></td><td class="num"><b>${sgn(A.ytdAct)}</b></td><td class="num"><b>${F.int(A.target)}</b></td><td class="num"><b>${F.int(U.sum(rows, (r) => r.a.fcEoy))}</b></td><td class="num"><b>${sgn(U.sum(rows, (r) => r.a.fcEoy) - A.target)}</b></td><td class="num"><b>${m$(A.pay)}</b></td><td class="num"><b>${m$(A.pay / A.hc, 0)}</b></td></tr></tbody></table></div>` }))}
+      <div class="ns-grid c3 mt-4">
+        ${raw(NS.card({ title: 'Payroll run-rate by department', body: '<div id="bPay"></div>' }))}
+        ${raw(NS.card({ title: 'Headcount by region', body: '<div id="bRegion"></div>' }))}
+        ${raw(NS.card({ title: 'Asks of the board', body: `<ol class="grid gap-3 sm ink2" style="padding-left:18px"><li><b class="ink">Hold the EOY target at ${F.int(A.target)}.</b> Q4 carries ${sgn(A.q4net)} net; the forecast lands ${Math.abs(A.fcEoy - A.target)} short without faster requisitioning.</li><li><b class="ink">Endorse the FY27 opening run-rate of ${m$(base.fy27)}</b>, including ${F.num(S.settings.merit, 1)}% merit (${m$(base.meritCost)}).</li><li><b class="ink">Note the org-shape risk:</b> ${om.wide.length} managers carry more than 10 reports; the Efficiency scenario appoints team leads to bring the average span toward 7.</li></ol>` }))}
+      </div>`;
+  };
+  const boardMounted = (c, root) => {
+    const rows = DEPTS.filter((d) => d !== 'Executive').map((d) => ({ label: d, value: P.payNow(UNITS.filter((u) => u.dept === d)), sub: `${U.sum(UNITS.filter((u) => u.dept === d), 'hc')} people` })).sort((a, b) => b.value - a.value);
+    NS.chart.hbars(root.querySelector('#bPay'), { items: rows, format: (v) => m$(v), valueLabel: 'Run-rate' });
+    const reg = U.countBy(D.people, 'region'); NS.chart.donut(root.querySelector('#bRegion'), { items: Object.entries(D.regions).map(([k, v]) => ({ label: v, value: reg[k] || 0 })), center: { value: F.int(D.people.length), label: 'people' }, size: 150, legend: 'bottom', format: F.int });
+    root.querySelector('[data-print]').onclick = () => window.print();
+    root.querySelector('[data-board-csv]').onclick = () => { const out = [['Department', 'Opening', 'Now', 'YTD plan net', 'YTD actual net', 'EOY target', 'EOY forecast', 'Run-rate (USD)']]; DEPTS.forEach((d) => { const a = agg(UNITS.filter((u) => u.dept === d)); out.push([d, a.opening, a.hc, a.ytdPlan, a.ytdAct, a.target, a.fcEoy, Math.round(a.pay)]); }); downloadCsv('northstar-board-pack-FY26-Q3.csv', out); };
+  };
+  R['/home'] = { title: 'Home', render: (c) => ((c.query.view === 'board' && (c.persona.id === 'cpo' || c.persona.id === 'rewards')) ? board(c) : home(c)), mounted: (c, root) => ((c.query.view === 'board' && (c.persona.id === 'cpo' || c.persona.id === 'rewards')) ? boardMounted(c, root) : homeMounted(c, root)), crumbs: (c) => [{ label: c.query.view === 'board' ? 'Board view' : 'Home' }] };
+
+  /* PLANNING GRID ----------------------------------------------------- */
+  const expanded = new Set(['Engineering']);
+  const rowsFor = (sc) => (sc.rows === 'org' ? unitsIn(sc).map((u) => ({ kind: 'unit', id: u.key, label: u.org, units: [u], sub: `${u.hc} people · ${u.teams.length || 1} teams` }))
+    : sc.depts.flatMap((d) => { const us = UNITS.filter((u) => u.dept === d); const out = [{ kind: 'dept', id: d, label: d, units: us, multi: us.length > 1, sub: `${U.sum(us, 'hc')} people${us.length > 1 ? ` · ${us.length} orgs` : ''}` }]; if (us.length > 1 && expanded.has(d)) us.forEach((u) => out.push({ kind: 'unit', child: true, id: u.key, label: u.org, units: [u], sub: `${u.hc} people` })); return out; }));
+  const q4Of = (units, sr) => { const g = (u) => (sr ? sr[u.key].c : S.q4[u.key]); return { h: U.sum(units, (u) => g(u).h), b: U.sum(units, (u) => g(u).b), x: U.sum(units, (u) => g(u).x), d: U.sum(units, (u) => (sr ? sr[u.key].d : dRun(u, S.q4[u.key]))) }; };
+  const isEdited = (units) => units.some((u) => ['h', 'b', 'x'].some((k) => S.q4[u.key][k] !== S.committed.q4[u.key][k]));
+  const gridHtml = (c, st) => {
+    const { sc, us, focus, mode, sr } = st, rows = rowsFor(sc);
+    const cellQ = (units, q) => { const a = { h: U.sum(units, (u) => u.act[q].h), b: U.sum(units, (u) => u.act[q].b), x: U.sum(units, (u) => u.act[q].x) }, p = { h: U.sum(units, (u) => u.plan[q].h), b: U.sum(units, (u) => u.plan[q].b), x: U.sum(units, (u) => u.plan[q].x) }; a.n = netOf(a); p.n = netOf(p); return { a, p }; };
+    const closed = (a, p, k, isNet) => { const v = mode === 'plan' ? p[k] : mode === 'var' ? a[k] - p[k] : a[k]; const cls = mode === 'var' ? (v > 0 ? 'vp' : v < 0 ? 'vn' : 'lk') : ''; return `<td class="num ${cls}">${mode === 'var' || isNet ? sgn(v) : F.int(v)}${mode === 'act' ? `<span class="sub">plan ${isNet ? sgn(p[k]) : p[k]}</span>` : ''}</td>`; };
+    const head2 = ['<th class="unit">' + (sc.rows === 'org' ? 'Org' : 'Department / org') + '</th>', '<th class="num">Opening</th>'];
+    const head1 = ['<th class="unit"></th>', '<th></th>'];
+    for (let q = 0; q < 4; q++) { const f = q === focus - 1; head1.push(`<th class="qs" colspan="${f ? 4 : 1}">Q${q + 1} ${q < 3 ? (q === 2 ? '· actual (closing)' : '· actual') : '· plan'}</th>`); head2.push(...(f ? [`<th class="num qs">Hires</th>`, '<th class="num">Backfills</th>', '<th class="num">Exits</th>', '<th class="num">Net</th>'] : [`<th class="num qs">Net</th>`])); }
+    head1.push('<th class="qs" colspan="4">Year end</th>'); head2.push('<th class="num qs">EOY</th>', '<th class="num">Target</th>', '<th class="num">vs target</th>', '<th class="num">Δ run-rate</th>');
+    const body = (row) => {
+      const units = row.units, plannable = units.some((u) => !u.lead), q4 = q4Of(units, sr), n4 = netOf(q4), hc = U.sum(units, 'hc'), eoy = hc + n4, tgt = U.sum(units, 'target');
+      const editable = row.kind !== 'total' && !sr && plannable;
+      const rid = esc(row.kind + '::' + row.id), ed = isEdited(units);
+      let tds = `<td class="unit"><div class="flex items-center min-w-0">${row.kind === 'dept' && row.multi ? `<button class="xb" data-x="${esc(row.id)}" aria-expanded="${expanded.has(row.id)}" aria-label="Expand ${esc(row.label)}">${NS.icon('chevron-right')}</button>` : row.child ? '' : '<span style="width:28px;flex:none"></span>'}<div class="min-w-0"><div class="truncate ${row.child ? 'medium ink2' : 'semibold ink'}">${esc(row.label)}</div><div class="xs faint truncate">${esc(row.sub || '')}</div></div></div></td><td class="num">${F.int(U.sum(units, 'opening'))}</td>`;
+      for (let q = 0; q < 3; q++) { const { a, p } = cellQ(units, q); tds += q === focus - 1 ? closed(a, p, 'h').replace('<td class="num', '<td class="num qs') + closed(a, p, 'b') + closed(a, p, 'x') + closed(a, p, 'n', true) : closed(a, p, 'n', true).replace('<td class="num', '<td class="num qs'); }
+      const e4 = (k) => (editable ? `<td class="num ed ${units.some((u) => S.q4[u.key][k] !== S.committed.q4[u.key][k]) ? 'edited' : ''}" data-row="${rid}" data-k="${k}" data-v="${q4[k]}" tabindex="0" data-tip="Click to edit Q4 ${K[k]}">${F.int(q4[k])}</td>` : `<td class="num ${plannable ? '' : 'lk'}">${F.int(q4[k])}</td>`);
+      tds += focus === 4 ? e4('h').replace('<td class="num', '<td class="num qs') + e4('b') + e4('x') + `<td class="num semibold ink">${sgn(n4)}</td>` : `<td class="num qs semibold ink">${sgn(n4)}</td>`;
+      tds += `<td class="num qs semibold ink">${F.int(eoy)}</td><td class="num">${F.int(tgt)}</td><td class="num ${eoy - tgt < 0 ? 'vn' : eoy - tgt > 0 ? 'vp' : 'lk'}">${sgn(eoy - tgt)}</td><td class="num">${q4.d ? sgn(q4.d, (n) => m$(n)) : '<span class="lk">—</span>'}</td>`;
+      return `<tr class="${row.child ? 'child' : ''} ${ed ? 'has-edit' : ''}" data-rk="${esc(row.id)}">${tds}</tr>`;
+    };
+    const tot = { kind: 'total', id: 'total', label: sc.rows === 'org' ? 'Engineering total' : sc.id === 'company' ? 'Northstar Labs total' : 'Portfolio total', units: us, sub: `${F.int(U.sum(us, 'hc'))} people` };
+    const totRow = body(tot).replace('<tr class="', '<tr class="tot ');
+    return `<div class="ns-table-wrap"><table class="ns-table pg"><thead><tr class="grp">${head1.join('')}</tr><tr>${head2.join('')}</tr></thead><tbody>${rows.map(body).join('')}${totRow}</tbody></table></div>`;
+  };
+  const planTiles = (st) => {
+    const { us, sr, run: rr } = st, A = agg(us), q4 = sr ? { h: rr.N, b: rr.B, x: rr.X } : A.q4, n4 = netOf(q4), eoy = A.hc + n4, payEoy = sr ? rr.eoyPay : A.payEoy, fy27 = sr ? rr.fy27 : A.payEoy * (1 + S.settings.merit / 100);
+    return `<div class="wp-bridge"><div><span>Opening · Jan 1</span><b>${F.int(A.opening)}</b><small>FY26 start</small></div>${[0, 1, 2].map((q) => `<div><span>Q${q + 1} actual</span><b>${sgn(netOf(A.act[q]))}</b><small>plan ${sgn(netOf(A.plan[q]))}</small></div>`).join('')}<div><span>Q4 ${sr ? 'scenario' : 'plan'}</span><b>${sgn(n4)}</b><small>${q4.h} hires · ${q4.b} backfills · ${q4.x} exits</small></div><div><span>EOY headcount</span><b>${F.int(eoy)}</b><small class="${eoy < A.target ? 'bad-text' : ''}">target ${F.int(A.target)} · ${sgn(eoy - A.target)}</small></div></div>
+      <div class="ns-stats mt-3">${NS.stat({ label: 'Q4 gross hiring', value: q4.h + q4.b, icon: 'user-plus', sub: `${q4.h} new roles · ${q4.b} backfills` })}${NS.stat({ label: 'Q4 expected exits', value: q4.x, icon: 'user-minus', sub: `${F.num(sr ? rr.sc.attr : S.settings.attr, 1)}% annualised attrition` })}${NS.stat({ label: 'EOY payroll run-rate', value: m$(payEoy), icon: 'banknote', sub: `${sgn(payEoy - A.pay, (n) => m$(n))} vs today (${m$(A.pay)})` })}${NS.stat({ label: 'FY27 opening run-rate', value: m$(fy27), icon: 'trending-up', sub: `incl. ${F.num(sr ? rr.sc.merit : S.settings.merit, 1)}% merit${S.settings.basis === 'loaded' ? ' · fully loaded' : ''}` })}</div>`;
+  };
+  R['/plan'] = {
+    title: 'Planning grid',
+    render: (c) => {
+      const sc = scopeOf(c.persona), focus = +(c.query.q || 4), mode = c.query.m || 'act', sid = S.scenarios.some((x) => x.id === c.query.sc) ? c.query.sc : 'base', s0 = scen(sid), last = S.commits[S.commits.length - 1];
+      return html`${raw(NS.pageHead({ eyebrow: `FY26 plan · ${sc.label}`, title: 'Planning grid', sub: `Hires, backfills and exits by quarter. Q1–Q3 show actuals against plan; Q4 is the live plan — click a Q4 cell to edit, Tab to move across. EOY headcount and run-rate cost recompute as you type${sc.rows === 'dept' ? '; editing a department spreads the change across its orgs' : ''}.`, actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export</button><button class="ns-btn ghost" data-reset>${ic('undo')}Reset</button><button class="ns-btn primary" data-commit>${ic('check')}Commit plan</button>` }))}
+        <div id="planTiles"></div>
+        <div class="ns-toolbar mt-4">
+          <div class="ns-seg" role="group" aria-label="Focus quarter">${raw([1, 2, 3, 4].map((q) => `<button data-q="${q}" aria-pressed="${q === focus}">Q${q}</button>`).join(''))}</div>
+          ${raw(focus < 4 ? `<div class="ns-seg" role="group" aria-label="Show">${[['act', 'Actual'], ['plan', 'Plan'], ['var', 'Variance']].map(([k, l]) => `<button data-m="${k}" aria-pressed="${k === mode}">${l}</button>`).join('')}</div>` : '')}
+          <label class="flex items-center gap-2 sm muted">Scenario <select class="ns-select" data-scen style="width:auto;height:34px">${raw(S.scenarios.map((x) => `<option value="${esc(x.id)}" ${x.id === sid ? 'selected' : ''}>${esc(x.name)}</option>`).join(''))}</select></label>
+          <div class="grow"></div>
+          <span id="planStatus"></span>
+        </div>
+        ${raw(sid !== 'base' ? `<div class="scen-strip">${NS.icon('sliders')}<span>Previewing <b>${esc(s0.name)}</b> — ${P.scenParams(s0, unitsIn(sc)).map(([k, v]) => `${k} ${v}`).join(' · ')}. Scenario cells are read-only.</span><span class="grow"></span><a class="ns-btn xs secondary" href="${NS.link('/plan', { q: focus })}">Back to base plan</a><a class="ns-btn xs ghost" href="${NS.link('/scenarios')}">Edit scenario</a></div>` : '')}
+        <div class="ns-card"><div class="ns-card-body flush" id="grid"></div></div>
+        <div class="flex gap-4 wrap xs muted mt-2"><span><span class="legend-sq" style="background:var(--brand-soft);border:1px solid var(--brand)"></span>Edited since v${last.v}</span><span><span class="legend-sq" style="background:var(--viz-div-pos)"></span>Ahead of plan / target</span><span><span class="legend-sq" style="background:var(--bad)"></span>Behind</span><span>Δ run-rate = new roles × band-mid hiring cost + backfills − exits, annualised</span></div>
+        <div class="ns-grid c2 mt-4">
+          ${raw(NS.card({ title: 'Q4 net adds', sub: sid === 'base' ? 'Live plan, by row' : `${esc(s0.name)}, by row`, body: '<div id="q4Bars"></div>' }))}
+          ${raw(NS.card({ title: 'Plan versions', sub: 'Committed plans are the baseline for variance and the board pack', body: '<div id="versions"></div>' }))}
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const sc = scopeOf(c.persona), us = unitsIn(sc), focus = +(c.query.q || 4), mode = c.query.m || 'act', sid = S.scenarios.some((x) => x.id === c.query.sc) ? c.query.sc : 'base';
+      if (c.query.focus && UBY[c.query.focus] && sc.rows === 'dept') expanded.add(UBY[c.query.focus].dept);
+      const st = { sc, us, focus, mode };
+      const redraw = () => {
+        const rr = sid === 'base' ? null : run(scen(sid), us); st.run = rr; st.sr = rr ? Object.fromEntries(rr.rows.map((r) => [r.u.key, r])) : null;
+        root.querySelector('#grid').innerHTML = gridHtml(c, st);
+        root.querySelector('#planTiles').innerHTML = planTiles(st);
+        const n = changedCells(), last = S.commits[S.commits.length - 1];
+        root.querySelector('#planStatus').innerHTML = n ? `<span class="ns-badge warn" data-tip="Draft is saved automatically">${NS.icon('pencil', { size: 12 })} Draft · ${n} ${n === 1 ? 'cell' : 'cells'} changed since v${last.v}</span>` : `<span class="ns-badge ok">${NS.icon('check', { size: 12 })} Matches committed v${last.v}</span>`;
+        const groups = rowsFor(sc).filter((r) => !r.child && r.units.some((u) => !u.lead));
+        NS.chart.hbars(root.querySelector('#q4Bars'), { items: groups.map((r) => { const q = q4Of(r.units, st.sr); return { label: r.label, value: netOf(q), sub: `${q.h} hires · ${q.b} backfills · ${q.x} exits` }; }).sort((a, b) => b.value - a.value), format: (v) => sgn(v), valueLabel: 'Q4 net adds' });
+        if (c.query.focus) { const tr = root.querySelector(`tr[data-rk="${CSS.escape(c.query.focus)}"]`); if (tr) { tr.querySelectorAll('td').forEach((td) => { td.style.boxShadow = 'inset 0 2px 0 var(--brand), inset 0 -2px 0 var(--brand)'; }); } }
+      };
+      const versions = () => { root.querySelector('#versions').innerHTML = `<div class="ns-timeline">${changedCells() ? `<div class="ns-tl-item now"><span class="pt">${NS.icon('pencil')}</span><div><div class="ttl">Draft v${S.commits[S.commits.length - 1].v + 1}</div><div class="sub">${changedCells()} cells changed · not yet committed</div></div></div>` : ''}${S.commits.slice().reverse().map((cm, i) => `<div class="ns-tl-item ${i === 0 ? 'done' : ''}"><span class="pt">${i === 0 ? NS.icon('check') : ''}</span><div><div class="ttl">v${cm.v} · ${esc(cm.note)}</div><div class="sub">${esc(D.byId(cm.by).name)} · ${F.date(cm.date)} · EOY ${F.int(cm.eoy)}</div></div></div>`).join('')}</div>`; };
+      const K2 = (k) => ({ h: 'Hires', b: 'Backfills', x: 'Exits' }[k]);
+      const applyEdit = (rowId, k, v) => {
+        const [kind, id] = rowId.split('::'); const units = kind === 'dept' ? UNITS.filter((u) => u.dept === id && !u.lead) : [UBY[id]];
+        const before = units.map((u) => ({ key: u.key, v: S.q4[u.key][k], e: !!S.edited[u.key + ':' + k] })); const cur = U.sum(before, 'v'), delta = v - cur;
+        if (units.length === 1) S.q4[units[0].key][k] = v;
+        else if (delta > 0) alloc(delta, units.map((u) => S.q4[u.key][k] + 1)).forEach((d, i) => { S.q4[units[i].key][k] += d; });
+        else alloc(-delta, units.map((u) => S.q4[u.key][k])).forEach((d, i) => { S.q4[units[i].key][k] -= d; });
+        units.forEach((u) => { S.edited[u.key + ':' + k] = true; });
+        save(); const label = kind === 'dept' ? id : UBY[id].org; log(`Q4 ${K[k]} for ${label}: ${cur} → ${v}`);
+        NS.toast('Q4 plan updated', { desc: `${label} · ${K2(k)} ${cur} → ${v}${units.length > 1 ? ` (spread across ${units.length} orgs)` : ''}`, action: { label: 'Undo', onClick: () => { before.forEach((b) => { S.q4[b.key][k] = b.v; if (!b.e) delete S.edited[b.key + ':' + k]; }); save(); redraw(); versions(); } } });
+      };
+      let active = null;
+      const startEdit = (td) => {
+        if (!td || td.querySelector('input')) return; const cur = +td.dataset.v, row = td.dataset.row, k = td.dataset.k;
+        const inp = document.createElement('input'); inp.type = 'number'; inp.min = '0'; inp.max = '999'; inp.value = cur; inp.setAttribute('aria-label', `Q4 ${K[k]}`); td.textContent = ''; td.appendChild(inp); inp.focus(); inp.select();
+        let done = false;
+        const finish = (commit, dir) => {
+          if (done) return; done = true; active = null; const all = Array.from(root.querySelectorAll('.pg .ed')), idx = all.indexOf(td);
+          let target = null; if (dir === 'next') target = idx + 1; else if (dir === 'prev') target = idx - 1; else if (dir === 'down') { const j = all.findIndex((x, i) => i > idx && x.dataset.k === k); target = j >= 0 ? j : null; }
+          if (commit) { const v = U.clamp(Math.round(+inp.value || 0), 0, 999); if (v !== cur) applyEdit(row, k, v); }
+          redraw(); versions();
+          if (target != null) { const nx = root.querySelectorAll('.pg .ed')[target]; if (nx) startEdit(nx); }
+        };
+        inp.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); finish(true, 'down'); } else if (e.key === 'Escape') { e.preventDefault(); finish(false); } else if (e.key === 'Tab') { e.preventDefault(); finish(true, e.shiftKey ? 'prev' : 'next'); } });
+        inp.addEventListener('blur', () => finish(true));
+        active = finish;
+      };
+      const findCell = (row, k) => root.querySelector(`.pg .ed[data-row="${CSS.escape(row)}"][data-k="${k}"]`);
+      const gridEl = root.querySelector('#grid');
+      gridEl.addEventListener('click', (e) => { const x = e.target.closest('[data-x]'); if (x) { const d = x.dataset.x; if (expanded.has(d)) expanded.delete(d); else expanded.add(d); redraw(); } });
+      gridEl.addEventListener('mousedown', (e) => { const td = e.target.closest('.ed'); if (!td || e.target.tagName === 'INPUT') return; e.preventDefault(); const row = td.dataset.row, k = td.dataset.k; if (active) active(true); startEdit(findCell(row, k)); });
+      gridEl.addEventListener('keydown', (e) => { const td = e.target.closest('.ed'); if (td && e.target === td && (e.key === 'Enter' || e.key === 'F2')) { e.preventDefault(); startEdit(td); } });
+      root.querySelectorAll('[data-q]').forEach((b) => { b.onclick = () => NS.go('/plan', { ...c.query, q: b.dataset.q }); });
+      root.querySelectorAll('[data-m]').forEach((b) => { b.onclick = () => NS.go('/plan', { ...c.query, m: b.dataset.m }); });
+      root.querySelector('[data-scen]').onchange = (e) => NS.go('/plan', { ...c.query, sc: e.target.value });
+      root.querySelector('[data-export]').onclick = () => { const out = [['Unit', 'Department', 'Opening', ...[1, 2, 3].flatMap((q) => [`Q${q} plan net`, `Q${q} actual hires`, `Q${q} actual backfills`, `Q${q} actual exits`, `Q${q} actual net`]), 'Q4 hires', 'Q4 backfills', 'Q4 exits', 'Q4 net', 'EOY', 'Target', 'Δ run-rate (USD)']]; us.forEach((u) => { const q4 = S.q4[u.key]; out.push([u.org, u.dept, u.opening, ...[0, 1, 2].flatMap((q) => [netOf(u.plan[q]), u.act[q].h, u.act[q].b, u.act[q].x, netOf(u.act[q])]), q4.h, q4.b, q4.x, netOf(q4), u.hc + netOf(q4), u.target, Math.round(dRun(u, q4))]); }); downloadCsv(`fy26-plan-${sc.id}.csv`, out); };
+      root.querySelector('[data-reset]').onclick = async () => { const n = changedCells(); if (!n) { NS.toast('Nothing to reset', { desc: `The draft already matches v${S.commits[S.commits.length - 1].v}.`, type: 'info' }); return; } if (await NS.confirm({ title: 'Discard draft changes?', body: `${n} Q4 cells return to committed plan v${S.commits[S.commits.length - 1].v}.`, confirmLabel: 'Discard changes', danger: true })) { S.q4 = clone(S.committed.q4); S.edited = clone(S.committed.edited); P.saveNow(); log('Discarded draft plan changes'); NS.toast('Draft discarded', { desc: `Back to v${S.commits[S.commits.length - 1].v}` }); NS.refresh(); } };
+      root.querySelector('[data-commit]').onclick = () => {
+        const n = changedCells(), last = S.commits[S.commits.length - 1]; if (!n) { NS.toast('Nothing to commit', { desc: `The draft matches v${last.v}.`, type: 'info' }); return; }
+        const A = agg(UNITS), diffs = []; UNITS.forEach((u) => ['h', 'b', 'x'].forEach((k) => { const a = S.committed.q4[u.key][k], b = S.q4[u.key][k]; if (a !== b) diffs.push({ u, k, a, b }); }));
+        NS.modal({ title: `Commit plan v${last.v + 1}`, sub: 'The committed plan becomes the baseline for variance, scenarios and the board pack.', body: `<div class="cost-box mb-4"><div><span>EOY headcount</span><b>${F.int(A.eoy)}</b></div><div><span>vs target</span><b>${sgn(A.eoy - A.target)}</b></div><div><span>EOY run-rate</span><b>${m$(A.payEoy)}</b></div></div><div class="ns-table-wrap mb-4"><table class="ns-table dense"><thead><tr><th>Org</th><th>Q4 field</th><th class="num">v${last.v}</th><th class="num">Draft</th></tr></thead><tbody>${diffs.slice(0, 8).map((d) => `<tr><td>${esc(d.u.org)} <span class="faint">· ${esc(d.u.dept)}</span></td><td>${K2(d.k)}</td><td class="num">${d.a}</td><td class="num"><b>${d.b}</b></td></tr>`).join('')}${diffs.length > 8 ? `<tr><td colspan="4" class="muted">…and ${diffs.length - 8} more</td></tr>` : ''}</tbody></table></div><label class="ns-field"><span class="ns-label">Change note</span><input class="ns-input" id="cnote" value="Q4 re-plan · ${diffs.length} cells updated"></label>`,
+          actions: [{ label: 'Cancel' }, { label: `Commit v${last.v + 1}`, cls: 'primary', onClick: (m) => { const note = m.el.querySelector('#cnote').value.trim() || 'Q4 re-plan'; S.commits.push({ v: last.v + 1, date: TODAY_ISO, by: c.persona.personId, note, eoy: A.eoy }); S.committed = { q4: clone(S.q4), edited: clone(S.edited) }; P.saveNow(); log(`Committed plan v${last.v + 1}`); NS.toast(`Plan v${last.v + 1} committed`, { desc: `EOY ${F.int(A.eoy)} · run-rate ${m$(A.payEoy)}` }); NS.refresh(); } }] });
+      };
+      redraw(); versions();
+      if (c.query.focus) { const tr = root.querySelector(`tr[data-rk="${CSS.escape(c.query.focus)}"]`); if (tr) tr.scrollIntoView({ block: 'center' }); }
+    },
+  };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__WP; const S = P.S;
+  const { D, U, F, raw, ic, html, esc, TODAY, TODAY_ISO, DEPTS, PORTFOLIO, short, m$, sgn, clone, UNITS, UBY, netOf, PROGRAMS, COMMITMENTS, scopeOf, unitsIn, planUnits, agg, run, scen, scenParams, baseOff, who, downloadCsv, aiNote, orgMetrics, layerOf, recFor, fmtInt, save, saveNow, log, R } = P;
+
+  /* SCENARIOS --------------------------------------------------------- */
+  const PARAMS = [
+    { k: 'hire', label: 'Q4 hire rate', min: 0, max: 150, step: 5, f: (v) => v + '%', help: 'Share of planned Q4 new roles that are actually hired.' },
+    { k: 'backfill', label: 'Backfill rate', min: 0, max: 130, step: 5, f: (v) => v + '%', help: 'Share of planned backfills executed (115% ≈ every exit replaced).' },
+    { k: 'attr', label: 'Attrition (annualised)', min: 4, max: 16, step: 0.5, f: (v) => F.num(v, 1) + '%', help: 'Drives Q4 exits; the plan assumes the rate set in Assumptions.' },
+    { k: 'merit', label: 'Merit increase (FY27)', min: 0, max: 6, step: 0.25, f: (v) => F.num(v, 2) + '%', help: 'Applied to the EOY run-rate to get the FY27 opening run-rate.' },
+    { k: 'conv', label: 'Contractor conversion', min: 0, max: 100, step: 10, f: (v) => v + '%', help: 'Contractors converted to FTE — removes the agency margin.' },
+    { k: 'offshore', label: 'Offshore mix of new hires', min: 0, max: 90, step: 1, f: (v) => v + '%', help: 'Share of Q4 new roles placed in Mumbai, Bengaluru and Pune.' },
+    { k: 'span', label: 'Span-of-control target', min: 0, max: 10, step: 1, f: (v) => (v ? String(v) : 'as-is'), help: 'Appoints team leads from within until the average span reaches the target (0 = leave as-is).' },
+  ];
+  const quarterPath = (us, r) => {
+    const A = agg(us), pts = [A.opening]; let h = A.opening; [0, 1, 2].forEach((q) => { h += netOf(A.act[q]); pts.push(h); });
+    const qAvg = A.fy / 4, s = r.sc, extraExit = (A.hc * (s.attr - S.settings.attr)) / 400;
+    pts.push(r.eoy); const q27 = Math.round((qAvg * s.hire) / 100 - extraExit); pts.push(r.eoy + q27, r.eoy + 2 * q27); return pts;
+  };
+  const narrative = (r, rb) => {
+    const d = r.fy27 - rb.fy27, e = r.eoy - rb.eoy, parts = [];
+    parts.push(`<b>${esc(r.sc.name)}</b> ${d < 0 ? 'saves' : 'adds'} <b>${m$(Math.abs(d))}</b> of FY27 run-rate and lands EOY headcount at <b>${F.int(r.eoy)}</b> (${sgn(e)} vs base)`);
+    if (r.unfilled) parts.push(`but leaves <b>${r.unfilled}</b> open reqs unfilled`);
+    if (r.leads) parts.push(`appoints ${r.leads} team leads to bring the average span to ${F.num(r.span, 1)}`);
+    if (r.converted) parts.push(`converts ${r.converted} contractors (${m$(r.conv)} of agency margin)`);
+    if (Math.abs(r.india - rb.india) >= 0.5) parts.push(`moves the India share to ${F.num(r.india, 1)}%`);
+    return parts.join(', ').replace(/, ([^,]*)$/, parts.length > 2 ? ' and $1' : ', $1') + '.';
+  };
+  const editScenario = (s, us, onSaved) => {
+    const draft = { ...s, offshore: s.offshore == null ? Math.round(baseOff(us)) : s.offshore, span: s.span || 0 };
+    const pct = (p, v) => (((v - p.min) / (p.max - p.min)) * 100).toFixed(1) + '%';
+    NS.drawer({
+      eyebrow: 'Scenario parameters', title: esc(s.name), sub: 'Outputs recompute live from band midpoints × location tiers for every org in scope.', size: 'lg',
+      body: `<div class="ns-grid c2" style="align-items:start"><div><label class="ns-field mb-2"><span class="ns-label">Name</span><input class="ns-input" id="scName" value="${esc(s.name)}"></label><label class="ns-field mb-2"><span class="ns-label">Description</span><textarea class="ns-textarea" id="scDesc" rows="2">${esc(s.desc || '')}</textarea></label>${PARAMS.map((p) => `<div class="sl"><div class="row"><span>${p.label}</span><output id="o-${p.k}">${p.f(draft[p.k])}</output></div><input type="range" class="ns-range" data-p="${p.k}" min="${p.min}" max="${p.max}" step="${p.step}" value="${draft[p.k]}" style="--p:${pct(p, draft[p.k])}" aria-label="${p.label}"><p>${p.help}</p></div>`).join('')}</div><div style="position:sticky;top:0"><div class="ns-card"><div class="ns-card-head"><div><h3>Live outputs</h3><p>vs ${esc(scen(S.baseId).name)}</p></div></div><div class="ns-card-body" id="scPrev"></div></div></div></div>`,
+      foot: `<button class="ns-btn ghost" data-close>Cancel</button><button class="ns-btn primary" data-save-sc>${NS.icon('check')}Save scenario</button>`,
+      mounted: (body, api) => {
+        const rb = run(scen(S.baseId), us);
+        const prev = () => { const r = run({ ...draft, span: draft.span || null }, us); body.querySelector('#scPrev').innerHTML = [['EOY headcount', F.int(r.eoy), sgn(r.eoy - rb.eoy)], ['Q4 hires · backfills · exits', `${r.N} · ${r.B} · ${r.X}`, ''], ['EOY payroll run-rate', m$(r.eoyPay), sgn(r.eoyPay - rb.eoyPay, (n) => m$(n))], ['FY27 run-rate', m$(r.fy27), sgn(r.fy27 - rb.fy27, (n) => m$(n))], ['Cost per engineer', m$(r.cpe), sgn(Math.round(r.cpe - rb.cpe), (n) => m$(n))], ['Avg span of control', F.num(r.span, 1), r.leads ? `${r.leads} leads` : ''], ['Headcount in India', F.pct(r.india, 1), ''], ['Open reqs left unfilled', r.unfilled, '']].map(([k, v, d]) => `<div class="kv"><span>${k}</span><b>${v}${d ? ` <span class="xs ${/^−/.test(d) ? 'ok-text' : 'muted'}" style="font-weight:500">${d}</span>` : ''}</b></div>`).join(''); };
+        body.querySelectorAll('[data-p]').forEach((inp) => { inp.oninput = () => { const p = PARAMS.find((x) => x.k === inp.dataset.p); draft[p.k] = +inp.value; inp.style.setProperty('--p', pct(p, +inp.value)); body.querySelector('#o-' + p.k).textContent = p.f(+inp.value); prev(); }; });
+        prev();
+        api.el.querySelector('[data-save-sc]').onclick = () => { Object.assign(s, { name: body.querySelector('#scName').value.trim() || s.name, desc: body.querySelector('#scDesc').value.trim(), hire: draft.hire, backfill: draft.backfill, attr: draft.attr, merit: draft.merit, conv: draft.conv, offshore: draft.offshore, span: draft.span || null }); saveNow(); log(`Updated scenario “${s.name}”`); api.close(); NS.toast('Scenario saved', { desc: `${s.name} · FY27 ${m$(run(s, us).fy27)}` }); onSaved(); };
+      },
+    });
+  };
+  R['/scenarios'] = {
+    title: 'Scenarios',
+    render: (c) => {
+      const sc = scopeOf(c.persona), us = unitsIn(sc), rb = run(scen(S.baseId), us), runs = S.scenarios.map((s) => run(s, us));
+      const card = (r) => { const s = r.sc, isBase = s.id === S.baseId; return `<div class="ns-card ${isBase ? 'is-base' : ''}"><div class="ns-card-body sc-card"><div><div class="flex gap-2 items-center wrap"><b class="md ink">${esc(s.name)}</b>${isBase ? NS.badge('Baseline', 'brand') : ''}${s.shared ? NS.badge(`Shared by ${D.byId(s.owner).first}`, 'info') : ''}${!s.seeded ? NS.badge('Custom', 'outline') : ''}</div><p class="xs muted mt-1">${esc(s.desc || '')}</p></div><div class="flex gap-1 wrap">${scenParams(s, us).map(([k, v]) => `<span class="pchip">${k} <b>${v}</b></span>`).join('')}</div><div class="sc-kpis"><div><span>EOY headcount</span><b>${F.int(r.eoy)}</b><span class="${r.eoy < rb.eoy ? 'bad-text' : r.eoy > rb.eoy ? 'ok-text' : ''}">${isBase ? 'baseline' : sgn(r.eoy - rb.eoy) + ' vs baseline'}</span></div><div><span>FY27 run-rate</span><b>${m$(r.fy27)}</b><span>${isBase ? `${m$(r.fy27 - r.now)} over today` : sgn(r.fy27 - rb.fy27, (n) => m$(n)) + ' vs baseline'}</span></div></div><div class="flex gap-1 wrap"><button class="ns-btn xs secondary" data-edit="${esc(s.id)}">${NS.icon('sliders')}Edit</button><button class="ns-btn xs ghost" data-dup="${esc(s.id)}">${NS.icon('copy')}Duplicate</button>${isBase ? '' : `<button class="ns-btn xs ghost" data-base="${esc(s.id)}" data-tip="Use as the comparison baseline">${NS.icon('flag')}Set as base</button>`}<a class="ns-btn xs ghost" href="${NS.link('/plan', { sc: s.id })}">${NS.icon('table')}Grid</a>${s.seeded ? '' : `<button class="ns-btn xs ghost" data-del="${esc(s.id)}" aria-label="Delete scenario">${NS.icon('trash')}</button>`}</div></div></div>`; };
+      const rowsT = [['EOY headcount', (r) => F.int(r.eoy), (r) => r.eoy - rb.eoy, F.int], ['Q4 new roles', (r) => r.N], ['Q4 backfills', (r) => r.B], ['Q4 exits', (r) => r.X], ['Q4 net adds', (r) => sgn(r.net)], ['EOY payroll run-rate', (r) => m$(r.eoyPay)], ['FY27 opening run-rate', (r) => m$(r.fy27), (r) => r.fy27 - rb.fy27, (n) => m$(n)], ['Cost per engineer', (r) => m$(r.cpe)], ['Avg span of control', (r) => F.num(r.span, 1)], ['Team leads appointed', (r) => r.leads || '—'], ['Headcount in India', (r) => F.pct(r.india, 1)], ['Contractor share', (r) => F.pct(r.conShare, 1)], ['Open reqs left unfilled', (r) => r.unfilled || '—']];
+      return html`${raw(NS.pageHead({ eyebrow: `Scenario compare · ${sc.label}`, title: 'Scenarios', sub: 'Test Q4 hiring, attrition, merit, contractor conversion, location mix and span targets against the committed plan. Every output is recomputed from band midpoints × location tiers for each org.', actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export</button><button class="ns-btn primary" data-new>${ic('plus')}New scenario</button>` }))}
+        <div class="ns-grid c4">${raw(runs.map(card).join(''))}</div>
+        ${raw(aiNote('What the scenarios say', runs.filter((r) => r.sc.id !== S.baseId).map((r) => narrative(r, rb)).join(' ')))}
+        <div class="ns-grid c2 mt-4">
+          ${raw(NS.card({ title: 'Headcount by scenario', sub: 'Quarter-ends · FY27 H1 extends this year’s average quarterly net adds at each hire rate', body: '<div id="scLine"></div>' }))}
+          ${raw(NS.card({ title: 'What moves the FY27 run-rate', sub: `Change vs today’s payroll of ${m$(rb.now)}`, body: '<div id="scCost"></div>' }))}
+        </div>
+        ${raw(NS.card({ cls: 'mt-4', title: 'Output comparison', sub: `Deltas vs ${esc(scen(S.baseId).name)}`, bodyCls: 'flush', body: `<div class="ns-table-wrap"><table class="ns-table dense"><thead><tr><th>Output</th>${runs.map((r) => `<th class="num">${esc(r.sc.name)}</th>`).join('')}</tr></thead><tbody>${rowsT.map(([k, f, dv, df]) => `<tr><td><b>${k}</b></td>${runs.map((r) => `<td class="num" ${r.sc.id === S.baseId ? 'style="background:var(--brand-soft)"' : ''}>${f(r)}${dv && r.sc.id !== S.baseId ? `<span class="xs ${dv(r) < 0 ? 'bad-text' : 'muted'}" style="display:block">${sgn(Math.round(dv(r)), df)}</span>` : ''}</td>`).join('')}</tr>`).join('')}</tbody></table></div>` }))}`;
+    },
+    mounted: (c, root) => {
+      const sc = scopeOf(c.persona), us = unitsIn(sc), runs = S.scenarios.map((s) => run(s, us));
+      NS.chart.line(root.querySelector('#scLine'), { labels: ['Dec ’25', 'Mar', 'Jun', 'Sep', 'Dec ’26', 'Mar ’27', 'Jun ’27'], series: runs.map((r) => ({ name: r.sc.name, values: quarterPath(us, r), dashed: r.sc.id !== S.baseId && false })), yFormat: fmtInt, height: 250, legend: 'top', markers: [{ i: 3, label: 'Today' }] });
+      NS.chart.bars(root.querySelector('#scCost'), { labels: runs.map((r) => r.sc.name), series: [{ name: 'Q4 hires, backfills & exits', values: runs.map((r) => Math.round(r.dPay)) }, { name: 'Team leads − contractor margin', values: runs.map((r) => Math.round(r.leadCost - r.conv)) }, { name: 'FY27 merit', values: runs.map((r) => Math.round(r.meritCost)) }], yFormat: (v) => m$(v), height: 250, legend: 'top' });
+      const refresh = () => NS.refresh();
+      root.querySelectorAll('[data-edit]').forEach((b) => { b.onclick = () => editScenario(scen(b.dataset.edit), us, refresh); });
+      root.querySelectorAll('[data-dup]').forEach((b) => { b.onclick = () => { const s = scen(b.dataset.dup), n = S.scenarios.filter((x) => !x.seeded).length + 1; const copy = { ...clone(s), id: 'custom-' + n + '-' + S.scenarios.length, name: `${s.name} (copy)`, seeded: false, shared: null, owner: c.persona.personId }; S.scenarios.push(copy); saveNow(); log(`Duplicated scenario “${s.name}”`); NS.toast('Scenario duplicated', { desc: copy.name, action: { label: 'Edit', onClick: () => editScenario(scen(copy.id), us, refresh) } }); NS.refresh(); }; });
+      root.querySelectorAll('[data-base]').forEach((b) => { b.onclick = () => { const s = scen(b.dataset.base); S.baseId = s.id; saveNow(); log(`Set “${s.name}” as the scenario baseline`); NS.toast('Baseline updated', { desc: `Deltas now compare against ${s.name}` }); NS.refresh(); }; });
+      root.querySelectorAll('[data-del]').forEach((b) => { b.onclick = async () => { const s = scen(b.dataset.del); if (await NS.confirm({ title: 'Delete scenario?', body: `“${esc(s.name)}” will be removed for everyone viewing this plan.`, confirmLabel: 'Delete', danger: true })) { S.scenarios = S.scenarios.filter((x) => x.id !== s.id); if (S.baseId === s.id) S.baseId = 'base'; saveNow(); NS.toast('Scenario deleted', { desc: s.name }); NS.refresh(); } }; });
+      root.querySelector('[data-new]').onclick = () => { const s = { ...clone(scen('base')), id: 'custom-' + (S.scenarios.length + 1), name: 'New scenario', desc: 'Starts from the base plan.', seeded: false, shared: null, owner: c.persona.personId }; S.scenarios.push(s); saveNow(); NS.refresh(); editScenario(scen(s.id), us, refresh); };
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`scenarios-${sc.id}.csv`, [['Scenario', 'Hire %', 'Backfill %', 'Attrition %', 'Merit %', 'Conversion %', 'Offshore %', 'Span target', 'EOY headcount', 'FY27 run-rate', 'Cost per engineer', 'Avg span', 'India %', 'Unfilled reqs'], ...runs.map((r) => [r.sc.name, r.sc.hire, r.sc.backfill, r.sc.attr, r.sc.merit, r.sc.conv, F.num(r.off, 0), r.sc.span || '', r.eoy, Math.round(r.fy27), Math.round(r.cpe), F.num(r.span, 2), F.num(r.india, 1), r.unfilled])]);
+    },
+  };
+
+  /* ORG DESIGN -------------------------------------------------------- */
+  const orgScopes = (persona) => {
+    const pid = persona.id, engOrgs = UNITS.filter((u) => u.dept === 'Engineering' && !u.lead).map((u) => ({ id: 'o:' + u.key, label: `Engineering › ${u.org}`, people: () => u.people }));
+    const dept = (d) => ({ id: 'd:' + d, label: d, people: () => D.people.filter((p) => p.dept === d) });
+    if (pid === 'exec') return [dept('Engineering'), ...engOrgs];
+    if (pid === 'hrbp') return [{ id: 'pf', label: 'My portfolio (Eng, Product, Design)', people: () => D.people.filter((p) => PORTFOLIO.includes(p.dept)) }, ...PORTFOLIO.map(dept), ...engOrgs];
+    return [{ id: 'all', label: 'Northstar Labs (company)', people: () => D.people }, ...DEPTS.filter((d) => d !== 'Executive').map(dept), ...engOrgs];
+  };
+  const canDraft = (pid) => pid === 'hrbp' || pid === 'cpo' || pid === 'exec';
+  R['/org'] = {
+    title: 'Org design', personas: ['hrbp', 'exec', 'cpo'],
+    render: (c) => {
+      const opts = orgScopes(c.persona), o = opts.find((x) => x.id === c.query.s) || opts[0], ps = o.people(), m = orgMetrics(ps);
+      const flagged = m.narrow.length + m.wide.length, mgrPct = (x) => (m.mg.length ? (x / m.mg.length) * 100 : 0);
+      const rules = [
+        { ok: m.avgSpan >= 6 && m.avgSpan <= 8, warn: m.avgSpan > 8 && m.avgSpan <= 9.5, t: 'Average span of control 6–8', v: F.num(m.avgSpan, 1) },
+        { ok: m.maxLayer <= 6, t: 'No more than 6 layers from the CEO', v: `${m.maxLayer} layers` },
+        { ok: m.seniorShare >= 30, t: 'At least 30% of ICs at senior level (P3+)', v: F.pct(m.seniorShare, 0) },
+        { ok: mgrPct(m.narrow.length) <= 10, warn: mgrPct(m.narrow.length) <= 20, t: 'Under 10% of managers with fewer than 4 reports', v: F.pct(mgrPct(m.narrow.length), 0) },
+        { ok: mgrPct(m.wide.length) <= 10, warn: mgrPct(m.wide.length) <= 25, t: 'Under 10% of managers with more than 10 reports', v: F.pct(mgrPct(m.wide.length), 0) },
+      ];
+      const passN = rules.filter((r) => r.ok).length;
+      return html`${raw(NS.pageHead({ eyebrow: 'Org design analyzer', title: 'Org shape', sub: 'Spans, layers, level mix and location mix against Northstar’s design rules. Flagged managers come with a recommendation you can turn into a plan action or a headcount request.', actions: `<select class="ns-select" data-scope style="width:auto;max-width:280px">${opts.map((x) => `<option value="${esc(x.id)}" ${x.id === o.id ? 'selected' : ''}>${esc(x.label)}</option>`).join('')}</select><button class="ns-btn secondary" data-export>${ic('download')}Export</button>` }))}
+        <div class="ns-stats">
+          ${raw(NS.stat({ label: 'People in scope', value: F.int(m.n), icon: 'users', sub: `${m.mg.length} managers · ${F.int(m.ics.length)} ICs` }))}
+          ${raw(NS.stat({ label: 'Avg span of control', value: F.num(m.avgSpan, 1), icon: 'network', sub: `Target 6–8 · manager ratio 1:${F.num(m.ratio, 1)}` }))}
+          ${raw(NS.stat({ label: 'Layers from CEO', value: m.maxLayer, unit: 'max', icon: 'layers', sub: `Rule: ≤ 6 · median layer ${U.median(ps.map(layerOf))}` }))}
+          ${raw(NS.stat({ label: 'Flagged managers', value: flagged, icon: 'alert-triangle', sub: `${m.narrow.length} under 4 · ${m.wide.length} over 10 reports` }))}
+        </div>
+        <div class="ns-grid c3 mt-4">
+          ${raw(NS.card({ title: 'Span of control', sub: 'Managers by number of direct reports', body: '<div id="spanBars"></div>' }))}
+          ${raw(NS.card({ title: 'Layers', sub: 'People by layer below the CEO (L1)', body: '<div id="layerBars"></div>' }))}
+          ${raw(NS.card({ title: 'Design rules', sub: `${passN} of ${rules.length} rules met`, body: rules.map((r) => `<div class="rule"><span class="ns-icon-box ${r.ok ? 'ok' : r.warn ? 'warn' : 'bad'}">${NS.icon(r.ok ? 'check' : 'alert-triangle')}</span><span class="ink2">${r.t}</span><b class="tnum">${r.v}</b></div>`).join('') }))}
+        </div>
+        ${raw(NS.card({ cls: 'mt-4', title: 'Flagged managers', sub: 'Span under 4 or over 10 · click a row for the team', actions: `<span class="xs muted">${Object.keys(S.orgActions).length} actions planned</span>`, bodyCls: 'flush', body: '<div id="flagTable"></div>' }))}
+        <div class="ns-grid c2 mt-4">
+          ${raw(NS.card({ title: 'Level mix', sub: 'Pyramid by career band · IC vs manager track', body: '<div id="pyr"></div>' }))}
+          ${raw(NS.card({ title: 'Location mix', sub: 'Headcount by country', body: '<div id="locDonut"></div>' }))}
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const opts = orgScopes(c.persona), o = opts.find((x) => x.id === c.query.s) || opts[0], ps = o.people(), m = orgMetrics(ps);
+      root.querySelector('[data-scope]').onchange = (e) => NS.go('/org', { s: e.target.value });
+      NS.chart.bars(root.querySelector('#spanBars'), { labels: ['1–3', '4–6', '7–9', '10+'], series: [{ name: 'Managers', values: m.spans }], colorByIndex: true, colors: ['var(--viz-warn)', 'var(--viz-1)', 'var(--viz-1)', 'var(--viz-serious)'], showValues: true, height: 210 });
+      const L = Object.keys(m.layers).map(Number).sort((a, b) => a - b);
+      NS.chart.bars(root.querySelector('#layerBars'), { labels: L.map((l) => (l === 1 ? 'L1 · CEO' : 'L' + l)), series: [{ name: 'People', values: L.map((l) => m.layers[l]) }], showValues: true, height: 210, yFormat: F.int });
+      P.pyramid(root.querySelector('#pyr'), m.pyr);
+      NS.chart.donut(root.querySelector('#locDonut'), { items: Object.entries(m.byCountry).sort((a, b) => b[1] - a[1]).map(([k, v]) => ({ label: k, value: v })), center: { value: F.pct((ps.filter((p) => P.INDIA.has(p.location)).length / ps.length) * 100, 0), label: 'in India' }, size: 170, format: F.int });
+      const rows = [...m.wide, ...m.narrow].map((x) => ({ ...x, rec: recFor(x) }));
+      const act = (row) => { const done = S.orgActions[row.id]; return done ? `<span class="ns-badge ok">${NS.icon('check', { size: 12 })} ${esc(done)}</span>` : row.rec.k === 'exempt' ? '<span class="xs faint">No action</span>' : `<button class="ns-btn xs ${row.rec.k === 'split' ? 'primary' : 'secondary'}" data-act="${row.id}">${esc(row.rec.a)}</button>`; };
+      const tbl = NS.table(root.querySelector('#flagTable'), { rows, rowKey: 'id', pageSize: 8, sort: { key: 'directs', dir: -1 }, dense: true, columns: [
+        { key: 'name', label: 'Manager', render: (r) => who(r.id, `${D.levelLabel(r.level)} · ${r.city}`) },
+        { key: 'team', label: 'Team', render: (r) => `<div class="truncate" style="max-width:190px">${esc(r.team)}</div><div class="xs faint">${esc(r.org)}</div>` },
+        { key: 'directs', label: 'Span', align: 'right', render: (r) => `<span class="ns-badge ${r.directs < 4 ? 'warn' : r.directs >= 15 ? 'bad' : 'warn'}">${r.directs}</span>` },
+        { key: 'orgSize', label: 'Org size', align: 'right', render: (r) => F.int(r.orgSize || r.directs) },
+        { key: 'layer', label: 'Layer', align: 'right', sort: (r) => layerOf(r), render: (r) => 'L' + layerOf(r) },
+        { key: 'rec', label: 'Recommendation', sort: false, render: (r) => `<div class="sm ink2" style="min-width:220px;max-width:340px;white-space:normal">${esc(r.rec.t)}</div>` },
+        { key: 'act', label: '', sort: false, render: act },
+      ], onRow: (r) => openMgr(r), empty: { icon: 'check-circle', title: 'No flagged managers', body: 'Every manager in this scope is within the 4–10 span range.' } });
+      root.querySelector('#flagTable').addEventListener('click', (e) => { const b = e.target.closest('[data-act]'); if (!b) return; e.stopPropagation(); const r = rows.find((x) => x.id === b.dataset.act); doAction(r, c, () => tbl.refresh()); });
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`org-design-flagged-${o.id.replace(/[^a-z0-9]+/gi, '-')}.csv`, [['Manager', 'Level', 'Team', 'Org', 'Span', 'Org size', 'Layer', 'Recommendation', 'Action'], ...rows.map((r) => [r.name, r.level, r.team, r.org, r.directs, r.orgSize || r.directs, layerOf(r), r.rec.t, S.orgActions[r.id] || ''])]);
+      const openMgr = (r) => { const reps = D.reports(r.id); NS.drawer({ eyebrow: `${esc(r.team)} · span ${r.directs}`, title: esc(r.name), sub: `${esc(r.title)} · ${esc(r.city)} · layer L${layerOf(r)}`, body: `<div class="case mb-4"><b>Recommendation.</b> ${esc(r.rec.t)}</div><div class="cost-box mb-4"><div><span>Direct reports</span><b>${r.directs}</b></div><div><span>Org size</span><b>${F.int(r.orgSize || r.directs)}</b></div><div><span>1:1 cadence</span><b>${esc(r.oneOnOnes || '—')}</b></div></div><div class="ns-section-title" style="margin-top:0"><h2>Direct reports</h2><p>${reps.length} people</p></div><div class="ns-list">${reps.map((p) => `<div class="ns-row">${NS.person(p, { sub: `${D.levelLabel(p.level)} · ${p.city}` })}<span class="grow"></span>${p.directs ? NS.badge(`manages ${p.directs}`, 'outline') : ''}</div>`).join('')}</div>`, foot: `<button class="ns-btn ghost" data-close>Close</button>${r.rec.k !== 'exempt' && !S.orgActions[r.id] ? `<button class="ns-btn primary" data-dact>${esc(r.rec.a)}</button>` : ''}`, mounted: (b, api) => { const x = api.el.querySelector('[data-dact]'); if (x) x.onclick = () => { api.close(); doAction(r, c, () => tbl.refresh()); }; } }); };
+    },
+  };
+  const doAction = (r, c, done) => {
+    if (r.rec.k === 'split' && canDraft(c.persona.id)) {
+      const ti = P.teamInfo(r.team); if (!ti) return;
+      const id = 'HC-26-' + String(S.nextReq++).padStart(3, '0'), u = UBY[ti.dept + '|' + ti.org];
+      S.requests.push({ id, status: 'Draft', team: r.team, dept: ti.dept, org: ti.org, unit: u.key, level: 'M3', loc: r.location, type: 'New role', title: P.roleTitle('M3', ti.dept, r.team), created: TODAY_ISO, requester: c.persona.personId, approver: P.approverFor(ti.dept), summary: `Engineering manager to split ${r.team} — ${r.first} currently has ${r.directs} direct reports against a 6–8 target.`, why: `A span of ${r.directs} leaves ${r.first} under 20 minutes a week per report; 1:1 cadence is ${r.oneOnOnes || 'irregular'}.`, risk: 'Senior attrition and slower delivery as review load concentrates on one manager.', alt: 'Appoint a team lead from within (no net headcount, no people-management capacity).', trail: [{ date: TODAY_ISO, who: c.persona.personId, what: 'Draft created from Org design' }] });
+      S.orgActions[r.id] = `Draft ${id}`; saveNow(); log(`Drafted ${id} to split ${r.team}`);
+      NS.toast('Headcount request drafted', { desc: `${id} · Engineering manager for ${r.team}`, action: { label: 'Open', onClick: () => NS.go('/requests', { id }) } });
+    } else { S.orgActions[r.id] = r.rec.k === 'merge' ? 'Merge planned' : 'Team lead planned'; saveNow(); log(`Planned org action for ${r.name}: ${r.rec.t}`); NS.toast('Org action planned', { desc: `${r.name} · ${r.rec.t}` }); }
+    done && done();
+  };
+
+  /* BUDGET ------------------------------------------------------------ */
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const progStatus = (r) => { const v = r.left / r.b; return v < -0.01 ? NS.badge('Over forecast', 'bad', true) : r.spent / r.b > 0.8 ? NS.badge('Watch', 'warn', true) : NS.badge('On track', 'ok', true); };
+  const reallocate = (c, pre = {}) => {
+    const bt = P.budgetTotals(), rows = bt.rows, byId = Object.fromEntries(rows.map((r) => [r.p.id, r]));
+    const donor = pre.from || U.sortBy(rows, (r) => -r.left)[0].p.id, taker = pre.to || U.sortBy(rows, 'left')[0].p.id;
+    const sugg = Math.max(1000, Math.round(Math.min(Math.abs(byId[taker].left), Math.max(0, byId[donor].left)) / 1000) * 1000);
+    NS.modal({ title: 'Reallocate budget', sub: 'Moves budget between people programs. The FY26 total stays at ' + m$(bt.budget) + '.', body: `<div class="ns-form-grid"><label class="ns-field"><span class="ns-label">From program</span><select class="ns-select" id="rf">${rows.map((r) => `<option value="${r.p.id}" ${r.p.id === donor ? 'selected' : ''}>${esc(r.p.name)}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">To program</span><select class="ns-select" id="rt">${rows.map((r) => `<option value="${r.p.id}" ${r.p.id === taker ? 'selected' : ''}>${esc(r.p.name)}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Amount (USD)</span><input class="ns-input" id="ra" type="number" min="1000" step="1000" value="${sugg}"></label></div><div class="ns-grid c2 mt-4" id="rprev"></div><label class="ns-field mt-4"><span class="ns-label">Justification <span class="opt">required · shared with program owners</span></span><textarea class="ns-textarea" id="rj" rows="3" placeholder="What changes and why — e.g. leadership programme cohort 3 expanded from 18 to 24 managers."></textarea></label>`,
+      actions: [{ label: 'Cancel' }, { label: 'Move budget', cls: 'primary', onClick: (m) => { const f = m.el.querySelector('#rf').value, t = m.el.querySelector('#rt').value, a = Math.round(+m.el.querySelector('#ra').value || 0), j = m.el.querySelector('#rj').value.trim(); if (f === t) { NS.toast('Pick two different programs', { type: 'warn' }); return false; } if (a <= 0) { NS.toast('Enter an amount above zero', { type: 'warn' }); return false; } if (a > byId[f].b - byId[f].spent) { NS.toast('Not enough unspent budget', { desc: `${byId[f].p.name} has ${m$(byId[f].b - byId[f].spent)} left to spend.`, type: 'warn' }); return false; } if (j.length < 12) { NS.toast('Add a justification', { desc: 'Program owners see the reason with the move.', type: 'warn' }); return false; } S.budget.adj[f] = (S.budget.adj[f] || 0) - a; S.budget.adj[t] = (S.budget.adj[t] || 0) + a; S.budget.moves.unshift({ id: 'mv' + (S.budget.moves.length + 1), from: f, to: t, amount: a, reason: j, by: c.persona.personId, date: TODAY_ISO }); saveNow(); log(`Moved ${m$(a)} from ${byId[f].p.short} to ${byId[t].p.short}`); NS.toast(`Moved ${m$(a)} to ${byId[t].p.name}`, { desc: `From ${byId[f].p.name} · owners notified` }); NS.refresh(); } }],
+      mounted: (body) => { const upd = () => { const f = body.querySelector('#rf').value, t = body.querySelector('#rt').value, a = +body.querySelector('#ra').value || 0; const box = (r, d) => `<div class="ns-card"><div class="ns-card-body tight"><div class="xs muted">${d < 0 ? 'From' : 'To'} · ${esc(r.p.name)}</div><div class="kv"><span>Budget</span><b>${m$(r.b, 2)} → ${m$(r.b + d, 2)}</b></div><div class="kv"><span>Forecast variance</span><b class="${r.left + d < 0 ? 'bad-text' : 'ok-text'}">${sgn(r.left, (n) => m$(n, 0))} → ${sgn(r.left + d, (n) => m$(n, 0))}</b></div></div></div>`; body.querySelector('#rprev').innerHTML = f === t ? '<div class="ns-alert warn">Choose two different programs.</div>' : box(byId[f], -a) + box(byId[t], a); }; ['#rf', '#rt', '#ra'].forEach((s) => body.querySelector(s).addEventListener('input', upd)); upd(); } });
+  };
+  R['/budget'] = {
+    title: 'Budget', personas: ['cpo', 'rewards'],
+    render: (c) => {
+      const bt = P.budgetTotals(), committed = U.sum(COMMITMENTS, 'amount');
+      return html`${raw(NS.pageHead({ eyebrow: 'People-programs budget · FY26', title: 'Budget', sub: `${m$(bt.budget)} across six programs, stewarded alongside a ${m$(P.payNow(UNITS))} payroll. Spend is actual through September; October–December is the owners’ forecast including contracted commitments.`, actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export</button><button class="ns-btn primary" data-realloc>${ic('refresh')}Reallocate</button>` }))}
+        <div class="ns-stats">
+          ${raw(NS.stat({ label: 'FY26 budget', value: m$(bt.budget), icon: 'wallet', sub: `${S.budget.moves.length} reallocations this year` }))}
+          ${raw(NS.stat({ label: 'Spent YTD', value: m$(bt.spent, 2), unit: F.pct((bt.spent / bt.budget) * 100, 0), icon: 'banknote', sub: `Straight-line budget to date ${m$(bt.ytdBudget, 2)}` }))}
+          ${raw(NS.stat({ label: 'Full-year forecast', value: m$(bt.fc, 2), icon: 'line-chart', sub: `${sgn(bt.fc - bt.budget, (n) => m$(n, 0))} vs budget · ${bt.rows.filter((r) => r.left < 0).length} programs over` }))}
+          ${raw(NS.stat({ label: 'Open commitments', value: m$(committed), icon: 'file-text', sub: `${COMMITMENTS.length} items · included in the forecast` }))}
+        </div>
+        ${raw(NS.card({ cls: 'mt-4', title: 'Programs', sub: 'Click a program for monthly spend and commitments', bodyCls: 'flush', body: `<div class="ns-table-wrap"><table class="ns-table" id="progTable"><thead><tr><th>Program</th><th>Owner</th><th class="num">Budget</th><th class="num">Spent YTD</th><th style="min-width:130px">Consumed</th><th class="num">Forecast FY</th><th class="num">Variance</th><th>Status</th></tr></thead><tbody>${bt.rows.map((r) => `<tr class="clickable" data-prog="${r.p.id}"><td><b>${esc(r.p.name)}</b><div class="xs faint truncate" style="max-width:280px">${esc(r.p.note)}</div></td><td>${who(r.p.owner)}</td><td class="num">${m$(r.b, 2)}${r.b !== r.p.budget ? `<span class="xs faint" style="display:block">orig. ${m$(r.p.budget, 2)}</span>` : ''}</td><td class="num">${m$(r.spent, 2)}</td><td><div class="flex items-center gap-2">${NS.progress((r.spent / r.b) * 100, { cls: r.spent / r.b > 0.8 ? 'warn' : '' })}<span class="xs tnum muted" style="min-width:32px">${F.pct((r.spent / r.b) * 100, 0)}</span></div></td><td class="num">${m$(r.fc, 2)}</td><td class="num ${r.left < 0 ? 'bad-text' : 'ok-text'}">${sgn(r.left, (n) => m$(n, 0))}</td><td>${progStatus(r)}</td></tr>`).join('')}<tr class="tot"><td><b>Total</b></td><td></td><td class="num"><b>${m$(bt.budget, 2)}</b></td><td class="num"><b>${m$(bt.spent, 2)}</b></td><td><span class="xs muted">${F.pct((bt.spent / bt.budget) * 100, 1)} vs 75% of year</span></td><td class="num"><b>${m$(bt.fc, 2)}</b></td><td class="num ${bt.budget - bt.fc < 0 ? 'bad-text' : 'ok-text'}"><b>${sgn(bt.budget - bt.fc, (n) => m$(n, 0))}</b></td><td></td></tr></tbody></table></div>` }))}
+        <div class="ns-grid main-side mt-4">
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Cumulative burn', sub: 'Actual through September, forecast to December, against a straight-line budget', body: '<div id="burn"></div>' }))}
+            <div class="ns-grid c2">
+              ${raw(NS.card({ title: 'Budget by program', body: '<div id="progDonut"></div>' }))}
+              ${raw(NS.card({ title: 'Reallocations', sub: 'Budget moved between programs', body: S.budget.moves.length ? `<div>${S.budget.moves.map((mv) => { const f = PROGRAMS.find((p) => p.id === mv.from), t = PROGRAMS.find((p) => p.id === mv.to); return `<div class="dec"><span class="ns-icon-box sm">${NS.icon('refresh')}</span><div class="grow min-w-0"><div class="t">${m$(mv.amount)} · ${esc(f.short)} → ${esc(t.short)}</div><div class="s">${esc(mv.reason)}</div><div class="xs faint mt-1">${esc(D.byId(mv.by).name)} · ${F.date(mv.date)}</div></div></div>`; }).join('')}</div>` : NS.empty({ icon: 'refresh', title: 'No reallocations yet' }) }))}
+            </div>
+          </div>
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Commitments', sub: 'Contracted or planned, not yet spent', body: `<div>${U.sortBy(COMMITMENTS, 'date').map((x) => { const p = PROGRAMS.find((q) => q.id === x.prog); return `<div class="dec"><span class="ns-icon-box sm ${x.status === 'Planned' ? 'neutral' : 'ok'}">${NS.icon(x.status === 'Planned' ? 'calendar' : 'file-text')}</span><div class="grow min-w-0"><div class="t">${esc(x.title)}</div><div class="s">${esc(p.short)} · ${F.date(x.date, 'short')} · ${esc(x.status)}</div></div><b class="tnum sm">${m$(x.amount)}</b></div>`; }).join('')}</div>` }))}
+            ${raw(aiNote('Budget note', (() => { const over = bt.rows.filter((r) => r.left < 0).sort((a, b) => a.left - b.left), under = bt.rows.filter((r) => r.left > 0).sort((a, b) => b.left - a.left); return over.length ? `${esc(over[0].p.name)} is ${F.pct((over[0].spent / over[0].b) * 100, 0)} consumed with a quarter to go and forecasts ${m$(-over[0].left, 0)} over. ${under.length ? `${esc(under[0].p.name)} is running ${m$(under[0].left, 0)} under — the campus season is contracted, so the remainder is safe to move. A ${m$(Math.min(-over[0].left, under[0].left), 0)} reallocation closes most of the gap without touching the total.` : ''}` : 'Every program is forecast within budget; the remaining headroom is ' + m$(bt.budget - bt.fc, 0) + '.'; })()))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const bt = P.budgetTotals(), cum = (arr) => arr.reduce((a, v, i) => (a.push((a[i - 1] || 0) + v), a), []);
+      const tot = MONTHS.map((_, i) => U.sum(PROGRAMS, (p) => p.monthly[i])), ct = cum(tot);
+      NS.chart.line(root.querySelector('#burn'), { labels: MONTHS, series: [{ name: 'Actual', values: ct.map((v, i) => (i < 9 ? v : null)), color: 'var(--viz-1)' }, { name: 'Forecast', values: ct.map((v, i) => (i >= 8 ? v : null)), color: 'var(--viz-1)', dashed: true }, { name: 'Straight-line budget', values: MONTHS.map((_, i) => Math.round((bt.budget * (i + 1)) / 12)), color: 'var(--ink-4)' }], yFormat: (v) => (v == null ? '—' : m$(v, 2)), height: 240, legend: 'top', markers: [{ i: 8, label: 'Sep' }] });
+      NS.chart.donut(root.querySelector('#progDonut'), { items: bt.rows.map((r) => ({ label: r.p.short, value: r.b })), center: { value: m$(bt.budget), label: 'FY26' }, size: 150, legend: 'bottom', format: (v) => m$(v, 2) });
+      root.querySelector('[data-realloc]').onclick = () => reallocate(c);
+      if (c.query.realloc) reallocate(c);
+      root.querySelector('[data-export]').onclick = () => downloadCsv('people-programs-budget-FY26.csv', [['Program', 'Owner', 'Budget', 'Spent YTD', 'Forecast FY', 'Variance', ...MONTHS], ...bt.rows.map((r) => [r.p.name, D.byId(r.p.owner).name, r.b, r.spent, r.fc, r.left, ...r.p.monthly])]);
+      root.querySelectorAll('[data-prog]').forEach((tr) => { tr.onclick = () => { const r = bt.rows.find((x) => x.p.id === tr.dataset.prog), coms = COMMITMENTS.filter((x) => x.prog === r.p.id); NS.drawer({ eyebrow: 'People program', title: esc(r.p.name), sub: esc(r.p.note), body: `<div class="cost-box mb-4"><div><span>Budget</span><b>${m$(r.b, 2)}</b></div><div><span>Spent YTD</span><b>${m$(r.spent, 2)}</b></div><div><span>Forecast</span><b>${m$(r.fc, 2)}</b></div></div><div class="ns-section-title" style="margin-top:0"><h2>Monthly spend</h2><p>Actual Jan–Sep · forecast Oct–Dec</p></div><div id="pm"></div><div class="ns-section-title"><h2>Commitments</h2><p>${coms.length} open</p></div>${coms.length ? coms.map((x) => `<div class="kv"><span>${esc(x.title)} · ${F.date(x.date, 'short')}</span><b>${m$(x.amount)}</b></div>`).join('') : '<p class="sm muted">No open commitments.</p>'}<div class="ns-section-title"><h2>Owner</h2></div>${who(r.p.owner, D.byId(r.p.owner).title)}`, foot: `<button class="ns-btn ghost" data-close>Close</button><button class="ns-btn primary" data-rr>${NS.icon('refresh')}Reallocate</button>`, mounted: (b, api) => { NS.chart.bars(b.querySelector('#pm'), { labels: MONTHS, series: [{ name: 'Actual', values: r.p.monthly.map((v, i) => (i < 9 ? v : 0)) }, { name: 'Forecast', values: r.p.monthly.map((v, i) => (i >= 9 ? v : 0)), color: 'var(--viz-seq-300)' }], stacked: true, yFormat: (v) => m$(v, 0), height: 200, legend: 'top' }); api.el.querySelector('[data-rr]').onclick = () => { api.close(); reallocate(c, r.left < 0 ? { to: r.p.id } : { from: r.p.id }); }; } }); }; });
+    },
+  };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__WP; const S = P.S;
+  const { D, U, F, raw, ic, html, esc, TODAY, TODAY_ISO, DEPTS, PORTFOLIO, short, m$, sgn, clone, UNITS, UBY, netOf, scopeOf, unitsIn, planUnits, agg, run, scen, reqsIn, who, statusBadge, reqCost, bandMid, costMult, newCost, downloadCsv, aiNote, FAM, capability, fmtInt, save, saveNow, log, R, RSTAT } = P;
+
+  /* REQUESTS ---------------------------------------------------------- */
+  const STATUSES = ['Under review', 'Approved', 'Draft', 'Filled', 'Declined'];
+  const canApprove = (persona, q) => q.status === 'Under review' && (persona.id === 'cpo' || (persona.id === 'exec' && q.approver === persona.personId));
+  const canCreate = (persona) => persona.id === 'hrbp' || persona.id === 'cpo';
+  const capacity = (q) => { const u = UBY[q.unit], c = S.q4[u.key], rq = S.requests.filter((x) => x.unit === u.key && x.id !== q.id && (x.status === 'Approved' || x.status === 'Under review')); const need = c.h + c.b; return { u, need, used: rq.length, left: need - rq.length }; };
+  const levelOpts = ['P1', 'P2', 'P3', 'P4', 'P5', 'M1', 'M2', 'M3', 'M4', 'M5'];
+  const decide = (q, c, approve, onDone) => {
+    NS.modal({ title: `${approve ? 'Approve' : 'Decline'} ${q.id}`, sub: `${esc(q.title)} · ${esc(q.team)} · ${m$(reqCost(q))} a year`, size: 'sm', body: `<label class="ns-field"><span class="ns-label">${approve ? 'Note to requester <span class="opt">optional</span>' : 'Reason <span class="opt">required · shared with the requester</span>'}</span><textarea class="ns-textarea" id="dn" rows="3" placeholder="${approve ? 'e.g. Approved within the Q4 plan — prioritise the Bengaluru hub.' : 'e.g. Over plan for Q4; re-submit against the FY27 plan.'}"></textarea></label>`,
+      actions: [{ label: 'Cancel' }, { label: approve ? 'Approve request' : 'Decline request', cls: approve ? 'primary' : 'danger', onClick: (m) => { const note = m.el.querySelector('#dn').value.trim(); if (!approve && note.length < 8) { NS.toast('Add a reason', { desc: 'Declines always carry a reason for the requester.', type: 'warn' }); return false; } q.status = approve ? 'Approved' : 'Declined'; if (approve) { q.stage = 'Sourcing'; q.candidates = 0; } else q.reason = note; q.trail.push({ date: TODAY_ISO, who: c.persona.personId, what: approve ? 'Approved' : 'Declined', note: note || (approve ? 'Approved within the Q4 plan.' : '') }); if (approve) q.trail.push({ date: TODAY_ISO, who: 'NS-1919', what: 'Requisition opened', note: 'Assigned to recruiting.' }); saveNow(); log(`${approve ? 'Approved' : 'Declined'} ${q.id}`); NS.toast(`${q.id} ${approve ? 'approved' : 'declined'}`, { desc: approve ? `Requisition opened for ${q.title} · recruiting notified` : `${D.byId(q.requester).first} has been notified`, type: approve ? 'ok' : 'info' }); onDone(); } }] });
+  };
+  const openReq = (q, c, onChange) => {
+    const cap = capacity(q), cost = reqCost(q), base = bandMid(q.level, q.dept, q.loc), within = cap.left >= 1 || q.status === 'Filled';
+    const acts = canApprove(c.persona, q) ? `<button class="ns-btn danger-soft" data-dec>${NS.icon('x')}Decline</button><button class="ns-btn primary" data-app>${NS.icon('check')}Approve</button>` : (q.status === 'Draft' && canCreate(c.persona)) ? `<button class="ns-btn ghost" data-del>${NS.icon('trash')}Delete draft</button><button class="ns-btn primary" data-sub>${NS.icon('send')}Submit for review</button>` : '';
+    NS.drawer({ eyebrow: `${esc(q.id)} · ${esc(q.type)}`, title: esc(q.title), sub: `${esc(q.team)} · ${esc(q.org)} · ${esc(D.locMap[q.loc].city)} · ${esc(D.levelLabel(q.level))}`, size: 'lg',
+      body: `<div class="flex gap-2 wrap items-center mb-4">${statusBadge(q.status)}${q.stage ? NS.badge(q.stage + (q.candidates ? ` · ${q.candidates} candidates` : ''), 'outline') : ''}${q.status !== 'Filled' && q.status !== 'Declined' ? NS.badge(within ? 'Within Q4 plan' : 'Above Q4 plan', within ? 'ok' : 'warn') : ''}${q.filledBy ? `<span class="sm muted">Filled by ${esc(D.byId(q.filledBy).name)} · started ${F.date(q.filledAt)}</span>` : ''}</div>
+        <div class="cost-box mb-4"><div><span>Band midpoint</span><b>${m$(base)}</b></div><div><span>Fully loaded (+${S.settings.oncost}%)</span><b>${m$(base * (1 + S.settings.oncost / 100))}</b></div><div><span>Band range</span><b>${m$(base * 0.8, 0)}–${m$(base * 1.2, 0)}</b></div></div>
+        <div class="case mb-4">${esc(q.summary)}</div>
+        <div class="ns-grid c2 mb-4"><div><div class="ns-label mb-1">Why now</div><p class="sm ink2">${esc(q.why)}</p></div><div><div class="ns-label mb-1">Impact if not approved</div><p class="sm ink2">${esc(q.risk)}</p></div></div>
+        <div class="mb-4"><div class="ns-label mb-1">Alternatives considered</div><p class="sm ink2">${esc(q.alt)}</p></div>
+        <div class="ns-card mb-4"><div class="ns-card-head"><div><h3>Cost impact vs plan</h3><p>${esc(cap.u.org)} · ${esc(cap.u.dept)} · Q4</p></div></div><div class="ns-card-body"><div class="kv"><span>Q4 roles in the plan (hires + backfills)</span><b>${cap.need}</b></div><div class="kv"><span>Already approved or in review</span><b>${cap.used}</b></div><div class="kv"><span>Capacity left for this request</span><b class="${cap.left >= 1 ? 'ok-text' : 'bad-text'}">${cap.left}</b></div><div class="kv"><span>Run-rate impact</span><b>+${m$(cost)} a year${S.settings.basis === 'loaded' ? ' (loaded)' : ''}</b></div><div class="kv"><span>vs typical hire in ${esc(cap.u.org)}</span><b>${sgn(Math.round(((cost - newCost(cap.u)) / newCost(cap.u)) * 100), (n) => n + '%')}</b></div>${!within && q.status !== 'Filled' ? `<div class="ns-alert warn mt-3">${NS.icon('alert-triangle')}<div><b>Above plan</b><p>Approving adds a role beyond ${esc(cap.u.org)}’s Q4 plan; the planning grid will show it as variance until the plan is re-committed.</p></div></div>` : ''}</div></div>
+        <div class="ns-label mb-2">Approval trail</div><div class="ns-timeline">${q.trail.map((t, i) => `<div class="ns-tl-item ${i === q.trail.length - 1 && q.status !== 'Under review' ? 'now' : 'done'}"><span class="pt">${NS.icon('check')}</span><div><div class="ttl">${esc(t.what)}</div><div class="sub">${esc(D.byId(t.who).name)} · ${F.date(t.date)}${t.note ? ` — ${esc(t.note)}` : ''}</div></div></div>`).join('')}${q.status === 'Under review' ? `<div class="ns-tl-item now"><span class="pt">${NS.icon('clock')}</span><div><div class="ttl">Awaiting decision</div><div class="sub">${esc(D.byId(q.approver).name)} · ${U.daysBetween(q.created, TODAY_ISO)} days in review</div></div></div>` : ''}</div>`,
+      foot: `<button class="ns-btn ghost" data-close>Close</button>${acts}`,
+      mounted: (b, api) => {
+        const el = api.el, done = () => { api.close(); onChange(); };
+        const a = el.querySelector('[data-app]'), d = el.querySelector('[data-dec]'), s = el.querySelector('[data-sub]'), x = el.querySelector('[data-del]');
+        if (a) a.onclick = () => decide(q, c, true, done); if (d) d.onclick = () => decide(q, c, false, done);
+        if (s) s.onclick = () => { q.status = 'Under review'; q.trail.push({ date: TODAY_ISO, who: c.persona.personId, what: 'Submitted for review', note: `Routed to ${D.byId(q.approver).name}.` }); saveNow(); log(`Submitted ${q.id}`); NS.toast(`${q.id} submitted`, { desc: `${D.byId(q.approver).name} will review` }); done(); };
+        if (x) x.onclick = async () => { if (await NS.confirm({ title: `Delete ${q.id}?`, body: 'The draft is removed permanently.', confirmLabel: 'Delete draft', danger: true })) { S.requests = S.requests.filter((r) => r.id !== q.id); P.S.requests = S.requests; saveNow(); NS.toast('Draft deleted', { desc: q.id, type: 'info' }); done(); } };
+      } });
+  };
+  const newRequest = (c, onDone) => {
+    const sc = scopeOf(c.persona), us = planUnits(unitsIn(sc)).filter((u) => u.teams.length);
+    const teamOpts = us.map((u) => `<optgroup label="${esc(u.dept)} › ${esc(u.org)}">${u.teams.map((t) => `<option value="${esc(t)}">${esc(t)}</option>`).join('')}</optgroup>`).join('');
+    NS.modal({ title: 'New headcount request', sub: 'Cost is calculated from the band midpoint for the level, function and location.', size: 'lg',
+      body: `<div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Team</span><select class="ns-select" id="nt">${teamOpts}</select></label><label class="ns-field"><span class="ns-label">Level</span><select class="ns-select" id="nl">${levelOpts.map((l) => `<option value="${l}" ${l === 'P3' ? 'selected' : ''}>${esc(D.levelLabel(l))}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Location</span><select class="ns-select" id="nc">${D.locations.map((l) => `<option value="${l.id}" ${l.id === 'BLR' ? 'selected' : ''}>${esc(l.city)} · ${esc(l.country)}</option>`).join('')}</select></label></div>
+        <div class="ns-form-grid mt-3"><label class="ns-field"><span class="ns-label">Role title</span><input class="ns-input" id="nr"></label><label class="ns-field"><span class="ns-label">Type</span><select class="ns-select" id="ny"><option>New role</option><option>Backfill</option></select></label><label class="ns-field"><span class="ns-label">Target start</span><select class="ns-select" id="ns"><option>Nov 2026</option><option selected>Dec 2026</option><option>Jan 2027 (FY27)</option></select></label></div>
+        <label class="ns-field mt-3"><span class="ns-label">Business case</span><textarea class="ns-textarea" id="nb" rows="3" placeholder="What outcome needs this role, why now, and what happens if it waits a quarter?"></textarea></label>
+        <div class="ns-card mt-4"><div class="ns-card-body" id="ncost"></div></div>`,
+      actions: [{ label: 'Cancel' }, { label: 'Save draft', cls: 'secondary', onClick: (m) => create(m, 'Draft') }, { label: 'Submit for review', cls: 'primary', onClick: (m) => create(m, 'Under review') }],
+      mounted: (body) => {
+        let titleEdited = false; const g = (s) => body.querySelector(s);
+        const upd = () => { const team = g('#nt').value, ti = P.teamInfo(team), lvl = g('#nl').value, loc = g('#nc').value, u = UBY[ti.dept + '|' + ti.org]; if (!titleEdited) g('#nr').value = P.roleTitle(lvl, ti.dept, team); const mid = bandMid(lvl, ti.dept, loc), cv = P.coverage(u), start = U.addDays(TODAY, S.settings.lead); g('#ncost').innerHTML = `<div class="cost-box"><div><span>Band midpoint</span><b>${m$(mid)}</b></div><div><span>Fully loaded</span><b>${m$(mid * (1 + S.settings.oncost / 100))}</b></div><div><span>Location tier</span><b>${F.num(D.locMap[loc].tier, 2)}×</b></div></div><div class="kv mt-3"><span>${esc(u.org)} Q4 plan</span><b>${cv.need} roles · ${cv.need - cv.gap} requisitioned · <span class="${cv.gap ? 'ok-text' : 'bad-text'}">${cv.gap} open capacity</span></b></div><div class="kv"><span>Earliest start at a ${S.settings.lead}-day lead time</span><b>${F.date(start)}</b></div><div class="kv"><span>Same role in Austin</span><b>${m$(bandMid(lvl, ti.dept, 'AUS'))} <span class="xs muted" style="font-weight:500">(${sgn(Math.round(((mid - bandMid(lvl, ti.dept, 'AUS')) / bandMid(lvl, ti.dept, 'AUS')) * 100), (n) => n + '%')})</span></b></div>`; };
+        g('#nr').addEventListener('input', () => { titleEdited = true; });
+        ['#nt', '#nl', '#nc'].forEach((s) => g(s).addEventListener('change', upd)); upd();
+      } });
+    const create = (m, status) => {
+      const g = (s) => m.el.querySelector(s), team = g('#nt').value, ti = P.teamInfo(team), u = UBY[ti.dept + '|' + ti.org], summary = g('#nb').value.trim();
+      if (summary.length < 20) { NS.toast('Add a business case', { desc: 'At least a sentence on the outcome and why now.', type: 'warn' }); return false; }
+      const id = 'HC-26-' + String(S.nextReq++).padStart(3, '0');
+      S.requests.push({ id, status, team, dept: ti.dept, org: ti.org, unit: u.key, level: g('#nl').value, loc: g('#nc').value, type: g('#ny').value, title: g('#nr').value.trim() || P.roleTitle(g('#nl').value, ti.dept, team), created: TODAY_ISO, start: g('#ns').value, requester: c.persona.personId, approver: P.approverFor(ti.dept), summary, why: summary, risk: 'Not yet assessed — added by the requester.', alt: 'Not yet documented.', trail: [{ date: TODAY_ISO, who: c.persona.personId, what: status === 'Draft' ? 'Draft created' : 'Request submitted', note: status === 'Draft' ? '' : `Routed to ${D.byId(P.approverFor(ti.dept)).name}.` }] });
+      saveNow(); log(`${status === 'Draft' ? 'Drafted' : 'Submitted'} ${id}`); NS.toast(status === 'Draft' ? `${id} saved as draft` : `${id} submitted`, { desc: `${team} · ${m$(bandMid(g('#nl').value, ti.dept, g('#nc').value))} a year` }); onDone(id);
+    };
+  };
+  R['/requests'] = {
+    title: 'Headcount requests', personas: ['hrbp', 'exec', 'cpo'],
+    render: (c) => {
+      const sc = scopeOf(c.persona), rq = reqsIn(unitsIn(sc)), cnt = U.countBy(rq, 'status'), st = c.query.status && STATUSES.includes(c.query.status) ? c.query.status : 'all';
+      const pend = rq.filter((q) => q.status === 'Under review'), mine = pend.filter((q) => canApprove(c.persona, q)), open = rq.filter((q) => q.status === 'Approved');
+      return html`${raw(NS.pageHead({ eyebrow: `${sc.label} · FY26`, title: 'Headcount requests', sub: 'Every role request with its business case, cost at band midpoint and approval trail. Approved requests become open requisitions; filled ones close against the plan.', actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export</button>${canCreate(c.persona) ? `<button class="ns-btn primary" data-new>${ic('plus')}New request</button>` : ''}` }))}
+        <div class="ns-stats">
+          ${raw(NS.stat({ label: c.persona.id === 'hrbp' ? 'In approval' : 'Awaiting your decision', value: c.persona.id === 'hrbp' ? pend.length : mine.length, icon: 'inbox', sub: `${m$(U.sum(c.persona.id === 'hrbp' ? pend : mine, (q) => reqCost(q)))} annual cost` }))}
+          ${raw(NS.stat({ label: 'Open requisitions', value: open.length, icon: 'briefcase', sub: ['Sourcing', 'Interviewing', 'Offer out', 'Offer accepted'].map((s) => `${open.filter((q) => q.stage === s).length} ${s.toLowerCase()}`).join(' · ') }))}
+          ${raw(NS.stat({ label: 'Filled this year', value: cnt.Filled || 0, icon: 'user-check', sub: `${m$(U.sum(rq.filter((q) => q.status === 'Filled'), (q) => reqCost(q)))} run-rate added` }))}
+          ${raw(NS.stat({ label: 'Drafts & declined', value: (cnt.Draft || 0) + (cnt.Declined || 0), icon: 'file-text', sub: `${cnt.Draft || 0} drafts · ${cnt.Declined || 0} declined` }))}
+        </div>
+        <div class="ns-toolbar mt-4"><div class="ns-input-wrap">${raw(NS.icon('search'))}<input class="ns-input" id="rqs" placeholder="Search role, team, ID or case…"></div><div class="ns-chips">${raw([['all', 'All', rq.length], ...STATUSES.map((s) => [s, s, cnt[s] || 0])].map(([k, l, n]) => `<button class="ns-chip" data-st="${esc(k)}" aria-pressed="${k === st}">${esc(l)} <span class="faint tnum">${n}</span></button>`).join(''))}</div><div class="grow"></div>${raw(sc.depts.length > 1 ? `<select class="ns-select" id="rqd" style="width:auto"><option value="">All departments</option>${sc.depts.filter((d) => rq.some((q) => q.dept === d)).map((d) => `<option>${esc(d)}</option>`).join('')}</select>` : '')}</div>
+        <div class="ns-card"><div class="ns-card-body flush" id="rqTable"></div></div>
+        <div class="ns-grid c2 mt-4">
+          ${raw(NS.card({ title: 'Requisition pipeline', sub: 'From request to hire, FY26 to date', body: '<div id="rqFunnel"></div>' }))}
+          ${raw(NS.card({ title: 'Requests by department', sub: 'All statuses', body: '<div id="rqDept"></div>' }))}
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const sc = scopeOf(c.persona), rq = reqsIn(unitsIn(sc)); let st = c.query.status && STATUSES.includes(c.query.status) ? c.query.status : 'all', dept = '';
+      const rowsNow = () => reqsIn(unitsIn(sc));
+      const tbl = NS.table(root.querySelector('#rqTable'), { rows: rowsNow(), rowKey: 'id', pageSize: 10, sort: { key: 'created', dir: -1 }, searchKeys: ['id', 'title', 'team', 'org', 'summary', (q) => D.locMap[q.loc].city], columns: [
+        { key: 'id', label: 'Req', render: (q) => `<span class="mono">${esc(q.id)}</span><div class="xs faint">${esc(q.type)}</div>` },
+        { key: 'title', label: 'Role / level', render: (q) => `<b>${esc(q.title)}</b><div class="xs faint">${esc(D.levelLabel(q.level))}</div>` },
+        { key: 'team', label: 'Team', render: (q) => `<div class="truncate" style="max-width:170px">${esc(q.team)}</div><div class="xs faint">${esc(q.org)}</div>` },
+        { key: 'loc', label: 'Location', sort: (q) => D.locMap[q.loc].city, render: (q) => esc(D.locMap[q.loc].city) },
+        { key: 'summary', label: 'Business case', sort: false, render: (q) => `<div class="sm ink2" style="max-width:260px;white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden">${esc(q.summary)}</div>` },
+        { key: 'cost', label: 'Cost', align: 'right', sort: (q) => reqCost(q), render: (q) => m$(reqCost(q)) },
+        { key: 'status', label: 'Status', render: (q) => `${statusBadge(q.status)}${q.stage ? `<div class="xs faint mt-1">${esc(q.stage)}</div>` : ''}` },
+        { key: 'requester', label: 'Requester', sort: (q) => D.byId(q.requester).name, render: (q) => who(q.requester) },
+        { key: 'approver', label: 'Approver', sort: (q) => D.byId(q.approver).name, render: (q) => who(q.approver) },
+        { key: 'created', label: 'Raised', render: (q) => `<span class="nowrap">${F.date(q.created, 'short')}</span>` },
+      ], onRow: (q) => openReq(q, c, () => NS.refresh()), rowCls: (q) => (canApprove(c.persona, q) ? 'has-edit' : ''), empty: { icon: 'inbox', title: 'No requests match', body: 'Clear the search or pick another status.' } });
+      const apply = () => tbl.setFilter((q) => (st === 'all' || q.status === st) && (!dept || q.dept === dept));
+      apply();
+      root.querySelector('#rqs').addEventListener('input', U.debounce((e) => tbl.setSearch(e.target.value), 150));
+      root.querySelectorAll('[data-st]').forEach((b) => { b.onclick = () => { st = b.dataset.st; root.querySelectorAll('[data-st]').forEach((x) => x.setAttribute('aria-pressed', x === b)); apply(); }; });
+      const dsel = root.querySelector('#rqd'); if (dsel) dsel.onchange = () => { dept = dsel.value; apply(); };
+      const nb = root.querySelector('[data-new]'); if (nb) nb.onclick = () => newRequest(c, (id) => NS.go('/requests', { id }));
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`headcount-requests-${sc.id}.csv`, [['Req', 'Type', 'Role', 'Level', 'Department', 'Org', 'Team', 'Location', 'Annual cost', 'Status', 'Stage', 'Requester', 'Approver', 'Raised', 'Business case'], ...tbl.rows().map((q) => [q.id, q.type, q.title, q.level, q.dept, q.org, q.team, D.locMap[q.loc].city, Math.round(reqCost(q)), q.status, q.stage || '', D.byId(q.requester).name, D.byId(q.approver).name, q.created, q.summary])]);
+      const all = rq.length, sub = rq.filter((q) => q.status !== 'Draft').length, appr = rq.filter((q) => q.status === 'Approved' || q.status === 'Filled').length, offer = rq.filter((q) => q.status === 'Filled' || /Offer/.test(q.stage || '')).length, filled = rq.filter((q) => q.status === 'Filled').length;
+      NS.chart.funnel(root.querySelector('#rqFunnel'), { stages: [{ label: 'Raised', value: all }, { label: 'Submitted', value: sub }, { label: 'Approved', value: appr }, { label: 'Offer stage', value: offer }, { label: 'Filled', value: filled }] });
+      const byD = U.groupBy(rq, 'dept'); NS.chart.hbars(root.querySelector('#rqDept'), { items: Object.entries(byD).map(([d, list]) => ({ label: d, value: list.length, sub: `${list.filter((q) => q.status === 'Approved').length} open · ${list.filter((q) => q.status === 'Under review').length} in review` })).sort((a, b) => b.value - a.value), format: F.int, valueLabel: 'Requests' });
+      if (c.query.id) { const q = S.requests.find((x) => x.id === c.query.id); if (q) openReq(q, c, () => NS.refresh()); }
+    },
+  };
+
+  /* CAPABILITY PLAN --------------------------------------------------- */
+  const capScope = (c) => { const pid = c.persona.id; const allowCo = pid === 'cpo' || pid === 'hrbp'; const v = allowCo && c.query.v === 'company' ? 'company' : 'eng'; return { v, allowCo }; };
+  const capData = (v) => {
+    if (v === 'eng') { const us = UNITS.filter((u) => u.dept === 'Engineering' && !u.lead), fams = FAM.slice(0, 8); return { rows: us.map((u) => u.org), fams, cells: capability(us, fams.map((f) => f[0])) }; }
+    const fams = FAM, depts = DEPTS.filter((d) => d !== 'Executive');
+    const cells = depts.map((d) => { const parts = capability(UNITS.filter((u) => u.dept === d), fams.map((f) => f[0])); const sup = {}, dem = {}, cur = {}; fams.forEach(([k]) => { sup[k] = U.sum(parts, (p) => p.sup[k]); dem[k] = U.sum(parts, (p) => p.dem[k]); cur[k] = U.sum(parts, (p) => p.cur[k]); }); return { u: { org: d, key: d, people: D.people.filter((p) => p.dept === d) }, sup, dem, cur }; });
+    return { rows: depts, fams, cells };
+  };
+  const actionFor = (cell, k, gap) => { const surplus = Object.keys(cell.sup).filter((f) => f !== k && cell.sup[f] - cell.dem[f] >= Math.abs(gap)).sort((a, b) => (cell.sup[b] - cell.dem[b]) - (cell.sup[a] - cell.dem[a]))[0]; if (Math.abs(gap) >= 6 && ['ml', 'sec', 'sre'].includes(k)) return { a: 'Hire', why: 'Scarce, strategic skill — build permanent capacity.' }; if (surplus) return { a: 'Upskill', why: `Redeploy from ${FAM.find((f) => f[0] === surplus)[1]} (+${cell.sup[surplus] - cell.dem[surplus]} surplus).`, from: surplus }; if (Math.abs(gap) <= 3) return { a: 'Contractor', why: 'Small, time-bound gap — cover for two quarters.' }; return { a: 'Hire', why: 'No adjacent surplus to redeploy.' }; };
+  R['/skills'] = {
+    title: 'Capability plan', personas: ['hrbp', 'exec', 'cpo'],
+    render: (c) => {
+      const { v, allowCo } = capScope(c), dd = capData(v), gaps = [];
+      dd.cells.forEach((cell) => dd.fams.forEach(([k, name]) => { const g = cell.sup[k] - cell.dem[k]; if (g < 0) gaps.push({ cell, k, name, g, key: cell.u.key + ':' + k }); }));
+      gaps.sort((a, b) => a.g - b.g); const top = gaps.slice(0, 8), short = U.sum(gaps, 'g'), surplus = U.sum(dd.cells.flatMap((cell) => dd.fams.map(([k]) => Math.max(0, cell.sup[k] - cell.dem[k]))));
+      const famTot = dd.fams.map(([k, name]) => ({ name, g: U.sum(dd.cells, (cell) => cell.sup[k] - cell.dem[k]) })).sort((a, b) => a.g - b.g);
+      return html`${raw(NS.pageHead({ eyebrow: 'Capability plan · FY27 demand', title: 'Skills supply vs demand', sub: 'Supply counts people holding at least one skill in each family, grown by the Q4 plan at today’s mix. Demand applies the FY27 strategy tilt (AI, security and reliability up) plus named roadmap roles. Red is a shortage, blue a surplus to redeploy.', actions: `${allowCo ? `<div class="ns-seg">${[['eng', 'Engineering orgs'], ['company', 'Company']].map(([k, l]) => `<button data-v="${k}" aria-pressed="${k === v}">${l}</button>`).join('')}</div>` : ''}<button class="ns-btn secondary" data-export>${ic('download')}Export</button>` }))}
+        <div class="ns-stats">
+          ${raw(NS.stat({ label: 'Largest family gap', value: sgn(famTot[0].g), icon: 'alert-triangle', sub: `${esc(famTot[0].name)} across all ${v === 'eng' ? 'orgs' : 'departments'}` }))}
+          ${raw(NS.stat({ label: 'Total shortage', value: F.int(-short), unit: 'people', icon: 'trending-down', sub: `${gaps.length} cells short of FY27 demand` }))}
+          ${raw(NS.stat({ label: 'Surplus to redeploy', value: F.int(surplus), unit: 'people', icon: 'refresh', sub: 'Skills above FY27 demand — upskilling candidates' }))}
+          ${raw(NS.stat({ label: 'Actions accepted', value: Object.keys(S.skillActions).length, icon: 'check-circle', sub: `${Object.values(S.skillActions).filter((x) => x === 'Hire').length} hire · ${Object.values(S.skillActions).filter((x) => x === 'Upskill').length} upskill · ${Object.values(S.skillActions).filter((x) => x === 'Contractor').length} contractor` }))}
+        </div>
+        ${raw(NS.card({ cls: 'mt-4', title: `Gap map · ${v === 'eng' ? 'Engineering orgs' : 'departments'} × skill families`, sub: 'Supply after the Q4 plan minus FY27 demand · click a cell for detail', body: '<div class="ns-scroll-x"><div id="heat" style="min-width:' + (v === 'eng' ? 640 : 820) + 'px"></div></div>' }))}
+        <div class="ns-grid main-side mt-4">
+          ${raw(NS.card({ title: 'Top gaps', sub: 'Largest shortages with a suggested response', bodyCls: 'flush', body: `<div style="padding:4px 20px 8px">${top.map((x) => { const ac = actionFor(x.cell, x.k, x.g), done = S.skillActions[x.key]; return `<div class="gap-row"><div class="min-w-0"><div class="flex gap-2 items-center wrap"><b class="md ink">${esc(x.cell.u.org)} · ${esc(x.name)}</b><span class="ns-badge bad">${sgn(x.g)}</span><span class="ns-badge ${ac.a === 'Hire' ? 'brand' : ac.a === 'Upskill' ? 'info' : 'neutral'}">${ac.a}</span></div><div class="xs muted mt-1">Supply ${x.cell.sup[x.k]} vs demand ${x.cell.dem[x.k]} · ${esc(ac.why)}</div></div><div class="flex gap-2 items-center">${ac.a === 'Hire' ? `<a class="ns-btn xs ghost" href="../pipeline-ats/index.html" target="_blank" rel="noopener">${NS.icon('external-link')}Pipeline</a>` : ac.a === 'Upskill' ? `<a class="ns-btn xs ghost" href="../competency-portal/index.html" target="_blank" rel="noopener">${NS.icon('external-link')}Competency Portal</a>` : ''}${done ? `<span class="ns-badge ok">${NS.icon('check', { size: 12 })} ${esc(done)} planned</span>` : `<button class="ns-btn xs secondary" data-acc="${esc(x.key)}" data-a="${ac.a}">Accept</button>`}</div></div>`; }).join('')}</div>` }))}
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Net gap by family', sub: 'Summed across the map', body: '<div id="famBars"></div>' }))}
+            ${raw(aiNote('Capability note', `${esc(famTot[0].name)} is the binding constraint (${sgn(famTot[0].g)}), concentrated in ${esc(gaps.filter((g) => g.name === famTot[0].name).map((g) => g.cell.u.org).slice(0, 2).join(' and ') || '—')}. ${famTot[famTot.length - 1].g > 0 ? `${esc(famTot[famTot.length - 1].name)} runs ${sgn(famTot[famTot.length - 1].g)} over demand — the cheapest source of the shortage is a structured upskilling path from there, validated in the Competency Portal.` : ''} Hiring the full shortage at band midpoint would add roughly ${m$(-short * 90000)} of run-rate.`))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const { v } = capScope(c), dd = capData(v);
+      root.querySelectorAll('[data-v]').forEach((b) => { b.onclick = () => NS.go('/skills', { v: b.dataset.v }); });
+      const vals = dd.cells.map((cell) => dd.fams.map(([k]) => (cell.sup[k] === 0 && cell.dem[k] === 0 ? null : cell.sup[k] - cell.dem[k])));
+      const mx = Math.max(4, ...vals.flat().filter((x) => x != null).map(Math.abs));
+      NS.chart.heatmap(root.querySelector('#heat'), { rows: dd.rows.map((r) => short(r)), cols: dd.fams.map((f) => f[1]), values: vals, diverging: true, min: -mx, max: mx, format: (x) => (x == null ? '' : x > 0 ? '+' + x : x === 0 ? '0' : '−' + Math.abs(x)), valueLabel: 'Supply − demand', labelWidth: 'minmax(110px,150px)', colWidth: 52,
+        onCell: (ri, ci) => { const cell = dd.cells[ri], [k, name] = dd.fams[ci], g = cell.sup[k] - cell.dem[k], ppl = cell.u.people.filter((p) => (p.skills || []).some((s) => FAM[FAM.findIndex((f) => f[0] === k)][2].includes(s))); const ac = g < 0 ? actionFor(cell, k, g) : null; NS.drawer({ eyebrow: esc(name), title: esc(cell.u.org), sub: `Supply ${cell.sup[k]} · demand ${cell.dem[k]} · gap ${sgn(g)}`, body: `<div class="cost-box mb-4"><div><span>Today</span><b>${cell.cur[k]}</b></div><div><span>After Q4 plan</span><b>${cell.sup[k]}</b></div><div><span>FY27 demand</span><b>${cell.dem[k]}</b></div></div>${ac ? `<div class="case mb-4"><b>${ac.a}.</b> ${esc(ac.why)}</div>` : `<div class="case mb-4">${g > 0 ? `Surplus of ${g} — candidates for internal mobility into shortage families.` : 'Balanced against FY27 demand.'}</div>`}<div class="ns-section-title" style="margin-top:0"><h2>People with these skills</h2><p>${ppl.length}</p></div><div class="ns-list">${ppl.slice(0, 10).map((p) => `<div class="ns-row">${NS.person(p, { sub: `${D.levelLabel(p.level)} · ${p.team}` })}<span class="grow"></span><span class="xs muted">${esc((p.skills || []).filter((s) => FAM.find((f) => f[0] === k)[2].includes(s)).join(', '))}</span></div>`).join('')}${ppl.length > 10 ? `<p class="xs muted mt-2">…and ${ppl.length - 10} more</p>` : ''}</div>` }); } });
+      NS.chart.hbars(root.querySelector('#famBars'), { items: dd.fams.map(([k, name]) => ({ label: name, value: U.sum(dd.cells, (cell) => cell.sup[k] - cell.dem[k]) })).filter((x) => x.value !== 0).sort((a, b) => a.value - b.value).map((x) => ({ ...x, color: x.value < 0 ? 'var(--viz-div-neg)' : 'var(--viz-div-pos)', value: Math.abs(x.value), sub: x.value < 0 ? 'shortage' : 'surplus' })), format: F.int, valueLabel: 'People' });
+      root.querySelectorAll('[data-acc]').forEach((b) => { b.onclick = () => { S.skillActions[b.dataset.acc] = b.dataset.a; saveNow(); log(`Accepted ${b.dataset.a} for ${b.dataset.acc}`); NS.toast(`${b.dataset.a} planned`, { desc: b.dataset.acc.split(':')[0].split('|').pop() + ' · added to the capability plan' }); NS.refresh(); }; });
+      root.querySelector('[data-export]').onclick = () => downloadCsv(`capability-plan-${v}.csv`, [['Unit', 'Family', 'Supply today', 'Supply after plan', 'FY27 demand', 'Gap'], ...dd.cells.flatMap((cell) => dd.fams.map(([k, name]) => [cell.u.org, name, cell.cur[k], cell.sup[k], cell.dem[k], cell.sup[k] - cell.dem[k]]))]);
+    },
+  };
+
+  /* ASSUMPTIONS ------------------------------------------------------- */
+  const FIELDS = [
+    { k: 'attr', label: 'Attrition (annualised)', unit: '%', min: 4, max: 16, step: 0.5, help: 'Drives expected Q4 exits for every org. FY26 actual is running at 7.4%.' },
+    { k: 'backfill', label: 'Backfill ratio', unit: '%', min: 50, max: 100, step: 5, help: 'Share of exits replaced like-for-like in the plan.' },
+    { k: 'merit', label: 'Merit budget (FY27)', unit: '%', min: 0, max: 6, step: 0.25, help: 'Applied to the EOY run-rate for the FY27 opening run-rate.' },
+    { k: 'lead', label: 'Hiring lead time', unit: 'days', min: 20, max: 120, step: 1, help: 'Req opened → start date. Sets the last day a Q4 req can land in FY26.' },
+    { k: 'mgrShare', label: 'Managers in new hiring', unit: '%', min: 0, max: 15, step: 1, help: 'Share of new roles that are people managers (affects span of control).' },
+    { k: 'oncost', label: 'On-costs for fully loaded cost', unit: '%', min: 10, max: 40, step: 1, help: 'Benefits, payroll taxes and equipment on top of base.' },
+    { k: 'margin', label: 'Contractor agency margin', unit: '%', min: 10, max: 60, step: 1, help: 'Removed when a contractor converts to FTE.' },
+  ];
+  R['/settings'] = {
+    title: 'Assumptions', personas: ['cpo', 'rewards'],
+    render: (c) => {
+      const st = S.settings, A = agg(UNITS);
+      return html`${raw(NS.pageHead({ eyebrow: 'Planning assumptions · FY26', title: 'Assumptions', sub: 'The drivers behind every number in Workforce Planner. Changes re-derive the Q4 exits and backfills you haven’t edited by hand, and flow into costs, scenarios and the board pack.', actions: `<button class="ns-btn ghost" data-defaults>${ic('undo')}Restore defaults</button><button class="ns-btn primary" data-save>${ic('save')}Save assumptions</button>` }))}
+        <div class="ns-grid main-side">
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Workforce drivers', body: `<div class="ns-form-grid">${FIELDS.slice(0, 5).map((f) => `<label class="ns-field"><span class="ns-label">${f.label} <span class="opt">${f.unit}</span></span><input class="ns-input tnum" type="number" data-f="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${st[f.k]}"><span class="ns-help">${f.help}</span></label>`).join('')}</div>` }))}
+            ${raw(NS.card({ title: 'Cost basis', sub: 'New hires are costed at band midpoint × function × location tier', body: `<div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Cost basis</span><select class="ns-select" data-f="basis"><option value="mid" ${st.basis === 'mid' ? 'selected' : ''}>Base salary at band midpoint</option><option value="loaded" ${st.basis === 'loaded' ? 'selected' : ''}>Fully loaded (midpoint + on-costs)</option></select><span class="ns-help">Switches every run-rate figure between base and fully loaded.</span></label>${FIELDS.slice(5).map((f) => `<label class="ns-field"><span class="ns-label">${f.label} <span class="opt">${f.unit}</span></span><input class="ns-input tnum" type="number" data-f="${f.k}" min="${f.min}" max="${f.max}" step="${f.step}" value="${st[f.k]}"><span class="ns-help">${f.help}</span></label>`).join('')}</div><div class="ns-section-title"><h2>Hiring-level mix</h2><p>Used for the cost of a new role</p></div><div class="flex gap-2 wrap">${[['P1', 15], ['P2', 40], ['P3', 35], ['P4', 10]].map(([l, w]) => `<span class="pchip">${esc(D.levelLabel(l))} <b>${w}%</b></span>`).join('')}</div>` }))}
+            ${raw(NS.card({ title: 'Fiscal year', body: `<div class="ns-form-grid"><label class="ns-field"><span class="ns-label">FY26 start</span><input class="ns-input" type="date" data-f="fyStart" value="${st.fyStart}"></label><label class="ns-field"><span class="ns-label">FY26 end</span><input class="ns-input" type="date" data-f="fyEnd" value="${st.fyEnd}"></label><div class="ns-field"><span class="ns-label">Last day to open a Q4 req</span><div class="ns-input" style="display:flex;align-items:center" id="lastReq">${F.date(P.reqDeadline())}</div></div></div>` }))}
+          </div>
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Impact preview', sub: 'Before → after saving', body: '<div id="impact"></div>' }))}
+            ${raw(NS.card({ title: 'Band midpoints by location', sub: 'Engineering P3 · base', body: `<div>${U.sortBy(D.locations, (l) => -l.tier).map((l) => `<div class="kv"><span>${esc(l.city)} <span class="faint">· ${F.num(l.tier, 2)}×</span></span><b>${m$(bandMid('P3', 'Engineering', l.id))}</b></div>`).join('')}</div>` }))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const read = () => { const st = { ...S.settings }; root.querySelectorAll('[data-f]').forEach((i) => { const k = i.dataset.f; st[k] = i.type === 'number' ? +i.value : i.value; }); FIELDS.forEach((f) => { st[f.k] = U.clamp(+st[f.k] || f.min, f.min, f.max); }); return st; };
+      const withSettings = (st, fn) => { const keep = S.settings, q4 = S.q4; S.settings = st; S.q4 = P.deriveQ4(st, q4, S.edited); const r = fn(); S.settings = keep; S.q4 = q4; return r; };
+      const snap = () => { const A = agg(UNITS), b = run({ ...scen('base'), attr: S.settings.attr, merit: S.settings.merit }, UNITS); return { x: A.q4.x, bf: A.q4.b, eoy: A.eoy, pay: A.payEoy, fy27: b.fy27, dl: P.reqDeadline() }; };
+      const upd = () => { const before = snap(), after = withSettings(read(), snap); const rows = [['Q4 expected exits', before.x, after.x, F.int], ['Q4 backfills', before.bf, after.bf, F.int], ['EOY headcount', before.eoy, after.eoy, F.int], ['EOY payroll run-rate', before.pay, after.pay, (n) => m$(n)], ['FY27 opening run-rate', before.fy27, after.fy27, (n) => m$(n)]]; root.querySelector('#impact').innerHTML = rows.map(([k, a, b, f]) => `<div class="kv"><span>${k}</span><b>${f(a)} → <span class="${a === b ? '' : 'brand-text'}">${f(b)}</span></b></div>`).join('') + `<div class="kv"><span>Last day to open a Q4 req</span><b>${F.date(before.dl, 'short')} → ${F.date(withSettings(read(), () => P.reqDeadline()), 'short')}</b></div><p class="xs muted mt-3">${Object.keys(S.edited).length} hand-edited Q4 cells keep their values.</p>`; root.querySelector('#lastReq').textContent = F.date(withSettings(read(), () => P.reqDeadline())); };
+      root.querySelectorAll('[data-f]').forEach((i) => i.addEventListener('input', upd)); upd();
+      root.querySelector('[data-save]').onclick = () => { const st = read(), old = S.settings; S.settings = st; S.q4 = P.deriveQ4(st, S.q4, S.edited); const b = scen('base'); b.attr = st.attr; b.merit = st.merit; S.scenarios.forEach((s) => { if (s.id !== 'base' && s.attr === old.attr) s.attr = st.attr; }); saveNow(); log('Updated planning assumptions'); NS.toast('Assumptions saved', { desc: `Attrition ${F.num(st.attr, 1)}% · merit ${F.num(st.merit, 2)}% · ${st.basis === 'loaded' ? 'fully loaded' : 'base'} cost` }); NS.refresh(); };
+      root.querySelector('[data-defaults]').onclick = () => { root.querySelectorAll('[data-f]').forEach((i) => { i.value = P.SETTINGS0[i.dataset.f]; }); upd(); NS.toast('Defaults restored in the form', { desc: 'Save to apply.', type: 'info' }); };
+    },
+  };
+
+  /* BOOT -------------------------------------------------------------- */
+  const store = P.store;
+  const personas = [
+    { ...D.personas.hrbp, note: 'Portfolio plan, requests & org design' },
+    { ...D.personas.exec, note: 'Engineering plan, scenarios & approvals' },
+    { ...D.personas.cpo, note: 'Company plan, budget & board view' },
+    { ...D.personas.rewards, label: 'Finance partner', note: 'Budget, cost model & merit' },
+  ];
+  R['/home'].nav = (c) => (c.query.view === 'board' ? 'board' : 'home');
+  ['/plan', '/scenarios'].forEach((k) => { R[k].personas = ['hrbp', 'exec', 'cpo', 'rewards']; });
+  const reqBadge = (pid) => { if (pid === 'exec') return S.requests.filter((q) => q.status === 'Under review' && q.approver === 'NS-1003').length || ''; if (pid === 'cpo') return S.requests.filter((q) => q.status === 'Under review').length || ''; return S.requests.filter((q) => q.status === 'Draft' && PORTFOLIO.includes(q.dept)).length || ''; };
+  const A0 = () => agg(UNITS);
+  NS.app({
+    id: 'workforce-planner', name: 'Workforce Planner', sub: 'Northstar Labs', brand: 'lime', version: '2.0',
+    mark: NS.icon('calculator', { size: 20 }),
+    about: { tagline: 'Plan the org you can afford — and the one you need.', description: 'One place where People, Finance and leaders plan headcount against budget. A live quarterly planning grid with plan-vs-actual variance, scenario modelling built on band midpoints and location tiers, a headcount-request workflow with business cases and approvals, an org-design analyzer for spans, layers and level mix, a capability gap map, and stewardship of the people-programs budget.', highlights: [{ icon: 'table', title: 'Live planning grid', body: 'Edit Q4 hires, backfills and exits; EOY headcount and run-rate recompute instantly.' }, { icon: 'sliders', title: 'Scenario engine', body: 'Hire rate, attrition, merit, conversion, offshore mix and span targets → cost and shape.' }, { icon: 'network', title: 'Org design rules', body: 'Spans, layers and senior-IC mix checked against target, with actionable fixes.' }, { icon: 'wallet', title: 'Budget stewardship', body: 'Burn vs straight-line, commitments and audited reallocations across six programs.' }] },
+    personas, defaultPersona: 'hrbp',
+    nav: (persona) => {
+      const pid = persona.id, it = (id, label, icon, extra = {}) => ({ id, label, icon, ...extra });
+      if (pid === 'hrbp') return [{ group: 'Plan', items: [it('home', 'Home', 'home'), it('plan', 'Planning grid', 'table'), it('scenarios', 'Scenarios', 'sliders')] }, { group: 'Portfolio', items: [it('requests', 'Headcount requests', 'user-plus', { badge: reqBadge(pid) }), it('org', 'Org design', 'network'), it('skills', 'Capability plan', 'puzzle')] }];
+      if (pid === 'exec') return [{ group: 'Engineering plan', items: [it('home', 'Home', 'home'), it('plan', 'Planning grid', 'table'), it('scenarios', 'Scenarios', 'sliders')] }, { group: 'Decide', items: [it('requests', 'Approvals', 'inbox', { badge: reqBadge(pid) }), it('org', 'Org design', 'network'), it('skills', 'Capability plan', 'puzzle')] }];
+      if (pid === 'cpo') return [{ group: 'Company plan', items: [it('home', 'Home', 'home'), it('board', 'Board view', 'clipboard-list', { route: '/home?view=board' }), it('plan', 'Planning grid', 'table'), it('scenarios', 'Scenarios', 'sliders')] }, { group: 'Money & org', items: [it('budget', 'Budget', 'wallet'), it('requests', 'Headcount requests', 'user-plus', { badge: reqBadge(pid) }), it('org', 'Org design', 'network'), it('skills', 'Capability plan', 'puzzle')] }, { group: 'Administration', items: [it('settings', 'Assumptions', 'settings')] }];
+      return [{ group: 'Cost model', items: [it('home', 'Home', 'home'), it('budget', 'Budget', 'wallet'), it('scenarios', 'Cost scenarios', 'sliders'), it('plan', 'Planning grid', 'table'), it('board', 'Board view', 'clipboard-list', { route: '/home?view=board' })] }, { group: 'Administration', items: [it('settings', 'Assumptions', 'settings')] }];
+    },
+    promo: () => { const A = A0(); return { title: `FY26 plan · ${Math.round(A.attain * 100)}% of net adds landed`, body: `${A.ytdAct} of ${A.ytdPlan} planned net adds through Q3 · Q4 needs ${sgn(A.q4net)} to reach ${F.int(A.target)}.`, progress: Math.round(A.attain * 100), cta: { label: 'Planning grid', route: '/plan' } }; },
+    notifications: [
+      { icon: 'sliders', title: 'Q4 hiring freeze scenario shared by Elena', body: '“Hiring freeze (Q4)” — only offers already out land; backfills at 50%.', time: 'Yesterday', route: '/scenarios' },
+      { icon: 'inbox', title: '3 headcount requests awaiting approval', body: 'ML Platform, Application Security and SRE — all within the Q4 plan.', time: 'Today', route: '/requests?status=Under review' },
+      { icon: 'wallet', title: 'L&D budget 84% consumed', body: '$756K of $900K spent with a quarter to run; forecast $46K over.', time: '2 days ago', route: '/budget' },
+      { icon: 'git-branch', title: 'Plan v3 committed', body: 'Q3 re-forecast — Q4 net adds set to 87 to hold EOY at 1,138.', time: '2 days ago', route: '/plan' },
+    ],
+    routes: R, default: '/home',
+    commands: (persona) => { const pid = persona.id, out = [{ label: 'Open the planning grid', icon: 'table', group: 'Actions', run: () => NS.go('/plan') }, { label: 'Compare scenarios', icon: 'sliders', group: 'Actions', run: () => NS.go('/scenarios') }]; if (pid === 'hrbp' || pid === 'cpo') out.push({ label: 'New headcount request', icon: 'user-plus', group: 'Actions', run: () => { NS.go('/requests'); setTimeout(() => { const b = document.querySelector('[data-new]'); if (b) b.click(); }, 120); } }); if (pid === 'exec' || pid === 'cpo') out.push({ label: 'Review requests awaiting approval', icon: 'inbox', group: 'Actions', run: () => NS.go('/requests', { status: 'Under review' }) }); if (pid === 'cpo' || pid === 'rewards') out.push({ label: 'Reallocate budget', icon: 'refresh', group: 'Actions', run: () => NS.go('/budget', { realloc: 1 }) }, { label: 'Open board view', icon: 'clipboard-list', group: 'Actions', run: () => NS.go('/home', { view: 'board' }) }); return out; },
+    search: (q) => { if (q.length < 2) return []; const s = q.toLowerCase(), pid = NS.persona.id, out = []; UNITS.filter((u) => !u.lead && (u.org.toLowerCase().includes(s) || u.dept.toLowerCase().includes(s))).slice(0, 4).forEach((u) => out.push({ group: 'Plan rows', label: `${u.org} · ${u.dept}`, hint: `${u.hc} people · Q4 ${sgn(netOf(S.q4[u.key]))}`, run: () => NS.go('/plan', { focus: u.key }) })); if (pid !== 'rewards') S.requests.filter((r) => r.id.toLowerCase().includes(s) || r.title.toLowerCase().includes(s) || r.team.toLowerCase().includes(s)).slice(0, 5).forEach((r) => out.push({ group: 'Requests', label: `${r.id} · ${r.title}`, hint: r.status, run: () => NS.go('/requests', { id: r.id }) })); if (pid !== 'rewards') D.managers.filter((p) => p.name.toLowerCase().includes(s)).slice(0, 4).forEach((p) => out.push({ group: 'Managers', label: p.name, hint: `${p.team} · span ${p.directs}`, avatar: NS.avatar(p, { size: 'xs' }), run: () => NS.go('/org', { s: UNITS.find((u) => u.dept === p.dept && u.org === p.org && u.dept === 'Engineering' && !u.lead) ? 'o:' + p.dept + '|' + p.org : (pid === 'exec' ? 'd:Engineering' : 'd:' + p.dept) }) })); return out; },
+    onReset: () => store.clear(),
+  });
+})();
+</script>
+</body>
+</html>
