@@ -1,0 +1,871 @@
+<!doctype html>
+<html lang="en" data-brand="indigo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Performance Nexus · Northstar Labs</title>
+<meta name="description" content="Performance Nexus — goals, self review, manager review, calibration and cycle operations for Northstar Labs. Concept prototype with illustrative data, designed by Ronak Mehta.">
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%234F46E5'/%3E%3Ccircle cx='24' cy='24' r='12' fill='none' stroke='%23fff' stroke-width='3.2'/%3E%3Ccircle cx='24' cy='24' r='6' fill='none' stroke='%23fff' stroke-width='3.2'/%3E%3Ccircle cx='24' cy='24' r='1.8' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/ns.css">
+<script src="../shared/ns.js"></script>
+<script src="../shared/ns-data.js"></script>
+<style>
+  .goal-card{display:grid;gap:12px}
+  .goal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+  .goal-title{font-weight:600;font-size:15px;line-height:1.3}
+  .goal-meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
+  .kr{display:grid;grid-template-columns:1fr auto;gap:6px 12px;font-size:12.5px;padding:8px 0;border-top:1px solid var(--line-2)}
+  .kr .ns-progress{grid-column:1/-1}
+  .rate-row{display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+  .rate-lbl{font-size:12.5px;font-weight:600;color:var(--ink-2);min-width:96px}
+  .rate-desc{font-size:12.5px;color:var(--ink-3)}
+  .review-layout{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:20px;align-items:start}
+  .review-side{position:sticky;top:calc(var(--topbar-h) + 20px);display:grid;gap:16px}
+  @media (max-width:1100px){.review-layout{grid-template-columns:minmax(0,1fr)}.review-side{position:static}}
+  .score-row{display:grid;grid-template-columns:1fr auto auto;gap:8px 16px;align-items:center;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line-2)}
+  .score-row:last-child{border-bottom:0}
+  .score-row b{font-variant-numeric:tabular-nums}
+  .score-head{font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-4)}
+  .self-quote{font-size:13px;color:var(--ink-2);background:var(--surface-2);border-left:3px solid var(--brand-line);padding:10px 12px;border-radius:0 10px 10px 0}
+  .wizard-nav{display:grid;gap:4px}
+  .wizard-nav button{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:10px;text-align:left;font-size:13px;color:var(--ink-2);width:100%}
+  .wizard-nav button{overflow:hidden;min-width:0}.wizard-nav button .truncate{flex:1;min-width:0}
+  .wizard-nav button:hover{background:var(--surface-3)}
+  .wizard-nav button[aria-current="true"]{background:var(--brand-soft);color:var(--brand-text);font-weight:600}
+  .wizard-nav .st{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;border:1.5px solid var(--line-strong);font-size:10px;flex:none;color:var(--ink-4)}
+  .wizard-nav .st.done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .wizard-nav .st svg{width:11px;height:11px}
+  .savebar{position:sticky;bottom:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:12px 16px;margin-top:20px;background:var(--glass);backdrop-filter:blur(10px);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow)}
+  .dist-bars{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;align-items:end;height:140px}
+  .dist-bars .b{display:grid;align-content:end;justify-items:center;gap:6px;height:100%}
+  .dist-bars .b i{width:100%;max-width:56px;border-radius:6px 6px 0 0;background:var(--brand);min-height:2px;transition:height .5s var(--ease)}
+  .dist-bars .b span{font-size:11px;color:var(--ink-3);text-align:center}
+  .dist-bars .b b{font-size:12.5px}
+  .feedback-card{display:grid;gap:10px}
+  .feedback-card .tags{display:flex;gap:6px;flex-wrap:wrap}
+  .tl-mini{display:grid;gap:6px;font-size:12.5px}
+  .status-chip{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600}
+  .gap-flag{font-size:11px;font-weight:600;color:var(--warn);background:var(--warn-bg);padding:2px 7px;border-radius:99px}
+  .cal-person{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:10px;background:var(--surface);border:1px solid var(--line);font-size:12.5px;cursor:grab;box-shadow:var(--shadow-xs)}
+  .cal-person .ns-avatar{--sz:24px;font-size:10px}
+  .cal-person b{font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cal-person .sc{margin-left:auto;font-variant-numeric:tabular-nums;color:var(--ink-3);font-size:11.5px}
+  .cal-person.dragging{opacity:.5}
+  .trap{display:flex;gap:10px;align-items:flex-start;padding:10px 12px;border-radius:12px;background:var(--bad-bg);font-size:12.5px}
+  .trap svg{width:16px;height:16px;color:var(--bad);flex:none;margin-top:1px}
+  .trap b{display:block;color:var(--bad)}
+  .checklist{display:grid;gap:6px}
+  .checklist label{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid var(--line-2);transition:background var(--dur)}
+  .checklist label:hover{background:var(--surface-2)}
+  .checklist label.done{opacity:.55}
+  .checklist .ns-check{align-items:flex-start;flex:1}
+  .checklist .t{font-weight:600;font-size:13.5px}
+  .checklist .s{font-size:12px;color:var(--ink-3);margin-top:2px}
+  .badge-status{white-space:nowrap}
+  .ratings-hist{display:flex;gap:6px;align-items:flex-end;height:44px}
+  .ratings-hist i{flex:1;border-radius:4px 4px 0 0;background:var(--brand)}
+</style>
+</head>
+<body>
+<script>
+(function () {
+  'use strict';
+  const D = NSData, U = NS.util, F = NS.fmt, raw = NS.raw, ic = NS.ic; const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const store = NS.store('performance-nexus');
+  const TODAY = new Date('2026-09-24T10:00:00');
+  const YEAR_FRAC = 267 / 365;
+
+  /* ------------------------------------------------------------------ */
+  /* 1. Domain content                                                   */
+  /* ------------------------------------------------------------------ */
+  const CATS = { Business: 'brand', Customer: 'info', Process: 'neutral', People: 'ok', Learning: 'warn' };
+  const CAT_COLORS = { Business: 'var(--viz-1)', Customer: 'var(--viz-3)', Process: 'var(--viz-7)', People: 'var(--viz-2)', Learning: 'var(--viz-4)' };
+  // Goal templates by skill group — title, description, category, weight, key results
+  const GT = {
+    backend: [
+      ['Ship OAuth 2.1 token rotation for the Identity service', 'Rotate refresh tokens for all first-party clients with zero customer-visible downtime.', 'Business', 30, [['Rotation live for first-party clients', '100%'], ['Auth incidents vs Q4 FY25', '−40%']]],
+      ['Bring p95 latency of the authorization API under 120 ms', 'Cache policy decisions at the edge and remove the synchronous audit write from the hot path.', 'Customer', 20, [['p95 latency', '120 ms'], ['Cache hit rate', '92%']]],
+      ['Raise unit-test coverage of core packages to 85%', 'Cover the token, session and policy packages; block merges under threshold.', 'Process', 15, [['Coverage (core)', '85%'], ['Flaky tests quarantined', '0 open']]],
+      ['Mentor two new joiners to independent delivery', 'Weekly pairing and a 30-60-90 plan for Siddharth and Ananya.', 'People', 15, [['Joiners shipping unassisted', '2']]],
+      ['Complete the Distributed Systems learning path', 'Finish the internal course and present one design review on consensus trade-offs.', 'Learning', 10, [['Modules completed', '8/8'], ['Design review delivered', '1']]],
+      ['Own the Q3 on-call reliability review', 'Cut repeat pages by fixing the top five alert sources.', 'Process', 10, [['Repeat pages', '−25%']]],
+    ],
+    data: [
+      ['Migrate the events pipeline to the streaming platform', 'Replace nightly batch with exactly-once streaming for the top 20 event types.', 'Business', 30, [['Event types migrated', '20/20'], ['Freshness SLA', '< 5 min']]],
+      ['Cut warehouse spend by 18% without SLA regressions', 'Right-size clusters, add partition pruning and retire orphaned tables.', 'Process', 20, [['Monthly warehouse cost', '−18%'], ['Orphaned tables retired', '140']]],
+      ['Launch the self-serve metrics layer for product teams', 'Certified metrics with owners, lineage and freshness badges.', 'Customer', 20, [['Certified metrics', '60'], ['Teams onboarded', '9']]],
+      ['Raise data-quality test coverage on tier-1 tables to 95%', 'Schema, volume and anomaly checks with paging on failure.', 'Process', 10, [['Tier-1 tables covered', '95%']]],
+      ['Coach analysts on dbt best practices', 'Run a monthly clinic and review PRs from the analytics guild.', 'People', 10, [['Clinics held', '9']]],
+      ['Earn the ML engineering certification', 'Complete the course and ship one model behind a feature flag.', 'Learning', 10, [['Certification', 'Done']]],
+    ],
+    frontend: [
+      ['Ship the redesigned onboarding flow', 'Reduce time-to-first-project for new workspaces.', 'Business', 30, [['Time to first project', '−35%'], ['Activation rate', '+6 pts']]],
+      ['Hit Core Web Vitals “good” on 90% of page loads', 'LCP under 2.5 s, INP under 200 ms across the console.', 'Customer', 20, [['Good CWV share', '90%']]],
+      ['Adopt the design system on every remaining legacy screen', 'Retire the legacy component library.', 'Process', 15, [['Legacy screens migrated', '42/42']]],
+      ['Raise accessibility conformance to WCAG 2.2 AA', 'Fix audit findings and add automated axe checks to CI.', 'Customer', 15, [['Open critical a11y issues', '0']]],
+      ['Run the frontend guild and mentor two engineers', 'Bi-weekly sessions and structured code-review coaching.', 'People', 10, [['Sessions held', '18']]],
+      ['Deepen expertise in web performance', 'Complete the performance course and publish three internal write-ups.', 'Learning', 10, [['Write-ups published', '3']]],
+    ],
+    mobile: [
+      ['Launch offline-first sync for the mobile app', 'Queue, conflict-resolve and replay edits made without connectivity.', 'Business', 30, [['Offline sessions completing', '98%'], ['Sync conflicts auto-resolved', '95%']]],
+      ['Cut crash-free-session rate to 99.8%', 'Fix the top ten crash clusters and add release gating.', 'Customer', 20, [['Crash-free sessions', '99.8%']]],
+      ['Bring app start time under 1.2 s on mid-tier devices', 'Lazy-load modules and trim the startup path.', 'Customer', 15, [['Cold start p50', '1.2 s']]],
+      ['Automate release trains with 100% signed builds', 'Weekly trains, no manual signing.', 'Process', 15, [['Manual release steps', '0']]],
+      ['Pair with two engineers on platform APIs', 'Raise the bus factor on the sync engine.', 'People', 10, [['Engineers proficient', '2']]],
+      ['Complete the mobile security learning path', 'Secure storage, certificate pinning and threat modelling.', 'Learning', 10, [['Modules', '6/6']]],
+    ],
+    infra: [
+      ['Deliver 99.95% availability for tier-1 services', 'Remove single points of failure and rehearse regional failover.', 'Customer', 30, [['Availability (tier-1)', '99.95%'], ['Failover drills', '4']]],
+      ['Reduce cloud spend per customer by 15%', 'Rightsizing, spot adoption and storage tiering.', 'Business', 20, [['Unit cost', '−15%'], ['Spot share', '35%']]],
+      ['Cut mean time to recovery to under 30 minutes', 'Runbooks, auto-remediation and better paging routing.', 'Process', 20, [['MTTR', '30 min']]],
+      ['Move 100% of infrastructure to reviewed Terraform', 'No click-ops; policy-as-code gates.', 'Process', 10, [['Resources under IaC', '100%']]],
+      ['Build the SRE mentoring rotation', 'Every engineer shadows on-call twice a year.', 'People', 10, [['Shadow rotations', '24']]],
+      ['Earn the cloud architect certification', 'Complete and apply to the multi-region design.', 'Learning', 10, [['Certification', 'Done']]],
+    ],
+    security: [
+      ['Close SOC 2 Type II with zero exceptions', 'Evidence automation and control ownership across engineering.', 'Business', 30, [['Audit exceptions', '0'], ['Controls automated', '80%']]],
+      ['Reduce critical vulnerability time-to-fix to 7 days', 'SLA tracking, auto-ticketing and weekly reviews.', 'Customer', 20, [['Critical TTF', '7 days']]],
+      ['Threat-model every tier-1 service', 'Facilitate sessions and track mitigations to closure.', 'Process', 20, [['Services modelled', '18/18']]],
+      ['Roll out phishing-resistant MFA company-wide', 'Hardware keys for all engineers and admins.', 'Process', 10, [['Coverage', '100%']]],
+      ['Run the security champions programme', 'One champion per team, quarterly training.', 'People', 10, [['Champions active', '38']]],
+      ['Complete offensive security training', 'Apply findings in two internal red-team exercises.', 'Learning', 10, [['Exercises', '2']]],
+    ],
+    devex: [
+      ['Halve CI time for the monorepo', 'Remote caching, test sharding and flaky-test quarantine.', 'Business', 30, [['Median CI time', '−50%'], ['Flaky tests', '< 1%']]],
+      ['Raise developer satisfaction score to 4.2/5', 'Quarterly DevEx survey with action plans.', 'Customer', 20, [['DevEx score', '4.2']]],
+      ['Ship the internal service catalogue', 'Ownership, SLOs and runbooks in one place.', 'Process', 20, [['Services registered', '100%']]],
+      ['Automate environment provisioning to under 10 minutes', 'Ephemeral preview environments on every PR.', 'Process', 10, [['Provision time', '10 min']]],
+      ['Coach teams on build best practices', 'Office hours and migration playbooks.', 'People', 10, [['Teams migrated', '30']]],
+      ['Learn and apply build-system internals', 'Contribute two upstream fixes.', 'Learning', 10, [['Upstream contributions', '2']]],
+    ],
+    qa: [
+      ['Reach 80% automated coverage of critical user journeys', 'End-to-end suites gating every release.', 'Business', 30, [['Journeys automated', '80%']]],
+      ['Cut escaped defects per release by 40%', 'Risk-based test planning and production monitoring.', 'Customer', 25, [['Escaped defects', '−40%']]],
+      ['Bring release regression cycle down to 1 day', 'Parallelise and prune the regression suite.', 'Process', 20, [['Regression cycle', '1 day']]],
+      ['Upskill four engineers on performance testing', 'Pairing and a shared load-testing toolkit.', 'People', 15, [['Engineers certified', '4']]],
+      ['Complete the test-architecture course', 'Apply to the new contract-testing strategy.', 'Learning', 10, [['Course', 'Done']]],
+    ],
+    product: [
+      ['Grow weekly active workspaces by 20%', 'Ship the top three activation opportunities from discovery.', 'Business', 35, [['WAW growth', '+20%'], ['Activation rate', '+5 pts']]],
+      ['Lift customer satisfaction on the core flow to 4.5', 'Close the top usability findings.', 'Customer', 20, [['CSAT (core flow)', '4.5']]],
+      ['Run a quarterly discovery cadence with engineering', 'Twelve customer interviews per quarter with shared insights.', 'Process', 15, [['Interviews per quarter', '12']]],
+      ['Publish a living roadmap with outcome metrics', 'Every initiative has a metric and an owner.', 'Process', 10, [['Initiatives with metrics', '100%']]],
+      ['Mentor an associate PM to own a surface', 'Structured 1:1s and shadowed launches.', 'People', 10, [['APM owning a surface', 'Yes']]],
+      ['Complete the pricing & packaging course', 'Apply learnings in the FY27 packaging proposal.', 'Learning', 10, [['Proposal delivered', '1']]],
+    ],
+    design: [
+      ['Ship the console redesign to GA', 'New navigation and information architecture.', 'Business', 30, [['Screens shipped', '100%'], ['Task success', '+12 pts']]],
+      ['Raise usability score of the top five flows to 80+', 'Research-led iterations with engineering partners.', 'Customer', 25, [['SUS score', '80']]],
+      ['Grow design system adoption to 95% of new work', 'Tokens, components and documented patterns.', 'Process', 15, [['Adoption', '95%']]],
+      ['Run monthly research read-outs for product teams', 'Insights repository with tagged findings.', 'People', 15, [['Read-outs', '12']]],
+      ['Complete the accessibility specialist certification', 'Apply in a full audit of the console.', 'Learning', 15, [['Certification', 'Done']]],
+    ],
+    people: [
+      ['Hold voluntary attrition under 10% for the supported orgs', 'Predictive retention reviews with managers each month.', 'Business', 30, [['Voluntary attrition', '< 10%'], ['Retention actions closed', '90%']]],
+      ['Lift engagement in supported orgs by 5 points', 'Action plans on the two lowest drivers per team.', 'Customer', 20, [['Engagement', '+5 pts']]],
+      ['Land the FY26 review cycle with 95% on-time completion', 'Manager enablement and weekly cycle health reviews.', 'Process', 20, [['On-time completion', '95%']]],
+      ['Coach ten first-time managers through the leadership programme', 'Cohort sessions and 1:1 coaching.', 'People', 15, [['Managers graduated', '10']]],
+      ['Complete the people-analytics certification', 'Apply to the retention model refresh.', 'Learning', 15, [['Certification', 'Done']]],
+    ],
+    ta: [
+      ['Fill 60 engineering roles with a 45-day median time-to-fill', 'Structured pipelines and weekly hiring-manager syncs.', 'Business', 35, [['Roles filled', '60'], ['Median time to fill', '45 days']]],
+      ['Raise candidate NPS to +60', 'Faster feedback loops and interviewer training.', 'Customer', 20, [['Candidate NPS', '+60']]],
+      ['Bring offer acceptance rate to 85%', 'Comp calibration and closing playbook.', 'Business', 15, [['Offer acceptance', '85%']]],
+      ['Train 40 interviewers on structured interviewing', 'Certification with shadow and reverse-shadow.', 'People', 15, [['Interviewers certified', '40']]],
+      ['Complete the sourcing masterclass', 'Apply to the ML hiring plan.', 'Learning', 15, [['Course', 'Done']]],
+    ],
+    finance: [
+      ['Deliver the FY27 plan with ±3% forecast accuracy', 'Driver-based model with monthly re-forecast.', 'Business', 35, [['Forecast accuracy', '±3%']]],
+      ['Close the books in 5 business days', 'Automate reconciliations and accruals.', 'Process', 25, [['Close time', '5 days']]],
+      ['Cut vendor spend by 8% through renegotiation', 'Top 30 vendors reviewed.', 'Business', 15, [['Savings', '8%']]],
+      ['Partner with three business units on unit economics', 'Monthly business reviews with owners.', 'Customer', 15, [['BUs covered', '3']]],
+      ['Complete the SaaS metrics certification', 'Apply to the board reporting pack.', 'Learning', 10, [['Certification', 'Done']]],
+    ],
+    sales: [
+      ['Close $2.4M in new ARR', 'Enterprise pipeline across the assigned territory.', 'Business', 40, [['New ARR', '$2.4M'], ['Win rate', '28%']]],
+      ['Maintain 3× pipeline coverage every quarter', 'Outbound cadence with SDR pairing.', 'Business', 20, [['Pipeline coverage', '3×']]],
+      ['Keep CRM hygiene score above 92%', 'Next steps and stage updates within 24 hours.', 'Process', 15, [['Hygiene score', '92%']]],
+      ['Expand two strategic accounts by 30%', 'Executive sponsorship and joint success plans.', 'Customer', 15, [['Expansion', '+30%']]],
+      ['Complete the enterprise negotiation programme', 'Apply on two live deals.', 'Learning', 10, [['Programme', 'Done']]],
+    ],
+    cs: [
+      ['Hold gross revenue retention at 94%', 'Health-score driven save plays.', 'Business', 35, [['GRR', '94%'], ['At-risk accounts saved', '70%']]],
+      ['Reach CSAT of 4.7 on resolved cases', 'Faster first response and quality reviews.', 'Customer', 25, [['CSAT', '4.7'], ['First response', '< 2 h']]],
+      ['Cut median resolution time to 18 hours', 'Knowledge-base deflection and routing.', 'Process', 15, [['Median resolution', '18 h']]],
+      ['Mentor two new CSMs to full book ownership', 'Shadowing and weekly coaching.', 'People', 15, [['CSMs ramped', '2']]],
+      ['Complete the solutions architecture path', 'Apply on three enterprise onboardings.', 'Learning', 10, [['Path', 'Done']]],
+    ],
+    marketing: [
+      ['Generate $9M in marketing-sourced pipeline', 'Campaigns across three segments with attribution.', 'Business', 35, [['Sourced pipeline', '$9M']]],
+      ['Lift organic traffic by 30%', 'Content programme and technical SEO.', 'Customer', 20, [['Organic sessions', '+30%']]],
+      ['Launch three product releases with full enablement', 'Messaging, sales decks and customer comms.', 'Process', 20, [['Launches', '3']]],
+      ['Grow the community to 12,000 members', 'Events and champion programme.', 'People', 15, [['Members', '12,000']]],
+      ['Complete the marketing-analytics course', 'Apply to the attribution model.', 'Learning', 10, [['Course', 'Done']]],
+    ],
+    legal: [
+      ['Cut contract turnaround to 5 days', 'Playbooks and clause library for sales.', 'Business', 35, [['Turnaround', '5 days']]],
+      ['Complete the privacy programme refresh', 'Records of processing and DPIAs for new products.', 'Process', 25, [['DPIAs completed', '100%']]],
+      ['Train 200 employees on data handling', 'Role-based modules with completion tracking.', 'People', 20, [['Trained', '200']]],
+      ['Complete the AI-governance certification', 'Apply to the model-use policy.', 'Learning', 20, [['Certification', 'Done']]],
+    ],
+    it: [
+      ['Reach 99% device compliance', 'MDM enrolment and patch automation.', 'Business', 35, [['Compliant devices', '99%']]],
+      ['Cut IT ticket resolution time to 8 hours', 'Self-service portal and automations.', 'Customer', 25, [['Median resolution', '8 h']]],
+      ['Complete the SSO migration for all SaaS apps', 'No local passwords.', 'Process', 20, [['Apps on SSO', '100%']]],
+      ['Complete the endpoint-security certification', 'Apply to the zero-trust rollout.', 'Learning', 20, [['Certification', 'Done']]],
+    ],
+    manager: [
+      ['Deliver the team roadmap with 90% of committed scope', 'Quarterly planning with explicit trade-offs.', 'Business', 30, [['Committed scope delivered', '90%']]],
+      ['Keep team attrition under 8% and engagement above 80', 'Monthly retention check-ins and action plans.', 'People', 25, [['Voluntary attrition', '< 8%'], ['Engagement', '> 80']]],
+      ['Hold weekly 1:1s with every report (95% held)', 'Reschedule, never cancel.', 'People', 15, [['1:1s held', '95%']]],
+      ['Raise team’s deployment frequency to daily', 'Smaller batches and trunk-based development.', 'Process', 15, [['Deploys per day', '1+']]],
+      ['Complete the leadership programme', 'Apply feedback from the 360.', 'Learning', 15, [['Programme', 'Done']]],
+    ],
+  };
+  const groupFor = (p) => (p.isManager ? 'manager' : GT[p.skillKey] ? p.skillKey : 'backend');
+
+  const NINE = [['Rough Diamond', 'Future Star', 'Consistent Star'], ['Inconsistent', 'Core Player', 'High Performer'], ['Talent Risk', 'Effective', 'Trusted Pro']]; // rows: potential High→Low, cols: performance Low→High
+  const TRAPS = [['Recency bias', 'Evaluating only the last two months. Pull the whole year’s evidence before rating.'], ['Halo effect', 'Letting one big win mask real gaps — or one miss erase a strong year.'], ['No surprises', 'The annual review is not the place for new feedback. If it wasn’t said in a 1:1, say it there first.'], ['Central tendency', 'Rating everyone “Meets” to avoid hard conversations flattens differentiation.']];
+  const STATUS = {
+    not_started: { label: 'Not started', cls: 'neutral', step: 0 },
+    self_in_progress: { label: 'Self review in progress', cls: 'info', step: 1 },
+    self_submitted: { label: 'Ready for manager', cls: 'brand', step: 2 },
+    manager_in_progress: { label: 'Manager review in progress', cls: 'warn', step: 3 },
+    manager_submitted: { label: 'Manager review submitted', cls: 'ok', step: 4 },
+    calibrated: { label: 'Calibrated', cls: 'ok', step: 5 },
+  };
+  const SCALE = D.ratingScale; // 1..5 with descriptions
+  const COMPS = D.competencies;
+  const WEIGHTS_DEFAULT = { goals: 60, comps: 40 };
+  const labelFor = (score) => (score == null ? '—' : score >= 4.5 ? 'Outstanding' : score >= 3.5 ? 'Exceeds' : score >= 2.5 ? 'Meets' : score >= 1.5 ? 'Developing' : 'Needs improvement');
+  const clsFor = (score) => (score == null ? 'neutral' : score >= 3.5 ? 'ok' : score >= 2.5 ? 'brand' : 'warn');
+
+  /* ------------------------------------------------------------------ */
+  /* 2. State — seeded then persisted                                    */
+  /* ------------------------------------------------------------------ */
+  const seedRng = NS.rng(4102);
+  const sr = () => seedRng();
+  const goalsFor = (p) => {
+    const g = GT[groupFor(p)];
+    const r = NS.rng(NS.hashStr(p.id + 'goals'));
+    return g.map((t, i) => {
+      const due = i === 0 ? '2026-12-18' : i === 1 ? '2026-11-27' : i === 2 ? '2026-10-30' : i === 3 ? '2026-12-11' : '2026-12-18';
+      let progress = Math.round(U.clamp(YEAR_FRAC * 100 + (r() - 0.45) * 46 + (p.rating ? (p.rating - 3) * 7 : 0), 8, 100));
+      if (p.id === 'NS-1207') progress = [100, 82, 71, 60, 88, 45][i];
+      const expected = YEAR_FRAC * 100;
+      const status = progress >= 100 ? 'done' : progress >= expected - 8 ? 'on' : progress >= expected - 22 ? 'risk' : 'behind';
+      return { id: `${p.id}-g${i + 1}`, title: t[0], desc: t[1], cat: t[2], weight: t[3], due, progress, status, krs: t[4].map(([k, target], ki) => ({ k, target, current: progress >= 100 ? target : `${Math.min(99, Math.round(progress * (0.85 + ki * 0.1)))}%` })), checkins: r() < 0.72 || p.id === 'NS-1207' ? [{ date: '2026-09-15', note: 'Progress updated after sprint review.' }, { date: '2026-08-04', note: 'Mid-quarter check-in with manager.' }] : [] };
+    });
+  };
+  const seedReview = (p, goals) => {
+    const r = NS.rng(NS.hashStr(p.id + 'review'));
+    const phaseP = r();
+    let status = phaseP < 0.12 ? 'not_started' : phaseP < 0.42 ? 'self_in_progress' : phaseP < 0.9 ? 'self_submitted' : phaseP < 0.97 ? 'manager_in_progress' : 'manager_submitted';
+    const rv = { status, self: { goals: {}, comps: {}, highlights: '', growth: '', aspirations: '', support: '' }, manager: { goals: {}, comps: {}, summary: '', potential: null, submittedAt: null }, calibrated: null, submittedAt: null, feedbackRequested: [] };
+    const base = p.rating || 3;
+    const rate = () => U.clamp(base + (r() < 0.3 ? (r() < 0.5 ? -1 : 1) : 0), 1, 5);
+    const fillSelf = (n) => { goals.slice(0, n).forEach((g) => { rv.self.goals[g.id] = { rating: rate(), comment: selfComment(p, g, rv.self.goals[g.id] ? rv.self.goals[g.id].rating : base) }; }); if (n >= goals.length) { COMPS.forEach((c) => { rv.self.comps[c.id] = { rating: rate(), comment: '' }; }); rv.self.highlights = highlightsText(p, goals); rv.self.growth = 'Sequence work better in Q2 — I took on two parallel projects and the review load on my teammates went up.'; rv.self.aspirations = aspirationsText(p); rv.self.support = 'Earlier visibility into roadmap changes, and time protected for the mentoring commitments in my goals.'; } };
+    if (status === 'self_in_progress') fillSelf(Math.max(1, Math.floor(r() * goals.length)));
+    if (['self_submitted', 'manager_in_progress', 'manager_submitted'].includes(status)) { fillSelf(goals.length); rv.submittedAt = '2026-09-' + String(15 + Math.floor(r() * 8)).padStart(2, '0'); }
+    if (status === 'manager_in_progress' || status === 'manager_submitted') { goals.slice(0, status === 'manager_submitted' ? goals.length : Math.ceil(goals.length / 2)).forEach((g) => { rv.manager.goals[g.id] = { rating: U.clamp(rv.self.goals[g.id].rating + (r() < 0.35 ? -1 : 0), 1, 5), comment: '' }; }); if (status === 'manager_submitted') { COMPS.forEach((c) => { rv.manager.comps[c.id] = { rating: U.clamp(rv.self.comps[c.id].rating + (r() < 0.3 ? -1 : 0), 1, 5), comment: '' }; }); rv.manager.potential = r() < 0.3 ? 3 : r() < 0.75 ? 2 : 1; rv.manager.summary = managerSummary(p, goals, rv); rv.manager.submittedAt = '2026-09-23'; } }
+    return rv;
+  };
+  const selfComment = (p, g, rating) => {
+    const kr = g.krs[0];
+    if (g.progress >= 100) return `Delivered in full — ${kr.k.toLowerCase()} landed at ${kr.target}. The hardest part was sequencing this with the ${g.cat.toLowerCase()} work in Q2; I front-loaded the risky pieces and it paid off.`;
+    if (rating >= 4) return `On track at ${g.progress}% with the remaining scope planned for the final sprint. ${kr.k} is at ${kr.current} toward ${kr.target}; I expect to close at target.`;
+    if (rating === 3) return `Solid progress (${g.progress}%) though slower than I planned — a dependency slipped by three weeks. Recovery plan is in place and reviewed with my manager.`;
+    return `Behind where I wanted to be (${g.progress}%). I under-scoped the effort and should have flagged it earlier. I have re-planned the remaining work and would value help prioritising.`;
+  };
+  const highlightsText = (p, goals) => `1. ${goals[0].title} — ${goals[0].krs[0].k.toLowerCase()} at ${goals[0].progress >= 100 ? goals[0].krs[0].target : goals[0].progress + '%'}.\n2. Stepped in to lead the incident review process for the team during Q2.\n3. Onboarded two new joiners to independent delivery within their first quarter.`;
+  const aspirationsText = (p) => (p.track === 'IC' ? `Grow toward ${nextLevel(p)} over the next 12–18 months by owning a cross-team initiative end-to-end. Open to a short rotation with a partner team to broaden system knowledge.` : 'Grow the team’s senior bench and take on a second team over the next 12–18 months.');
+  const nextLevel = (p) => { const L = D.levels.filter((l) => l.track === p.track); const i = L.findIndex((l) => l.code === p.level); return L[i + 1] ? L[i + 1].title : 'the next level'; };
+  const managerSummary = (p, goals, rv) => `${p.first} had a strong year. ${goals[0].title.split(' for ')[0]} was the standout delivery, and the ${goals.find((g) => g.cat === 'People') ? 'mentoring commitments' : 'process improvements'} raised the whole team’s bar. The main growth edge is scope management — sequencing parallel work so quality never dips.`;
+
+  // full state (lazy: only teams that are opened get seeded, but console needs everyone → seed statuses cheaply for all)
+  let S = store.get('state');
+  const buildState = () => {
+    const st = { goals: {}, reviews: {}, feedback: {}, calib: {}, settings: { weights: { ...WEIGHTS_DEFAULT }, anonymousPeer: true, minPeer: 3, allowNA: true, phases: D.cycle.phases.map((x) => ({ ...x })) }, checklist: {}, nudges: {}, activity: [] };
+    D.people.forEach((p) => { const g = goalsFor(p); st.goals[p.id] = g; st.reviews[p.id] = seedReview(p, g); });
+    // demo personas — deliberately staged
+    const me = 'NS-1207', team = D.reports('NS-1180');
+    const my = st.reviews[me]; my.status = 'self_in_progress'; my.self.goals = {}; my.self.comps = {};
+    st.goals[me].slice(0, 4).forEach((g, i) => { my.self.goals[g.id] = { rating: [5, 4, 4, 3][i], comment: selfComment(D.byId(me), g, [5, 4, 4, 3][i]) }; });
+    COMPS.forEach((c, i) => { my.self.comps[c.id] = { rating: [5, 4, 4, 4, 5, 4, 3][i], comment: i === 0 ? 'Led the token-rotation design, wrote the ADR and kept test coverage above 85% throughout.' : '' }; });
+    my.self.highlights = highlightsText(D.byId(me), st.goals[me]); my.self.growth = 'Sequence work better — I ran two parallel projects in Q2 and my review turnaround for teammates slipped to three days.';
+    const stage = { 'NS-1208': 'self_submitted', 'NS-1209': 'self_submitted', 'NS-1210': 'manager_in_progress', 'NS-1211': 'not_started', 'NS-1212': 'self_in_progress', 'NS-1213': 'manager_submitted', 'NS-1214': 'manager_submitted' };
+    team.forEach((p) => { if (stage[p.id]) { const g = st.goals[p.id]; const rv = seedReview(p, g); const want = stage[p.id]; if (rv.status !== want) { const r2 = NS.rng(9); const fake = { ...seedReview(p, g) }; fake.status = want; if (want === 'not_started') { fake.self = { goals: {}, comps: {}, highlights: '', growth: '', aspirations: '', support: '' }; fake.submittedAt = null; fake.manager = { goals: {}, comps: {}, summary: '', potential: null, submittedAt: null }; } else if (want === 'self_in_progress') { const keep = Object.keys(fake.self.goals).slice(0, 2); const ng = {}; keep.forEach((k) => ng[k] = fake.self.goals[k]); fake.self.goals = ng; fake.self.comps = {}; fake.submittedAt = null; fake.manager = { goals: {}, comps: {}, summary: '', potential: null, submittedAt: null }; } else if (want === 'self_submitted') { if (!Object.keys(fake.self.goals).length) g.forEach((gg) => fake.self.goals[gg.id] = { rating: U.clamp((p.rating || 3) + (r2() < .3 ? 1 : 0), 1, 5), comment: selfComment(p, gg, p.rating || 3) }); if (!Object.keys(fake.self.comps).length) COMPS.forEach((c) => fake.self.comps[c.id] = { rating: U.clamp((p.rating || 3) + (r2() < .3 ? 1 : 0), 1, 5), comment: '' }); fake.self.highlights = fake.self.highlights || highlightsText(p, g); fake.self.aspirations = fake.self.aspirations || aspirationsText(p); fake.submittedAt = fake.submittedAt || '2026-09-19'; fake.manager = { goals: {}, comps: {}, summary: '', potential: null, submittedAt: null }; } else if (want === 'manager_in_progress') { if (!Object.keys(fake.self.goals).length) g.forEach((gg) => fake.self.goals[gg.id] = { rating: p.rating || 3, comment: selfComment(p, gg, p.rating || 3) }); if (!Object.keys(fake.self.comps).length) COMPS.forEach((c) => fake.self.comps[c.id] = { rating: p.rating || 3, comment: '' }); fake.submittedAt = fake.submittedAt || '2026-09-17'; fake.manager = { goals: {}, comps: {}, summary: '', potential: null, submittedAt: null }; g.slice(0, 3).forEach((gg) => fake.manager.goals[gg.id] = { rating: fake.self.goals[gg.id].rating, comment: '' }); } else if (want === 'manager_submitted') { if (!Object.keys(fake.self.goals).length) g.forEach((gg) => fake.self.goals[gg.id] = { rating: p.rating || 3, comment: selfComment(p, gg, p.rating || 3) }); if (!Object.keys(fake.self.comps).length) COMPS.forEach((c) => fake.self.comps[c.id] = { rating: p.rating || 3, comment: '' }); fake.submittedAt = fake.submittedAt || '2026-09-16'; g.forEach((gg) => fake.manager.goals[gg.id] = { rating: fake.self.goals[gg.id].rating, comment: '' }); COMPS.forEach((c) => fake.manager.comps[c.id] = { rating: fake.self.comps[c.id].rating, comment: '' }); fake.manager.potential = 2; fake.manager.summary = managerSummary(p, g, fake); fake.manager.submittedAt = '2026-09-23'; } st.reviews[p.id] = fake; } else st.reviews[p.id] = rv; } });
+    // peer feedback for the employee persona
+    st.feedback[me] = {
+      requested: [{ from: 'NS-1209', status: 'received' }, { from: 'NS-1210', status: 'received' }, { from: 'NS-1213', status: 'pending' }],
+      received: [
+        { from: 'NS-1209', date: '2026-09-20', strengths: 'Priya’s design for token rotation was the clearest ADR I read this year — she anticipated the migration edge cases before anyone raised them.', growth: 'Could delegate more of the follow-up work; she tends to carry the last 10% herself.', tags: ['System Design', 'Ownership'] },
+        { from: 'NS-1210', date: '2026-09-18', strengths: 'Incredibly responsive across time zones and patient when walking me through the policy engine.', growth: 'Sometimes moves fast in reviews; a bit more context in PR descriptions would help remote teammates.', tags: ['Communication', 'Technical Excellence'] },
+      ],
+      toGive: [{ for: 'NS-1213', due: '2026-09-29', status: 'pending' }, { for: 'NS-1208', due: '2026-09-30', status: 'pending' }],
+    };
+    return st;
+  };
+  if (!S || S.v !== 3) { S = buildState(); S.v = 3; }
+  const save = U.debounce(() => store.set('state', S), 250);
+  const log = (msg) => { S.activity.unshift({ t: new Date().toISOString(), msg }); S.activity = S.activity.slice(0, 40); save(); };
+
+  /* scoring */
+  const weights = () => S.settings.weights;
+  const goalScore = (pid, who) => { const g = S.goals[pid], r = S.reviews[pid][who].goals; const rated = g.filter((x) => r[x.id] && r[x.id].rating); if (!rated.length) return null; const tw = U.sum(rated, 'weight'); return U.sum(rated, (x) => r[x.id].rating * x.weight) / tw; };
+  const compScore = (pid, who) => { const r = S.reviews[pid][who].comps; const v = COMPS.map((c) => r[c.id] && r[c.id].rating).filter((x) => x); return v.length ? U.avg(v) : null; };
+  const overall = (pid, who) => { const g = goalScore(pid, who), c = compScore(pid, who), w = weights(); if (g == null && c == null) return null; if (g == null) return c; if (c == null) return g; return (g * w.goals + c * w.comps) / 100; };
+  const selfSections = (pid) => { const g = S.goals[pid], rv = S.reviews[pid]; const list = g.map((x) => ({ id: x.id, label: x.title, done: !!(rv.self.goals[x.id] && rv.self.goals[x.id].rating) })); list.push({ id: 'comps', label: 'Competencies', done: COMPS.every((c) => rv.self.comps[c.id] && rv.self.comps[c.id].rating != null) }); list.push({ id: 'reflect', label: 'Reflection', done: !!(rv.self.highlights && rv.self.growth) }); list.push({ id: 'career', label: 'Career & support', done: !!rv.self.aspirations }); return list; };
+  const completion = (pid) => { const s = selfSections(pid); return { done: s.filter((x) => x.done).length, total: s.length, pct: Math.round((s.filter((x) => x.done).length / s.length) * 100) }; };
+  const statusOf = (pid) => S.reviews[pid].status;
+  const daysLeft = (iso) => Math.ceil((new Date(iso) - TODAY) / 86400000);
+  const teamOf = (mid) => D.reports(mid);
+  const meFor = (persona) => D.byId(persona.personId);
+
+  /* AI helpers (simulated, data-aware) */
+  const aiGoalText = (p, g, rating, who) => {
+    const kr = g.krs[0], first = who === 'self', name = first ? 'I' : p.first;
+    const verb = first ? 'delivered' : 'delivered';
+    if (rating >= 5) return `${name} ${verb} ${g.title.charAt(0).toLowerCase() + g.title.slice(1)} ahead of plan — ${kr.k.toLowerCase()} closed at ${g.progress >= 100 ? kr.target : kr.current}. Beyond the metric, ${first ? 'I' : p.first} shaped how the team approached the ${g.cat.toLowerCase()} work: clearer sequencing, earlier risk calls and a written decision record others now reuse. This is the level of impact we associate with the next level.`;
+    if (rating === 4) return `${first ? 'I' : p.first} ${first ? 'am' : 'is'} at ${g.progress}% on ${g.title.charAt(0).toLowerCase() + g.title.slice(1)}, with ${kr.k.toLowerCase()} at ${kr.current} toward a target of ${kr.target}. The remaining scope is planned and de-risked; the quality of the work so far — tests, documentation, stakeholder updates — has been consistently above the bar for the level.`;
+    if (rating === 3) return `${first ? 'I' : p.first} made steady progress (${g.progress}%) on ${g.title.charAt(0).toLowerCase() + g.title.slice(1)}. A dependency slipped mid-year and the recovery plan is realistic. Delivery met expectations; the opportunity is flagging risk earlier so trade-offs can be made before deadlines are at stake.`;
+    return `Progress on ${g.title.charAt(0).toLowerCase() + g.title.slice(1)} is behind plan (${g.progress}%). ${first ? 'I under-scoped the effort and should have escalated in Q2.' : `${p.first} under-scoped the effort and escalated late.`} ${first ? 'My' : 'The'} re-plan is credible, and ${first ? 'I would value' : 'we agreed on'} weekly check-ins until the key result is back on track.`;
+  };
+  const aiSummary = (p, pid) => { const g = S.goals[pid], rv = S.reviews[pid]; const top = g.slice().sort((a, b) => ((rv.manager.goals[b.id] || {}).rating || 0) - ((rv.manager.goals[a.id] || {}).rating || 0))[0]; const gs = goalScore(pid, 'manager'), cs = compScore(pid, 'manager'); return `${p.first} ${gs >= 4 ? 'had an excellent year' : gs >= 3 ? 'delivered a solid year' : 'had a mixed year'}: weighted goal attainment scores ${gs ? gs.toFixed(1) : '—'} and competencies ${cs ? cs.toFixed(1) : '—'}. The standout was “${top.title}” (${top.progress}% complete). Peers highlight ${p.first}’s ${COMPS[0].name.toLowerCase()} and ${COMPS[5].name.toLowerCase()}. The growth edge for FY27 is scope management — sequencing parallel work so that review turnaround and quality stay consistent. Recommended: ${gs >= 4 ? 'stretch assignment leading a cross-team initiative' : 'a focused development plan with quarterly checkpoints'}.`; };
+  const biasCheck = (text) => { const flags = []; const rules = [[/\b(aggressive|abrasive|bossy|emotional|shrill)\b/i, 'Gendered or personality-coded word — describe the behaviour and its impact instead.'], [/\b(hard worker|works hard|team player|nice|great attitude)\b/i, 'Vague praise — anchor to a specific outcome or example.'], [/\b(always|never)\b/i, 'Absolute language — cite the pattern with examples.'], [/\b(young|old|mature|junior for|for (his|her) age)\b/i, 'Age-related framing — remove.'], [/\b(recently|last month|lately)\b/i, 'Possible recency bias — check the whole year’s evidence.']]; rules.forEach(([re, msg]) => { const m = text.match(re); if (m) flags.push({ word: m[0], msg }); }); return flags; };
+
+  /* ------------------------------------------------------------------ */
+  /* 3. Shared UI pieces                                                 */
+  /* ------------------------------------------------------------------ */
+  const goalStatusBadge = (g) => ({ done: NS.badge('Done', 'ok', true), on: NS.badge('On track', 'ok', true), risk: NS.badge('At risk', 'warn', true), behind: NS.badge('Behind', 'bad', true) }[g.status]);
+  const statusBadge = (st) => `<span class="ns-badge ${STATUS[st].cls} badge-status">${STATUS[st].label}</span>`;
+  const ratingButtons = (name, value, o = {}) => `<div class="ns-rating" data-rate="${name}">${o.na ? `<button data-v="0" ${value === 0 ? 'aria-pressed="true"' : ''} data-tip="Not applicable">N/A</button>` : ''}${[1, 2, 3, 4, 5].map((v) => `<button data-v="${v}" ${value === v ? 'aria-pressed="true"' : ''} data-tip="${NS.esc(SCALE[v - 1].label)}">${v}</button>`).join('')}</div>`;
+  const scaleLegend = () => `<div class="grid gap-2">${SCALE.slice().reverse().map((s) => `<div class="flex gap-3 items-start"><span class="ns-badge ${s.v >= 4 ? 'ok' : s.v === 3 ? 'brand' : 'warn'} sq" style="min-width:26px;justify-content:center">${s.v}</span><div><b class="sm">${s.label}</b><p class="xs muted">${s.desc}</p></div></div>`).join('')}</div>`;
+  const goalCard = (g, o = {}) => `<div class="ns-card"><div class="ns-card-body goal-card">
+      <div class="goal-top"><div><div class="goal-meta"><span class="ns-badge ${CATS[g.cat]} sq">${g.cat}</span><span>Weight ${g.weight}%</span><span>·</span><span>${ic('calendar', { size: 12 })} Due ${F.date(g.due, 'short')}</span></div><div class="goal-title mt-2">${NS.esc(g.title)}</div><p class="sm muted mt-1">${NS.esc(g.desc)}</p></div><div class="right flex-none"><div class="xl-text bold tnum">${g.progress}%</div>${goalStatusBadge(g)}</div></div>
+      ${NS.progress(g.progress, { cls: g.status === 'behind' ? 'bad' : g.status === 'risk' ? 'warn' : '' })}
+      <div>${g.krs.map((k) => `<div class="kr"><span class="ink2">${ic('target', { size: 12 })} ${NS.esc(k.k)}</span><span class="tnum"><b>${NS.esc(k.current)}</b> <span class="faint">${k.current === k.target ? 'target met' : 'toward ' + NS.esc(k.target)}</span></span></div>`).join('')}</div>
+      ${o.actions ? `<div class="flex gap-2 wrap">${o.actions}</div>` : ''}
+    </div></div>`;
+  const cycleStepper = () => { const ph = S.settings.phases; return `<div class="ns-stepper">${ph.map((p) => { const st = new Date(p.end) < TODAY ? 'done' : new Date(p.start) <= TODAY ? 'now' : ''; return `<div class="ns-step ${st}"><span class="pt">${st === 'done' ? ic('check') : ph.indexOf(p) + 1}</span><b>${p.label}</b><span>${F.date(p.start, 'short')} – ${F.date(p.end, 'short')}</span></div>`; }).join('')}</div>`; };
+  // Evergreen countdown: remaining time is measured from the pinned demo date, so the demo never "expires".
+  const cdTarget = (iso) => Date.now() + Math.max(0, new Date(iso) - TODAY);
+  const cdParts = (target) => { const ms = Math.max(0, target - Date.now()); return [Math.floor(ms / 86400000), Math.floor((ms % 86400000) / 3600000), Math.floor((ms % 3600000) / 60000), Math.floor((ms % 60000) / 1000)]; };
+  const countdown = (iso) => { const t = cdTarget(iso); const v = cdParts(t); return `<div class="ns-countdown" data-countdown="${t}">${['days', 'hrs', 'min', 'sec'].map((l, i) => `<div><b>${String(v[i]).padStart(2, '0')}</b><span>${l}</span></div>`).join('')}</div>`; };
+  let cdTimer; const tickCountdown = (root) => { clearInterval(cdTimer); const el = root.querySelector('[data-countdown]'); if (!el) return; cdTimer = setInterval(() => { if (!el.isConnected) { clearInterval(cdTimer); return; } const v = cdParts(+el.dataset.countdown); el.querySelectorAll('b').forEach((b, i) => b.textContent = String(v[i]).padStart(2, '0')); }, 1000); };
+  const personLink = (p, sub) => `<a href="${NS.link('/people/' + p.id)}" class="ns-person" style="text-decoration:none">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="nm">${NS.esc(p.name)}</div><div class="sb">${NS.esc(sub || p.title)}</div></div></a>`;
+  const scoreCard = (pid, o = {}) => { const gs = goalScore(pid, 'self'), cs = compScore(pid, 'self'), os = overall(pid, 'self'), gm = goalScore(pid, 'manager'), cm = compScore(pid, 'manager'), om = overall(pid, 'manager'); const w = weights(); const f = (v) => (v == null ? '<span class="faint">—</span>' : v.toFixed(1)); return `<div class="ns-card"><div class="ns-card-head"><div><h3>Live scorecard</h3><p>Goals ${w.goals}% · competencies ${w.comps}%</p></div></div><div class="ns-card-body"><div class="score-row score-head"><span></span><span>Self</span><span>${o.who === 'manager' ? 'You' : 'Manager'}</span></div><div class="score-row"><span>Goals (weighted)</span><b>${f(gs)}</b><b>${f(gm)}</b></div><div class="score-row"><span>Competencies</span><b>${f(cs)}</b><b>${f(cm)}</b></div><div class="score-row"><span class="semibold ink">Overall</span><b class="ink">${f(os)}</b><b class="ink">${f(om)}</b></div><div class="mt-3 flex items-center justify-between gap-2 wrap"><span class="sm muted">Projected rating</span>${om != null ? NS.badge(labelFor(om), clsFor(om)) : os != null ? `<span class="ns-badge outline">Self: ${labelFor(os)}</span>` : NS.badge('Not yet rated')}</div>${om != null && os != null && Math.abs(om - os) >= 0.8 ? `<div class="ns-alert warn mt-3">${ic('alert-triangle')}<div><b>Large self–manager gap (${(om - os).toFixed(1)})</b><p>Prepare specific examples for the conversation — gaps this size need evidence, not adjectives.</p></div></div>` : ''}</div></div>`; };
+
+  /* ------------------------------------------------------------------ */
+  /* 4. Routes                                                           */
+  /* ------------------------------------------------------------------ */
+  const R = {};
+
+  /* HOME ------------------------------------------------------------- */
+  R['/home'] = { title: 'Home', render: (c) => (c.persona.id === 'employee' ? homeEmployee(c) : c.persona.id === 'manager' ? homeManager(c) : homeHRBP(c)), mounted: (c, root) => { tickCountdown(root); if (c.persona.id === 'employee') { root.querySelectorAll('[data-check]').forEach((cb) => cb.onchange = () => { S.checklist[cb.dataset.check] = cb.checked; save(); cb.closest('label').classList.toggle('done', cb.checked); }); } if (c.persona.id === 'manager') { const el = root.querySelector('#teamGoalCats'); if (el) { const team = teamOf(c.persona.personId); const cats = Object.keys(CATS); NS.chart.hbars(el, { items: cats.map((cat) => { const gs = team.flatMap((p) => S.goals[p.id]).filter((g) => g.cat === cat); return { label: cat, value: Math.round(U.avg(gs, 'progress')), color: CAT_COLORS[cat] }; }), max: 100, format: (v) => v + '%', valueLabel: 'Avg progress' }); } } if (c.persona.id === 'hrbp') { const el = root.querySelector('#deptCompletion'); if (el) { const depts = D.departments.map((d) => d.name); const vals = depts.map((d) => { const ps = D.dept(d); return Math.round((ps.filter((p) => STATUS[statusOf(p.id)].step >= 2).length / ps.length) * 100); }); NS.chart.hbars(el, { items: depts.map((d, i) => ({ label: d, value: vals[i], sub: `${D.dept(d).length} people` })).sort((a, b) => b.value - a.value), max: 100, format: (v) => v + '%', valueLabel: 'Self reviews submitted' }); } const tl = root.querySelector('#cycleTrend'); if (tl) NS.chart.line(tl, { labels: ['Sep 14', 'Sep 16', 'Sep 18', 'Sep 20', 'Sep 22', 'Sep 24'], series: [{ name: 'Self reviews submitted', values: [4, 14, 27, 38, 49, Math.round(U.pctOf(D.people.filter((p) => STATUS[statusOf(p.id)].step >= 2).length, D.people.length)) ] }, { name: 'FY25 same point', values: [3, 9, 18, 26, 33, 41], dashed: true, color: 'var(--ink-4)' }], yFormat: (v) => v + '%', yMin: 0, yMax: 100, height: 200, endLabels: true }); } } };
+
+  const homeEmployee = (c) => {
+    const me = meFor(c.persona), pid = me.id, goals = S.goals[pid], comp = completion(pid), fb = S.feedback[pid] || { received: [], requested: [], toGive: [] };
+    const wprog = Math.round(U.sum(goals, (g) => g.progress * g.weight) / U.sum(goals, 'weight'));
+    const onTrack = goals.filter((g) => g.status === 'on' || g.status === 'done').length;
+    const checks = [{ id: 'c1', t: 'Finish your self review', s: `${comp.done} of ${comp.total} sections done · closes ${F.date(D.cycle.selfReviewCloses)}`, route: '/review', cta: 'Continue' }, { id: 'c2', t: 'Update key results on “' + goals[5].title + '”', s: 'Last check-in 9 days ago', route: '/goals', cta: 'Update' }, { id: 'c3', t: `Give feedback for ${D.byId(fb.toGive[0].for).first} and ${D.byId(fb.toGive[1].for).first}`, s: `Requested by ${D.byId(fb.toGive[0].for).first} · due ${F.date(fb.toGive[0].due, 'short')}`, route: '/feedback', cta: 'Write' }, { id: 'c4', t: 'Prepare for your 1:1 with Aditya', s: 'Thursday 10:30 · bring one thing you’re stuck on', route: '/home', cta: 'Notes' }];
+    const mgr = D.byId(me.managerId);
+    return html`
+      <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('map-pin', { size: 12 })} ${NS.esc(me.city)} · ${NS.esc(me.team)}</span></div>
+        <h1>${NS.greeting()}, ${me.first} 👋</h1>
+        <p>Your weighted goal progress is <b>${wprog}%</b> against a ${Math.round(YEAR_FRAC * 100)}% year-to-date pace. Your self review is <b>${comp.pct}%</b> complete — finish it to lock in your evidence before ${mgr.first} starts the manager review.</p>
+        <div class="ns-eyebrow" style="color:rgba(255,255,255,.75);margin-top:18px">${D.cycle.name} · self review closes in</div>
+        ${raw(countdown(D.cycle.selfReviewCloses))}
+        <div class="flex gap-2 wrap"><a class="ns-btn primary" href="${NS.link('/review')}">Continue self review ${ic('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/goals')}">Update goals</a></div>
+        <svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><g fill="none" stroke="rgba(255,255,255,.18)" stroke-width="2"><circle cx="300" cy="150" r="120"/><circle cx="300" cy="150" r="84"/><circle cx="300" cy="150" r="48"/><circle cx="300" cy="150" r="14" fill="rgba(255,255,255,.35)"/></g><path d="M300 150 L385 62" stroke="rgba(255,255,255,.6)" stroke-width="3" stroke-linecap="round"/><circle cx="385" cy="62" r="7" fill="#fff"/></svg>
+      </div>
+      <div class="ns-stats mt-4">
+        ${raw(NS.stat({ label: 'Weighted goal progress', value: wprog, unit: '%', delta: NS.delta(wprog - Math.round(YEAR_FRAC * 100), { suf: ' pts', d: 0 }), sub: `${onTrack} of ${goals.length} on track · vs ${Math.round(YEAR_FRAC * 100)}% pace`, spark: [22, 31, 38, 47, 55, 61, 68, wprog] }))}
+        ${raw(NS.stat({ label: 'Self review', value: comp.pct, unit: '%', icon: 'clipboard-check', sub: `${comp.done} of ${comp.total} sections · ${F.days(daysLeft(D.cycle.selfReviewCloses))} left` }))}
+        ${raw(NS.stat({ label: 'Peer feedback', value: fb.received.length, unit: `of ${fb.requested.length} received`, icon: 'message-square', sub: `${fb.toGive.filter((x) => x.status === 'pending').length} to write for others` }))}
+        ${raw(NS.stat({ label: 'Rating trend', value: me.rating ? SCALE[me.rating - 1].label : '—', icon: 'trending-up', sub: `FY23 → FY25: ${me.ratings.map((r) => r || '–').join(' · ')}` }))}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Review cycle', sub: `${D.cycle.name} · you are in the self review window`, actions: NS.badge('Self review open', 'ok', true), body: cycleStepper() }))}
+          ${raw(NS.card({ title: 'Your goals', sub: 'Weighted by importance · click a goal to update progress', actions: `<a class="ns-btn sm secondary" href="${NS.link('/goals')}">All goals</a>`, body: `<div class="grid gap-3">${goals.map((g) => `<a href="${NS.link('/goals', { g: g.id })}" class="grid gap-2" style="text-decoration:none;color:inherit"><div class="flex items-center justify-between gap-3"><div class="min-w-0"><div class="flex gap-2 items-center"><span class="ns-badge ${CATS[g.cat]} sq">${g.cat}</span><span class="xs muted">${g.weight}%</span></div><div class="semibold md mt-1 truncate">${NS.esc(g.title)}</div></div><div class="flex items-center gap-3 flex-none">${goalStatusBadge(g)}<b class="tnum" style="min-width:40px;text-align:right">${g.progress}%</b></div></div>${NS.progress(g.progress, { cls: g.status === 'behind' ? 'bad' : g.status === 'risk' ? 'warn' : '' })}</a>`).join('')}</div>` }))}
+        </div>
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'For you today', sub: `${checks.filter((x) => !S.checklist[x.id]).length} things need your attention`, body: `<div class="checklist">${checks.map((x) => `<label class="${S.checklist[x.id] ? 'done' : ''}"><span class="ns-check"><input type="checkbox" data-check="${x.id}" ${S.checklist[x.id] ? 'checked' : ''}><span><div class="t">${NS.esc(x.t)}</div><div class="s">${NS.esc(x.s)}</div></span></span><a class="ns-btn xs soft flex-none" href="${NS.link(x.route)}">${x.cta}</a></label>`).join('')}</div>` }))}
+          ${raw(NS.card({ title: 'Recent feedback', sub: 'From your peers', actions: `<a class="ns-btn xs ghost" href="${NS.link('/feedback')}">All</a>`, body: fb.received.length ? `<div class="grid gap-3">${fb.received.slice(0, 2).map((f) => { const p = D.byId(f.from); return `<div class="flex gap-3 items-start">${NS.avatar(p, { size: 'sm' })}<div class="min-w-0"><div class="flex justify-between gap-2"><b class="sm">${S.settings.anonymousPeer ? 'Peer' : NS.esc(p.name)}</b><span class="xs faint">${F.date(f.date, 'short')}</span></div><p class="sm ink2 mt-1">“${NS.esc(f.strengths)}”</p></div></div>`; }).join('')}</div>` : NS.empty({ icon: 'message-square', title: 'No feedback yet' }) }))}
+          ${raw(NS.card({ title: 'Your manager', body: `<div class="flex items-center gap-3">${NS.avatar(mgr, { size: 'lg' })}<div><b>${NS.esc(mgr.name)}</b><div class="sm muted">${NS.esc(mgr.title)} · ${mgr.city}</div><div class="xs faint mt-1">Weekly 1:1 · Thursdays 10:30</div></div></div>` }))}
+        </div>
+      </div>`;
+  };
+
+  const homeManager = (c) => {
+    const me = meFor(c.persona), team = teamOf(me.id);
+    const ready = team.filter((p) => statusOf(p.id) === 'self_submitted'), inProg = team.filter((p) => statusOf(p.id) === 'manager_in_progress'), done = team.filter((p) => STATUS[statusOf(p.id)].step >= 4);
+    const selfDone = team.filter((p) => STATUS[statusOf(p.id)].step >= 2).length;
+    const allGoals = team.flatMap((p) => S.goals[p.id]); const risk = allGoals.filter((g) => g.status === 'risk' || g.status === 'behind').length;
+    const mgrPhase = S.settings.phases.find((p) => p.id === 'manager');
+    return html`
+      <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('users', { size: 12 })} ${NS.esc(me.team)} · ${team.length} reports</span></div>
+        <h1>${NS.greeting()}, ${me.first} 👋</h1>
+        <p><b>${ready.length}</b> self reviews are ready for you and <b>${inProg.length}</b> ${inProg.length === 1 ? 'is' : 'are'} in progress. The manager-review window opens ${F.date(mgrPhase.start)} — reviewing early gives you time for real conversations, not rushed ratings.</p>
+        <div class="ns-eyebrow" style="color:rgba(255,255,255,.75);margin-top:18px">Manager review window opens in</div>
+        ${raw(countdown(mgrPhase.start + 'T09:00:00'))}
+        <div class="flex gap-2 wrap"><a class="ns-btn primary" href="${NS.link('/team')}">Open review queue ${ic('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/calibration')}">Prepare calibration</a></div>
+      </div>
+      <div class="ns-stats mt-4">
+        ${raw(NS.stat({ label: 'Reviews waiting for you', value: ready.length + inProg.length, icon: 'inbox', sub: `${ready.length} ready · ${inProg.length} in progress` }))}
+        ${raw(NS.stat({ label: 'Team self-review completion', value: Math.round((selfDone / team.length) * 100), unit: '%', icon: 'clipboard-check', sub: `${selfDone} of ${team.length} submitted` }))}
+        ${raw(NS.stat({ label: 'Team goal progress', value: Math.round(U.avg(allGoals, 'progress')), unit: '%', delta: NS.delta(Math.round(U.avg(allGoals, 'progress')) - Math.round(YEAR_FRAC * 100), { suf: ' pts', d: 0 }), sub: `${allGoals.length} goals · vs ${Math.round(YEAR_FRAC * 100)}% pace`, spark: [30, 36, 44, 51, 58, 63, 69, Math.round(U.avg(allGoals, 'progress'))] }))}
+        ${raw(NS.stat({ label: 'Goals at risk or behind', value: risk, icon: 'alert-triangle', sub: `${U.round(U.pctOf(risk, allGoals.length), 0)}% of team goals` }))}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Review queue', sub: 'Sorted by what needs you most', actions: `<a class="ns-btn sm secondary" href="${NS.link('/team')}">Full queue</a>`, bodyCls: 'flush', body: `<div class="ns-list" style="padding:6px 20px">${U.sortBy(team, (p) => -({ self_submitted: 3, manager_in_progress: 4, self_in_progress: 1, not_started: 0, manager_submitted: -1, calibrated: -2 }[statusOf(p.id)])).slice(0, 6).map((p) => { const st = statusOf(p.id); const os = overall(p.id, 'self'); return `<div class="ns-row">${personLink(p, `${D.levelLabel(p.level)} · ${p.city}`)}<div class="grow"></div><div class="hide-sm">${statusBadge(st)}</div><div class="tnum sm muted hide-sm" style="min-width:64px;text-align:right">${os != null ? `Self ${os.toFixed(1)}` : ''}</div>${st === 'self_submitted' || st === 'manager_in_progress' ? `<a class="ns-btn sm primary" href="${NS.link('/review/' + p.id)}">${st === 'self_submitted' ? 'Review' : 'Continue'}</a>` : st === 'manager_submitted' ? `<a class="ns-btn sm secondary" href="${NS.link('/review/' + p.id)}">View</a>` : `<button class="ns-btn sm ghost" data-nudge="${p.id}">Nudge</button>`}</div>`; }).join('')}</div>` }))}
+          ${raw(NS.card({ title: 'Team goal health by category', sub: 'Average progress across all team goals', body: '<div id="teamGoalCats"></div>' }))}
+        </div>
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Cycle timeline', body: `<div class="ns-timeline">${S.settings.phases.map((p) => { const st = new Date(p.end) < TODAY ? 'done' : new Date(p.start) <= TODAY ? 'now' : ''; return `<div class="ns-tl-item ${st}"><span class="pt">${st === 'done' ? ic('check') : st === 'now' ? ic('circle-dot') : ''}</span><div><div class="ttl">${p.label}</div><div class="sub">${F.date(p.start, 'short')} – ${F.date(p.end)}</div></div></div>`; }).join('')}</div>` }))}
+          ${raw(NS.card({ title: 'Before you rate', sub: 'Calibration traps to avoid', body: `<div class="grid gap-2">${TRAPS.slice(0, 3).map(([t, b]) => `<div class="trap">${ic('alert-triangle')}<div><b>${t}</b>${b}</div></div>`).join('')}</div>` }))}
+        </div>
+      </div>`;
+  };
+
+  const homeHRBP = (c) => {
+    const me = meFor(c.persona);
+    const all = D.people.filter((p) => p.level !== 'E2');
+    const selfSub = all.filter((p) => STATUS[statusOf(p.id)].step >= 2).length, mgrSub = all.filter((p) => STATUS[statusOf(p.id)].step >= 4).length, notStarted = all.filter((p) => statusOf(p.id) === 'not_started').length;
+    const mgrs = D.managers.filter((m) => D.reports(m.id).length >= 3);
+    const laggards = mgrs.map((m) => { const t = D.reports(m.id); return { m, pct: Math.round(U.pctOf(t.filter((p) => STATUS[statusOf(p.id)].step >= 2).length, t.length)), n: t.length }; }).filter((x) => x.pct < 35).sort((a, b) => a.pct - b.pct).slice(0, 6);
+    return html`
+      <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('activity', { size: 12 })} ${D.cycle.name} · day 11 of 19 in self review</span></div>
+        <h1>Cycle health, ${me.first}</h1>
+        <p><b>${Math.round(U.pctOf(selfSub, all.length))}%</b> of ${F.int(all.length)} participants have submitted self reviews — ${Math.round(U.pctOf(selfSub, all.length)) - 41} points ahead of FY25 at the same point. <b>${notStarted}</b> people haven’t started; ${laggards.length} managers have teams under 35%.</p>
+        <div class="ns-eyebrow" style="color:rgba(255,255,255,.75);margin-top:18px">Self review closes in</div>
+        ${raw(countdown(D.cycle.selfReviewCloses))}
+        <div class="flex gap-2 wrap"><a class="ns-btn primary" href="${NS.link('/console')}">Open cycle console ${ic('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/insights')}">Insights</a></div>
+      </div>
+      <div class="ns-stats mt-4">
+        ${raw(NS.stat({ label: 'Participants', value: F.int(all.length), icon: 'users', sub: `${D.managers.length} managers · ${D.departments.length} departments` }))}
+        ${raw(NS.stat({ label: 'Self reviews submitted', value: Math.round(U.pctOf(selfSub, all.length)), unit: '%', delta: NS.delta(Math.round(U.pctOf(selfSub, all.length)) - 41, { suf: ' pts', d: 0 }), sub: `${F.int(selfSub)} of ${F.int(all.length)} · vs 41% in FY25`, spark: [4, 14, 27, 38, 49, Math.round(U.pctOf(selfSub, all.length))] }))}
+        ${raw(NS.stat({ label: 'Manager reviews started early', value: F.int(all.filter((p) => STATUS[statusOf(p.id)].step >= 3).length), icon: 'clipboard-check', sub: `${mgrSub} already submitted` }))}
+        ${raw(NS.stat({ label: 'Not started', value: F.int(notStarted), icon: 'alert-triangle', sub: `${Math.round(U.pctOf(notStarted, all.length))}% · auto-nudge scheduled Sep 26` }))}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Self review submissions', sub: 'Cumulative % of participants · vs FY25 at the same point', body: '<div id="cycleTrend"></div>' }))}
+          ${raw(NS.card({ title: 'Completion by department', sub: 'Self reviews submitted', body: '<div id="deptCompletion"></div>' }))}
+        </div>
+        <div class="grid gap-4">
+          ${raw(NS.card({ title: 'Managers to nudge', sub: 'Teams under 35% self-review completion', bodyCls: 'flush', body: `<div style="padding:6px 20px">${laggards.map((x) => `<div class="ns-row">${personLink(x.m, `${x.m.team} · ${x.n} reports`)}<div class="grow"></div><b class="tnum ${x.pct < 20 ? 'bad-text' : 'warn-text'}">${x.pct}%</b><button class="ns-btn xs secondary" data-nudge="${x.m.id}">Nudge</button></div>`).join('')}</div>` }))}
+          ${raw(NS.card({ title: 'Cycle timeline', body: `<div class="ns-timeline">${S.settings.phases.map((p) => { const st = new Date(p.end) < TODAY ? 'done' : new Date(p.start) <= TODAY ? 'now' : ''; return `<div class="ns-tl-item ${st}"><span class="pt">${st === 'done' ? ic('check') : st === 'now' ? ic('circle-dot') : ''}</span><div><div class="ttl">${p.label}</div><div class="sub">${F.date(p.start, 'short')} – ${F.date(p.end)}</div></div></div>`; }).join('')}</div>` }))}
+          <div class="ns-ai"><div><div class="ns-ai-head">${ic('sparkles')} Cycle insights <span class="ns-badge">Generated</span></div><p>Submission pace is strongest in Engineering (Platform and Frontend) and weakest in Sales, where field teams historically finish in the last 72 hours. Three managers with teams under 20% also had late completion in FY25 — a direct nudge from their director works better than another email.</p></div></div>
+        </div>
+      </div>`;
+  };
+
+  window.__PN = { S, save, R, STATUS, SCALE, COMPS, CATS, CAT_COLORS, NINE, TRAPS, goalScore, compScore, overall, completion, selfSections, statusOf, statusBadge, goalStatusBadge, ratingButtons, scaleLegend, goalCard, cycleStepper, countdown, tickCountdown, personLink, scoreCard, labelFor, clsFor, aiGoalText, aiSummary, biasCheck, teamOf, meFor, daysLeft, weights, log, TODAY, YEAR_FRAC, selfComment, nextLevel };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__PN, D = NSData, U = NS.util, F = NS.fmt, raw = NS.raw, ic = NS.ic; const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const { S, save, R, STATUS, SCALE, COMPS, CATS, CAT_COLORS, goalScore, compScore, overall, completion, selfSections, statusOf, statusBadge, goalStatusBadge, ratingButtons, scaleLegend, goalCard, personLink, scoreCard, labelFor, clsFor, aiGoalText, aiSummary, biasCheck, teamOf, meFor, daysLeft, log, TODAY, YEAR_FRAC } = P;
+
+  /* GOALS ------------------------------------------------------------ */
+  R['/goals'] = {
+    title: 'Goals',
+    render: (c) => {
+      if (c.persona.id === 'manager') return teamGoals(c);
+      const me = meFor(c.persona), goals = S.goals[me.id];
+      const wprog = Math.round(U.sum(goals, (g) => g.progress * g.weight) / U.sum(goals, 'weight'));
+      const byCat = Object.keys(CATS).map((cat) => ({ cat, w: U.sum(goals.filter((g) => g.cat === cat), 'weight'), p: Math.round(U.avg(goals.filter((g) => g.cat === cat), 'progress') || 0) })).filter((x) => x.w);
+      return html`${raw(NS.pageHead({ eyebrow: 'Goals & key results', title: 'My FY26 goals', sub: `${goals.length} goals · weights total ${U.sum(goals, 'weight')}% · progress updates feed your self review and your manager’s scorecard.`, actions: `<button class="ns-btn secondary" data-export-goals>${ic('download')}Export</button><button class="ns-btn primary" data-new-goal>${ic('plus')}New goal</button>` }))}
+        <div class="ns-grid main-side">
+          <div class="grid gap-4">${goals.map((g) => goalCard(g, { actions: `<button class="ns-btn sm secondary" data-checkin="${g.id}">${ic('activity')}Check in</button><button class="ns-btn sm ghost" data-edit-goal="${g.id}">${ic('pencil')}Edit</button>${g.status !== 'done' ? `<button class="ns-btn sm ghost" data-done="${g.id}">${ic('check')}Mark done</button>` : ''}` })).join('')}</div>
+          <div class="review-side">
+            <div class="ns-card"><div class="ns-card-body center"><div class="mb-2">${NS.ring({ value: wprog / 100, size: 150, thickness: 12, label: wprog + '%', sub: 'weighted progress' })}</div><div class="sm muted">Year-to-date pace: ${Math.round(YEAR_FRAC * 100)}%</div><div class="mt-3 grid gap-2">${byCat.map((x) => `<div class="ns-meter"><div class="row"><span class="flex items-center gap-2"><i style="width:10px;height:10px;border-radius:3px;background:${CAT_COLORS[x.cat]}"></i>${x.cat}</span><b>${x.w}% weight · ${x.p}%</b></div>${NS.progress(x.p, { color: CAT_COLORS[x.cat] })}</div>`).join('')}</div></div></div>
+            ${raw(NS.card({ title: 'Writing a good goal', body: `<div class="grid gap-2 sm ink2"><div class="flex gap-2"><span class="ns-badge brand sq">Impact</span><span>Ties to a team or company outcome, not an activity.</span></div><div class="flex gap-2"><span class="ns-badge brand sq">Clarity</span><span>Anyone can tell, in one glance, if it was hit.</span></div><div class="flex gap-2"><span class="ns-badge brand sq">Focus</span><span>Three to six goals. If it doesn’t scare you a little, it’s too small.</span></div></div>` }))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const me = meFor(c.persona), goals = S.goals[me.id];
+      const focus = c.query.g; if (focus) { const el = root.querySelector(`[data-checkin="${focus}"]`); if (el) el.closest('.ns-card').scrollIntoView({ block: 'center' }); }
+      root.querySelectorAll('[data-checkin]').forEach((b) => b.onclick = () => { const g = goals.find((x) => x.id === b.dataset.checkin); NS.modal({ title: 'Check in', sub: g.title, body: `<div class="grid gap-4"><label class="ns-field"><span class="ns-label">Progress <span class="opt" id="pv">${g.progress}%</span></span><input type="range" class="ns-range" min="0" max="100" value="${g.progress}" id="pr" style="--p:${g.progress}%"></label><div class="ns-form-grid">${g.krs.map((k, i) => `<label class="ns-field"><span class="ns-label">${NS.esc(k.k)} <span class="opt">target ${NS.esc(k.target)}</span></span><input class="ns-input" data-kr="${i}" value="${NS.esc(k.current)}"></label>`).join('')}</div><label class="ns-field"><span class="ns-label">Update note</span><textarea class="ns-textarea" id="note" placeholder="What moved since last time? What’s blocking?"></textarea></label><label class="ns-field"><span class="ns-label">Confidence</span><div class="ns-seg" id="conf"><button aria-pressed="true">On track</button><button>At risk</button><button>Behind</button></div></label></div>`, actions: [{ label: 'Cancel' }, { label: 'Save check-in', cls: 'primary', onClick: (m) => { const v = +m.el.querySelector('#pr').value; g.progress = v; m.el.querySelectorAll('[data-kr]').forEach((i) => g.krs[+i.dataset.kr].current = i.value); const conf = Array.from(m.el.querySelectorAll('#conf button')).findIndex((x) => x.getAttribute('aria-pressed') === 'true'); g.status = v >= 100 ? 'done' : ['on', 'risk', 'behind'][conf]; g.checkins.unshift({ date: TODAY.toISOString().slice(0, 10), note: m.el.querySelector('#note').value || 'Progress updated.' }); save(); log(`Checked in on “${g.title}” at ${v}%`); NS.toast('Check-in saved', { desc: `${g.title} · ${v}%` }); NS.refresh(); } }], mounted: (body) => { const pr = body.querySelector('#pr'), pv = body.querySelector('#pv'); pr.oninput = () => { pv.textContent = pr.value + '%'; pr.style.setProperty('--p', pr.value + '%'); }; body.querySelectorAll('#conf button').forEach((x) => x.onclick = () => { body.querySelectorAll('#conf button').forEach((y) => y.setAttribute('aria-pressed', y === x)); }); } }); });
+      root.querySelectorAll('[data-done]').forEach((b) => b.onclick = () => { const g = goals.find((x) => x.id === b.dataset.done); g.progress = 100; g.status = 'done'; g.krs.forEach((k) => k.current = k.target); save(); log(`Marked “${g.title}” done`); NS.toast('Goal marked done 🎉', { desc: g.title }); NS.refresh(); });
+      root.querySelectorAll('[data-edit-goal]').forEach((b) => b.onclick = () => goalForm(goals.find((x) => x.id === b.dataset.editGoal), me));
+      const nb = root.querySelector('[data-new-goal]'); if (nb) nb.onclick = () => goalForm(null, me);
+      const ex = root.querySelector('[data-export-goals]'); if (ex) ex.onclick = () => downloadCsv(`${me.first}-goals-FY26.csv`, [['Goal', 'Category', 'Weight', 'Progress', 'Status', 'Due'], ...goals.map((g) => [g.title, g.cat, g.weight, g.progress, g.status, g.due])]);
+    },
+  };
+  const goalForm = (g, me) => {
+    const isNew = !g; const goals = S.goals[me.id];
+    NS.modal({ title: isNew ? 'New goal' : 'Edit goal', sub: isNew ? 'Goals need manager approval before they count toward your scorecard.' : g.title, size: 'lg', body: `<div class="grid gap-4"><label class="ns-field"><span class="ns-label">Goal</span><input class="ns-input" id="gt" value="${g ? NS.esc(g.title) : ''}" placeholder="Outcome, not activity — e.g. Cut p95 latency of the auth API under 120 ms"></label><label class="ns-field"><span class="ns-label">Why it matters</span><textarea class="ns-textarea" id="gd" placeholder="Which team or company outcome does this move?">${g ? NS.esc(g.desc) : ''}</textarea></label><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Category</span><select class="ns-select" id="gc">${Object.keys(CATS).map((cat) => `<option ${g && g.cat === cat ? 'selected' : ''}>${cat}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Weight (%)</span><input class="ns-input" id="gw" type="number" min="5" max="50" value="${g ? g.weight : 10}"></label><label class="ns-field"><span class="ns-label">Due date</span><input class="ns-input" id="gdue" type="date" value="${g ? g.due : '2026-12-18'}"></label></div><div class="ns-field"><span class="ns-label">Key results</span><div class="grid gap-2" id="krs">${(g ? g.krs : [{ k: '', target: '' }]).map((k) => `<div class="grid" style="grid-template-columns:2fr 1fr;gap:8px"><input class="ns-input sm" data-k value="${NS.esc(k.k)}" placeholder="Measure"><input class="ns-input sm" data-t value="${NS.esc(k.target)}" placeholder="Target"></div>`).join('')}</div><button class="ns-btn xs ghost mt-1" id="addkr" style="justify-self:start">${ic('plus')}Add key result</button></div><div class="ns-alert brand">${ic('sparkles')}<div><b>AI check</b><p id="aicheck">Type a goal to get a quick Impact · Clarity · Focus check.</p></div></div></div>`,
+      actions: [{ label: 'Cancel' }, { label: isNew ? 'Submit for approval' : 'Save changes', cls: 'primary', onClick: (m) => { const t = m.el.querySelector('#gt').value.trim(); if (!t) { NS.toast('Give the goal a title', { type: 'warn' }); return false; } const krs = Array.from(m.el.querySelectorAll('#krs > div')).map((r) => ({ k: r.querySelector('[data-k]').value, target: r.querySelector('[data-t]').value, current: '0% there' })).filter((k) => k.k); const w = U.clamp(+m.el.querySelector('#gw').value || 10, 5, 50); if (isNew) { goals.push({ id: `${me.id}-g${Date.now()}`, title: t, desc: m.el.querySelector('#gd').value, cat: m.el.querySelector('#gc').value, weight: w, due: m.el.querySelector('#gdue').value, progress: 0, status: 'on', krs, checkins: [], pendingApproval: true }); log(`Proposed new goal “${t}”`); NS.toast('Goal sent for approval', { desc: `${D.byId(me.managerId).first} will be notified.` }); } else { Object.assign(g, { title: t, desc: m.el.querySelector('#gd').value, cat: m.el.querySelector('#gc').value, weight: w, due: m.el.querySelector('#gdue').value, krs: krs.length ? krs.map((k, i) => ({ ...k, current: g.krs[i] ? g.krs[i].current : k.current })) : g.krs }); NS.toast('Goal updated'); } save(); NS.refresh(); } }],
+      mounted: (body) => { body.querySelector('#addkr').onclick = () => body.querySelector('#krs').insertAdjacentHTML('beforeend', '<div class="grid" style="grid-template-columns:2fr 1fr;gap:8px"><input class="ns-input sm" data-k placeholder="Measure"><input class="ns-input sm" data-t placeholder="Target"></div>'); const gt = body.querySelector('#gt'), out = body.querySelector('#aicheck'); const check = U.debounce(() => { const t = gt.value; if (t.length < 12) { out.textContent = 'Type a goal to get a quick Impact · Clarity · Focus check.'; return; } const hasNum = /\d/.test(t), hasVerb = /^(ship|cut|raise|reduce|launch|deliver|grow|hit|reach|bring|close|hold|move|complete|improve|increase|decrease)/i.test(t.trim()), activity = /\b(attend|learn about|try|explore|work on|help with)\b/i.test(t); out.innerHTML = `${hasVerb ? '✅ Starts with an outcome verb.' : '⚠️ Start with an outcome verb (ship, cut, raise…).'} ${hasNum ? '✅ Has a measurable target.' : '⚠️ Add a number so anyone can tell if it was hit.'} ${activity ? '⚠️ Reads like an activity — what changes because of it?' : '✅ Reads like an outcome.'}`; }, 300); gt.oninput = check; check(); } });
+  };
+  const downloadCsv = (name, rows) => { const csv = rows.map((r) => r.map((v) => `"${String(v ?? '').replace(/"/g, '""')}"`).join(',')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 500); NS.toast('Export ready', { desc: name, type: 'info' }); };
+  P.downloadCsv = downloadCsv;
+
+  const teamGoals = (c) => {
+    const me = meFor(c.persona), team = teamOf(me.id);
+    const rows = team.map((p) => ({ p, goals: S.goals[p.id], w: Math.round(U.sum(S.goals[p.id], (g) => g.progress * g.weight) / U.sum(S.goals[p.id], 'weight')) }));
+    return html`${raw(NS.pageHead({ eyebrow: 'Team goals', title: `${me.team} · goal health`, sub: 'Every goal in the team, weighted progress per person, and the ones that need a conversation this week.', actions: `<button class="ns-btn secondary" data-export-team>${ic('download')}Export</button>` }))}
+      <div class="ns-grid main-side">
+        <div class="grid gap-4">
+          ${rows.map(({ p, goals, w }) => `<div class="ns-card"><div class="ns-card-head">${personLink(p, `${D.levelLabel(p.level)} · ${goals.length} goals`)}<div class="flex items-center gap-3"><span class="sm muted">Weighted</span><b class="xl-text tnum">${w}%</b></div></div><div class="ns-card-body"><div class="grid gap-2">${goals.map((g) => `<div class="flex items-center gap-3"><span class="ns-badge ${CATS[g.cat]} sq" style="min-width:74px;justify-content:center">${g.cat}</span><span class="grow truncate sm">${NS.esc(g.title)}</span>${goalStatusBadge(g)}<div style="width:120px" class="hide-sm">${NS.progress(g.progress, { cls: g.status === 'behind' ? 'bad' : g.status === 'risk' ? 'warn' : '' })}</div><b class="tnum sm" style="min-width:36px;text-align:right">${g.progress}%</b></div>`).join('')}</div></div></div>`).join('')}
+        </div>
+        <div class="review-side">
+          ${raw(NS.card({ title: 'Needs a conversation', sub: 'Goals behind or at risk', body: `<div class="grid gap-3">${rows.flatMap(({ p, goals }) => goals.filter((g) => g.status === 'behind' || g.status === 'risk').map((g) => ({ p, g }))).slice(0, 8).map(({ p, g }) => `<div class="flex gap-3 items-start">${NS.avatar(p, { size: 'xs' })}<div class="min-w-0"><div class="sm semibold truncate">${NS.esc(g.title)}</div><div class="xs muted">${p.first} · ${g.progress}% · ${g.status === 'behind' ? 'behind' : 'at risk'}</div></div></div>`).join('') || '<div class="sm muted">All goals are on track. 🎉</div>'}</div>` }))}
+          ${raw(NS.card({ title: 'Pending approvals', body: rows.flatMap(({ p, goals }) => goals.filter((g) => g.pendingApproval).map((g) => ({ p, g }))).map(({ p, g }) => `<div class="flex items-center gap-2 mb-2"><span class="grow sm">${NS.esc(g.title)} <span class="muted">· ${p.first}</span></span><button class="ns-btn xs primary" data-approve="${g.id}" data-p="${p.id}">Approve</button></div>`).join('') || '<div class="sm muted">No goals awaiting approval.</div>' }))}
+        </div>
+      </div>`;
+  };
+  R['/goals'].mountedManager = (c, root) => {};
+  const origGoalsMounted = R['/goals'].mounted;
+  R['/goals'].mounted = (c, root) => { if (c.persona.id !== 'manager') return origGoalsMounted(c, root); root.querySelectorAll('[data-approve]').forEach((b) => b.onclick = () => { const g = S.goals[b.dataset.p].find((x) => x.id === b.dataset.approve); g.pendingApproval = false; save(); NS.toast('Goal approved', { desc: g.title }); NS.refresh(); }); const ex = root.querySelector('[data-export-team]'); if (ex) ex.onclick = () => downloadCsv('team-goals-FY26.csv', [['Person', 'Goal', 'Category', 'Weight', 'Progress', 'Status'], ...teamOf(meFor(c.persona).id).flatMap((p) => S.goals[p.id].map((g) => [p.name, g.title, g.cat, g.weight, g.progress, g.status]))]); };
+
+  /* SELF REVIEW (employee) ------------------------------------------- */
+  R['/review'] = {
+    title: 'Self review', personas: ['employee', 'manager', 'hrbp'],
+    render: (c) => {
+      if (c.persona.id !== 'employee') return managerReviewIndex(c);
+      const me = meFor(c.persona), pid = me.id, rv = S.reviews[pid], goals = S.goals[pid], secs = selfSections(pid), comp = completion(pid);
+      const locked = STATUS[rv.status].step >= 2;
+      const cur = c.query.s || (secs.find((s) => !s.done) || secs[0]).id;
+      const w = P.weights();
+      const sectionBody = () => {
+        const g = goals.find((x) => x.id === cur);
+        if (g) { const r = rv.self.goals[g.id] || {}; return `${goalCard(g)}<div class="ns-card mt-4"><div class="ns-card-body grid gap-4"><div><div class="ns-label mb-2">How did you do against this goal?</div><div class="rate-row">${ratingButtons('goal:' + g.id, r.rating)}<span class="rate-desc" data-rate-desc>${r.rating ? SCALE[r.rating - 1].label + ' — ' + SCALE[r.rating - 1].desc : 'Pick a rating that you could defend with evidence.'}</span></div></div><label class="ns-field"><span class="ns-label">Evidence & impact <span class="opt">what changed, for whom, by how much</span></span><textarea class="ns-textarea" data-comment="goal:${g.id}" ${locked ? 'disabled' : ''} placeholder="Lead with the outcome. Numbers beat adjectives.">${NS.esc(r.comment || '')}</textarea></label><div class="flex items-center gap-2 wrap"><button class="ns-btn sm soft" data-ai="goal:${g.id}" ${locked ? 'disabled' : ''}>${ic('sparkles')}AI draft from my check-ins</button><span class="xs faint">Drafts use your goal data and check-in notes — always edit before saving.</span></div></div></div>`; }
+        if (cur === 'comps') return `<div class="grid gap-4">${COMPS.map((cp) => { const r = rv.self.comps[cp.id] || {}; return `<div class="ns-card"><div class="ns-card-body grid gap-3"><div class="flex gap-3 items-start"><span class="ns-icon-box">${ic(cp.icon)}</span><div><b class="md">${cp.name}</b><p class="sm muted">${cp.desc}</p></div></div><div class="rate-row">${ratingButtons('comp:' + cp.id, r.rating, { na: S.settings.allowNA })}<span class="rate-desc" data-rate-desc>${r.rating ? (r.rating === 0 ? 'Not applicable this cycle' : SCALE[r.rating - 1].label) : ''}</span></div><textarea class="ns-textarea" style="min-height:64px" data-comment="comp:${cp.id}" ${locked ? 'disabled' : ''} placeholder="One concrete example (optional but persuasive)">${NS.esc(r.comment || '')}</textarea></div></div>`; }).join('')}</div>`;
+        if (cur === 'reflect') return `<div class="ns-card"><div class="ns-card-body grid gap-4"><label class="ns-field"><span class="ns-label">Top three accomplishments this year</span><textarea class="ns-textarea" style="min-height:130px" data-text="highlights" ${locked ? 'disabled' : ''}>${NS.esc(rv.self.highlights)}</textarea></label><label class="ns-field"><span class="ns-label">What would you do differently?</span><textarea class="ns-textarea" data-text="growth" ${locked ? 'disabled' : ''}>${NS.esc(rv.self.growth)}</textarea></label></div></div>`;
+        if (cur === 'career') return `<div class="ns-card"><div class="ns-card-body grid gap-4"><label class="ns-field"><span class="ns-label">Career aspirations <span class="opt">next 12–18 months</span></span><textarea class="ns-textarea" data-text="aspirations" ${locked ? 'disabled' : ''} placeholder="Where do you want to grow? Roles, scope, skills, mobility…">${NS.esc(rv.self.aspirations)}</textarea></label><label class="ns-field"><span class="ns-label">What do you need from your manager?</span><textarea class="ns-textarea" data-text="support" ${locked ? 'disabled' : ''}>${NS.esc(rv.self.support)}</textarea></label><div class="ns-alert info">${ic('info')}<div><b>Next level for you: ${P.nextLevel(me)}</b><p>Open the Competency Portal to see what the level expects — your manager sees the same descriptors.</p></div></div></div></div>`;
+        return '';
+      };
+      const idx = secs.findIndex((s) => s.id === cur);
+      return html`${raw(NS.pageHead({ eyebrow: D.cycle.name, title: locked ? 'Self review — submitted' : 'Self review', sub: locked ? `Submitted ${F.date(rv.submittedAt)} · your manager can now see it. You can still read everything here.` : `Rate each goal and competency, add evidence, then submit. Autosaves as you go · closes ${F.date(D.cycle.selfReviewCloses, 'long')}.`, actions: locked ? statusBadge(rv.status) : `<span class="ns-status ok pulse" id="savestate"><i></i>All changes saved</span>` }))}
+        ${locked ? `<div class="ns-alert ok mb-4">${ic('check-circle')}<div><b>Thanks, ${me.first} — your self review is locked.</b><p>${D.byId(me.managerId).first} will complete the manager review between ${F.date(S.settings.phases[3].start, 'short')} and ${F.date(S.settings.phases[3].end)}. You’ll be notified when your rating conversation is scheduled.</p></div></div>` : ''}
+        <div class="review-layout">
+          <div>
+            <div class="ns-card mb-4"><div class="ns-card-body tight flex items-center gap-4 wrap"><div class="grow"><div class="flex justify-between sm"><b>${comp.done} of ${comp.total} sections complete</b><span class="muted">${comp.pct}%</span></div>${NS.progress(comp.pct, { cls: 'mt-2' })}</div><div class="xs muted hide-sm">Weights: goals ${w.goals}% · competencies ${w.comps}%</div></div></div>
+            <div id="section">${sectionBody()}</div>
+            <div class="savebar"><button class="ns-btn secondary" data-nav="${idx > 0 ? secs[idx - 1].id : ''}" ${idx === 0 ? 'disabled' : ''}>${ic('arrow-left')}Previous</button><div class="sm muted hide-sm">${secs[idx].label}</div>${idx < secs.length - 1 ? `<button class="ns-btn primary" data-nav="${secs[idx + 1].id}">Next ${ic('arrow-right')}</button>` : `<button class="ns-btn primary" data-submit ${locked ? 'disabled' : ''}>${ic('send')}Submit self review</button>`}</div>
+          </div>
+          <div class="review-side">
+            <div class="ns-card"><div class="ns-card-body"><div class="wizard-nav">${secs.map((s, i) => `<button data-nav="${s.id}" aria-current="${s.id === cur}"><span class="st ${s.done ? 'done' : ''}">${s.done ? ic('check') : i + 1}</span><span class="truncate">${NS.esc(s.label)}</span></button>`).join('')}</div></div></div>
+            ${raw(scoreCard(pid))}
+            ${raw(NS.card({ title: 'Rating guide', body: scaleLegend() }))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      if (c.persona.id !== 'employee') return;
+      const me = meFor(c.persona), pid = me.id, rv = S.reviews[pid];
+      const saved = root.querySelector('#savestate');
+      const dirty = () => { if (!saved) return; saved.className = 'ns-status warn'; saved.innerHTML = '<i></i>Saving…'; clearTimeout(saved.__t); saved.__t = setTimeout(() => { saved.className = 'ns-status ok pulse'; saved.innerHTML = '<i></i>All changes saved'; }, 900); save(); };
+      root.querySelectorAll('[data-nav]').forEach((b) => b.onclick = () => { if (b.dataset.nav) NS.go('/review', { s: b.dataset.nav }); });
+      root.querySelectorAll('[data-rate] button').forEach((b) => b.onclick = () => { const [kind, id] = b.closest('[data-rate]').dataset.rate.split(':'); const v = +b.dataset.v; const bag = kind === 'goal' ? rv.self.goals : rv.self.comps; bag[id] = { ...(bag[id] || {}), rating: v }; if (rv.status === 'not_started') rv.status = 'self_in_progress'; dirty(); b.closest('[data-rate]').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b)); const d = b.closest('.rate-row').querySelector('[data-rate-desc]'); if (d) d.textContent = v === 0 ? 'Not applicable this cycle' : SCALE[v - 1].label + ' — ' + SCALE[v - 1].desc; const sc = root.querySelector('.review-side'); if (sc) { const cards = sc.querySelectorAll('.ns-card'); cards[1].outerHTML = scoreCard(pid); } const nav = root.querySelector('.wizard-nav'); if (nav) { const secs = selfSections(pid); nav.querySelectorAll('button').forEach((x, i) => { const st = x.querySelector('.st'); st.className = 'st ' + (secs[i].done ? 'done' : ''); st.innerHTML = secs[i].done ? ic('check') : i + 1; }); } });
+      root.querySelectorAll('[data-comment]').forEach((t) => t.oninput = () => { const [kind, id] = t.dataset.comment.split(':'); const bag = kind === 'goal' ? rv.self.goals : rv.self.comps; bag[id] = { ...(bag[id] || {}), comment: t.value }; dirty(); });
+      root.querySelectorAll('[data-text]').forEach((t) => t.oninput = () => { rv.self[t.dataset.text] = t.value; dirty(); });
+      root.querySelectorAll('[data-ai]').forEach((b) => b.onclick = async () => { const [, id] = b.dataset.ai.split(':'); const g = S.goals[pid].find((x) => x.id === id); const r = rv.self.goals[id]; if (!r || !r.rating) { NS.toast('Pick a rating first', { type: 'warn', desc: 'The draft is anchored to the rating you choose.' }); return; } const ta = root.querySelector(`[data-comment="goal:${id}"]`); b.disabled = true; b.innerHTML = ic('sparkles') + 'Drafting…'; const text = aiGoalText(me, g, r.rating, 'self'); ta.value = ''; await NS.aiTyping(ta, text, { delay: 500 }); ta.value = text; rv.self.goals[id].comment = text; dirty(); b.disabled = false; b.innerHTML = ic('sparkles') + 'Regenerate'; NS.toast('Draft inserted — edit it to make it yours', { type: 'info' }); });
+      const sub = root.querySelector('[data-submit]'); if (sub) sub.onclick = () => { const secs = selfSections(pid); const missing = secs.filter((s) => !s.done); if (missing.length) { NS.modal({ title: `${missing.length} section${missing.length > 1 ? 's' : ''} still open`, sub: 'You can submit anyway, but unrated goals count as “not rated” in your scorecard.', size: 'sm', body: `<ul class="sm ink2" style="margin:0;padding-left:18px">${missing.map((m) => `<li>${NS.esc(m.label)}</li>`).join('')}</ul>`, actions: [{ label: 'Go back' }, { label: 'Submit anyway', cls: 'primary', onClick: () => doSubmit() }] }); return; } NS.modal({ title: 'Submit your self review?', sub: 'It locks after submission and becomes visible to your manager.', size: 'sm', body: `<div class="grid gap-2 sm ink2"><div class="flex justify-between"><span>Goals (weighted)</span><b>${(goalScore(pid, 'self') || 0).toFixed(1)}</b></div><div class="flex justify-between"><span>Competencies</span><b>${(compScore(pid, 'self') || 0).toFixed(1)}</b></div><div class="flex justify-between"><span>Overall self score</span><b>${(overall(pid, 'self') || 0).toFixed(1)} · ${labelFor(overall(pid, 'self'))}</b></div></div>`, actions: [{ label: 'Keep editing' }, { label: 'Submit', cls: 'primary', onClick: () => doSubmit() }] }); };
+      const doSubmit = () => { rv.status = 'self_submitted'; rv.submittedAt = TODAY.toISOString().slice(0, 10); save(); log('Submitted self review'); NS.toast('Self review submitted 🎉', { desc: `${D.byId(me.managerId).first} has been notified.` }); NS.go('/review'); };
+    },
+  };
+
+  /* MANAGER REVIEW ----------------------------------------------------- */
+  const managerReviewIndex = (c) => {
+    const me = meFor(c.persona); if (c.persona.id === 'hrbp') { return html`${raw(NS.pageHead({ title: 'Reviews', sub: 'As an HRBP you review cycle health in the console; managers review their teams here.' }))}${raw(NS.empty({ icon: 'clipboard-list', title: 'Open the cycle console', body: 'Track every review across the organisation, nudge managers and export status.', action: `<a class="ns-btn primary sm" href="${NS.link('/console')}">Cycle console</a>` }))}`; }
+    const team = teamOf(me.id).filter((p) => STATUS[statusOf(p.id)].step >= 2);
+    return html`${raw(NS.pageHead({ eyebrow: 'Manager review', title: 'Choose a review', sub: 'Self reviews that are ready for you.' }))}<div class="ns-grid c3">${team.map((p) => `<a class="ns-card hover" href="${NS.link('/review/' + p.id)}" style="text-decoration:none;color:inherit"><div class="ns-card-body"><div class="flex justify-between items-start gap-2">${NS.person(p)}${statusBadge(statusOf(p.id))}</div><div class="mt-3 flex justify-between sm"><span class="muted">Self score</span><b>${(overall(p.id, 'self') || 0).toFixed(1)}</b></div></div></a>`).join('') || NS.empty({ icon: 'inbox', title: 'Nothing ready yet', body: 'You’ll see reviews here as your team submits.' })}</div>`;
+  };
+  R['/review/:id'] = {
+    title: (c) => `Review · ${D.byId(c.params.id) ? D.byId(c.params.id).name : ''}`, nav: 'team', personas: ['manager', 'hrbp'],
+    crumbs: (c) => [{ label: 'Team reviews', href: NS.link('/team') }, { label: D.byId(c.params.id).name }],
+    render: (c) => {
+      const p = D.byId(c.params.id); if (!p) return NS.empty({ title: 'Person not found' });
+      const pid = p.id, rv = S.reviews[pid], goals = S.goals[pid], done = STATUS[rv.status].step >= 4, ready = STATUS[rv.status].step >= 2;
+      if (!ready) return html`${raw(NS.pageHead({ eyebrow: 'Manager review', title: p.name, sub: `${p.title} · ${p.team}` }))}${raw(NS.empty({ icon: 'hourglass', title: `${p.first} hasn’t submitted a self review yet`, body: 'You can start your review once the self review is in — or nudge them.', action: `<button class="ns-btn primary sm" data-nudge="${pid}">Send a nudge</button>` }))}`;
+      const flags = biasCheck(Object.values(rv.manager.goals).map((x) => x.comment || '').join(' ') + ' ' + (rv.manager.summary || ''));
+      const compare = c.query.view === 'compare';
+      return html`${raw(NS.pageHead({ eyebrow: 'Manager review', title: `<span class="flex items-center gap-3">${NS.avatar(p, { size: 'lg' })}<span>${NS.esc(p.name)}<div class="base medium muted" style="letter-spacing:0">${p.title} · ${D.levelLabel(p.level)} · ${p.city} · ${F.tenure(p.tenure)} tenure</div></span></span>`, actions: `${statusBadge(rv.status)}<a class="ns-btn secondary" href="${NS.link('/people/' + pid)}">${ic('id-card')}Profile</a><div class="ns-seg"><a class="ns-btn" style="height:30px;padding:0 12px;font-size:13px;border-radius:8px;${!compare ? 'background:var(--surface);box-shadow:var(--shadow-sm)' : 'color:var(--ink-3)'}" href="${NS.link('/review/' + pid)}">Review</a><a class="ns-btn" style="height:30px;padding:0 12px;font-size:13px;border-radius:8px;${compare ? 'background:var(--surface);box-shadow:var(--shadow-sm)' : 'color:var(--ink-3)'}" href="${NS.link('/review/' + pid, { view: 'compare' })}">Compare</a></div>` }))}
+        ${done ? `<div class="ns-alert ok mb-4">${ic('check-circle')}<div><b>Submitted ${F.date(rv.manager.submittedAt)} · overall ${(overall(pid, 'manager') || 0).toFixed(1)} — ${labelFor(overall(pid, 'manager'))}</b><p>Ratings are provisional until calibration closes on ${F.date(S.settings.phases[4].end)}.</p></div></div>` : ''}
+        ${compare ? compareView(p) : html`<div class="review-layout"><div class="grid gap-4">
+          <div class="ns-section-title" style="margin-top:0"><h2>Goals <span class="muted medium">· ${P.weights().goals}% of overall</span></h2><span class="sm muted">Self ratings are shown for context — rate on evidence, not on the self score.</span></div>
+          ${goals.map((g, i) => { const s = rv.self.goals[g.id] || {}, m = rv.manager.goals[g.id] || {}; const gap = s.rating && m.rating ? m.rating - s.rating : 0; return `<div class="ns-card"><div class="ns-card-body grid gap-3"><div class="goal-top"><div><div class="goal-meta"><span class="ns-badge ${CATS[g.cat]} sq">${g.cat}</span><span>Weight ${g.weight}%</span><span>·</span><span>${g.progress}% complete</span>${goalStatusBadge(g)}</div><div class="goal-title mt-2">${NS.esc(g.title)}</div></div><div class="right flex-none"><div class="xs muted">Self rating</div><div class="xl-text bold">${s.rating || '—'}<span class="sm muted">/5</span></div></div></div><div class="self-quote">${s.comment ? NS.esc(s.comment) : '<span class="faint">No self-comment provided.</span>'}</div><div class="kr" style="border-top:0;padding:0">${g.krs.map((k) => `<span class="xs muted">${ic('target', { size: 11 })} ${NS.esc(k.k)}: <b class="ink">${NS.esc(k.current)}</b> ${k.current === k.target ? '· met' : '→ ' + NS.esc(k.target)}</span>`).join('')}</div><div><div class="ns-label mb-2 flex items-center gap-2">Your assessment ${Math.abs(gap) >= 2 ? `<span class="gap-flag">${gap > 0 ? '+' : ''}${gap} vs self — add evidence</span>` : ''}</div><div class="rate-row">${done ? `<span class="ns-badge lg ${clsFor(m.rating)}">${m.rating} · ${SCALE[m.rating - 1].label}</span>` : ratingButtons('goal:' + g.id, m.rating)}<span class="rate-desc" data-rate-desc>${m.rating ? SCALE[m.rating - 1].desc : ''}</span></div></div>${done ? (m.comment ? `<p class="sm ink2">${NS.esc(m.comment)}</p>` : '') : `<textarea class="ns-textarea" data-comment="goal:${g.id}" placeholder="Specific, observable, tied to the key results. Avoid adjectives without evidence.">${NS.esc(m.comment || '')}</textarea><div class="flex gap-2 items-center wrap"><button class="ns-btn sm soft" data-ai="goal:${g.id}">${ic('sparkles')}AI draft from evidence</button><span class="xs faint">Uses the goal’s key results, check-ins and your rating.</span></div>`}</div></div>`; }).join('')}
+          <div class="ns-section-title"><h2>Competencies <span class="muted medium">· ${P.weights().comps}% of overall</span></h2><span class="sm muted">Level: ${D.levelLabel(p.level)}</span></div>
+          <div class="ns-card"><div class="ns-card-body grid gap-4">${COMPS.map((cp) => { const s = rv.self.comps[cp.id] || {}, m = rv.manager.comps[cp.id] || {}; return `<div class="grid gap-2" style="padding-bottom:14px;border-bottom:1px solid var(--line-2)"><div class="flex justify-between gap-3 items-start"><div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic(cp.icon)}</span><div><b class="md">${cp.name}</b><div class="xs muted">${cp.desc}</div></div></div><div class="right flex-none xs muted">Self <b class="ink base">${s.rating === 0 ? 'N/A' : s.rating || '—'}</b></div></div>${s.comment ? `<div class="self-quote">${NS.esc(s.comment)}</div>` : ''}<div class="rate-row">${done ? `<span class="ns-badge lg ${clsFor(m.rating)}">${m.rating === 0 ? 'N/A' : m.rating ? m.rating + ' · ' + SCALE[m.rating - 1].label : '—'}</span>` : ratingButtons('comp:' + cp.id, m.rating, { na: S.settings.allowNA })}</div></div>`; }).join('')}</div></div>
+          <div class="ns-section-title"><h2>Overall</h2></div>
+          <div class="ns-card"><div class="ns-card-body grid gap-4">
+            <div class="ns-field"><span class="ns-label">Potential <span class="opt">for calibration — readiness for broader scope</span></span><div class="ns-seg" id="potential">${['Low', 'Medium', 'High'].map((l, i) => `<button data-pot="${i + 1}" aria-pressed="${rv.manager.potential === i + 1}" ${done ? 'disabled' : ''}>${l}</button>`).join('')}</div></div>
+            <label class="ns-field"><span class="ns-label">Summary for the conversation</span>${done ? `<p class="md ink2">${NS.esc(rv.manager.summary)}</p>` : `<textarea class="ns-textarea" style="min-height:120px" data-summary placeholder="Three sentences: the headline, the evidence, the growth edge.">${NS.esc(rv.manager.summary || '')}</textarea>`}</label>
+            ${done ? '' : `<div class="flex gap-2 wrap items-center"><button class="ns-btn sm soft" data-ai-summary>${ic('sparkles')}Draft summary from ratings</button><span class="xs faint">Synthesises goals, competencies and peer feedback.</span></div>`}
+            <div id="biasbox">${flags.length ? `<div class="ns-alert warn">${ic('alert-triangle')}<div><b>Language check · ${flags.length} suggestion${flags.length > 1 ? 's' : ''}</b>${flags.map((f) => `<p>“${NS.esc(f.word)}” — ${f.msg}</p>`).join('')}</div></div>` : `<div class="ns-alert ok">${ic('check-circle')}<div><b>Language check passed</b><p>No vague, absolute or coded terms found in your comments.</p></div></div>`}</div>
+            ${done ? '' : `<div class="flex gap-2 justify-end wrap"><button class="ns-btn secondary" data-save-draft>${ic('save')}Save draft</button><button class="ns-btn primary" data-submit-mgr>${ic('send')}Submit manager review</button></div>`}
+          </div></div>
+        </div>
+        <div class="review-side">${scoreCard(pid, { who: 'manager' })}${NS.card({ title: 'Rating guide', body: scaleLegend() })}${NS.card({ title: 'Your ratings so far', sub: 'Across the team this cycle', body: distMini(meFor(c.persona)) })}</div></div>`}`;
+    },
+    mounted: (c, root) => {
+      const p = D.byId(c.params.id); if (!p) return; const pid = p.id, rv = S.reviews[pid];
+      root.querySelectorAll('[data-rate] button').forEach((b) => b.onclick = () => { const [kind, id] = b.closest('[data-rate]').dataset.rate.split(':'); const v = +b.dataset.v; const bag = kind === 'goal' ? rv.manager.goals : rv.manager.comps; bag[id] = { ...(bag[id] || {}), rating: v }; if (rv.status === 'self_submitted') rv.status = 'manager_in_progress'; save(); b.closest('[data-rate]').querySelectorAll('button').forEach((x) => x.setAttribute('aria-pressed', x === b)); const d = b.closest('.rate-row').querySelector('[data-rate-desc]'); if (d) d.textContent = v === 0 ? 'Not applicable' : SCALE[v - 1].desc; const side = root.querySelector('.review-side'); if (side) side.firstElementChild.outerHTML = scoreCard(pid, { who: 'manager' }); });
+      root.querySelectorAll('[data-comment]').forEach((t) => t.oninput = U.debounce(() => { const [, id] = t.dataset.comment.split(':'); rv.manager.goals[id] = { ...(rv.manager.goals[id] || {}), comment: t.value }; save(); refreshBias(root, rv); }, 200));
+      const sum = root.querySelector('[data-summary]'); if (sum) sum.oninput = U.debounce(() => { rv.manager.summary = sum.value; save(); refreshBias(root, rv); }, 200);
+      root.querySelectorAll('#potential button').forEach((b) => b.onclick = () => { rv.manager.potential = +b.dataset.pot; save(); root.querySelectorAll('#potential button').forEach((x) => x.setAttribute('aria-pressed', x === b)); });
+      root.querySelectorAll('[data-ai]').forEach((b) => b.onclick = async () => { const [, id] = b.dataset.ai.split(':'); const g = S.goals[pid].find((x) => x.id === id); const m = rv.manager.goals[id]; if (!m || !m.rating) { NS.toast('Rate the goal first', { type: 'warn', desc: 'The draft is anchored to your rating.' }); return; } const ta = root.querySelector(`[data-comment="goal:${id}"]`); b.disabled = true; const text = aiGoalText(p, g, m.rating, 'manager'); await NS.aiTyping(ta, text, { delay: 500 }); ta.value = text; rv.manager.goals[id].comment = text; save(); b.disabled = false; b.innerHTML = ic('sparkles') + 'Regenerate'; refreshBias(root, rv); });
+      const ais = root.querySelector('[data-ai-summary]'); if (ais) ais.onclick = async () => { if (!Object.keys(rv.manager.goals).length) { NS.toast('Rate at least one goal first', { type: 'warn' }); return; } const ta = root.querySelector('[data-summary]'); ais.disabled = true; const text = aiSummary(p, pid); await NS.aiTyping(ta, text, { delay: 600 }); ta.value = text; rv.manager.summary = text; save(); ais.disabled = false; refreshBias(root, rv); };
+      const sd = root.querySelector('[data-save-draft]'); if (sd) sd.onclick = () => { if (rv.status === 'self_submitted') rv.status = 'manager_in_progress'; save(); NS.toast('Draft saved', { type: 'info' }); NS.refresh(); };
+      const sm = root.querySelector('[data-submit-mgr]'); if (sm) sm.onclick = () => { const goals = S.goals[pid]; const missing = goals.filter((g) => !(rv.manager.goals[g.id] && rv.manager.goals[g.id].rating)).length + COMPS.filter((cp) => !(rv.manager.comps[cp.id] && rv.manager.comps[cp.id].rating != null)).length; if (missing) { NS.toast(`${missing} item${missing > 1 ? 's' : ''} still unrated`, { type: 'warn', desc: 'Every goal and competency needs a rating before you submit.' }); return; } if (!rv.manager.potential) { NS.toast('Set a potential rating', { type: 'warn' }); return; } const om = overall(pid, 'manager'); NS.modal({ title: `Submit review for ${p.first}?`, sub: 'Ratings stay provisional until calibration closes.', size: 'sm', body: `<div class="grid gap-2 sm ink2"><div class="flex justify-between"><span>Goals (weighted)</span><b>${goalScore(pid, 'manager').toFixed(1)}</b></div><div class="flex justify-between"><span>Competencies</span><b>${compScore(pid, 'manager').toFixed(1)}</b></div><div class="flex justify-between"><span>Overall</span><b>${om.toFixed(1)} · ${labelFor(om)}</b></div><div class="flex justify-between"><span>Potential</span><b>${['Low', 'Medium', 'High'][rv.manager.potential - 1]}</b></div></div>`, actions: [{ label: 'Keep editing' }, { label: 'Submit', cls: 'primary', onClick: () => { rv.status = 'manager_submitted'; rv.manager.submittedAt = TODAY.toISOString().slice(0, 10); save(); log(`Submitted manager review for ${p.name}`); NS.toast('Manager review submitted', { desc: `${p.first}’s rating is now in the calibration set.` }); NS.go('/team'); } }] }); };
+    },
+  };
+  const refreshBias = (root, rv) => { const box = root.querySelector('#biasbox'); if (!box) return; const flags = biasCheck(Object.values(rv.manager.goals).map((x) => x.comment || '').join(' ') + ' ' + (rv.manager.summary || '')); box.innerHTML = flags.length ? `<div class="ns-alert warn">${ic('alert-triangle')}<div><b>Language check · ${flags.length} suggestion${flags.length > 1 ? 's' : ''}</b>${flags.map((f) => `<p>“${NS.esc(f.word)}” — ${f.msg}</p>`).join('')}</div></div>` : `<div class="ns-alert ok">${ic('check-circle')}<div><b>Language check passed</b><p>No vague, absolute or coded terms found in your comments.</p></div></div>`; };
+  const distMini = (mgr) => { const team = teamOf(mgr.id); const counts = [0, 0, 0, 0, 0]; team.forEach((p) => { const o = overall(p.id, 'manager'); if (o != null) counts[U.clamp(Math.round(o), 1, 5) - 1]++; }); const max = Math.max(1, ...counts); return `<div class="dist-bars" style="height:96px">${counts.map((n, i) => `<div class="b"><b>${n}</b><i style="height:${(n / max) * 60}px"></i><span>${SCALE[i].short}</span></div>`).join('')}</div><div class="xs muted mt-2">Guideline: roughly 5 · 15 · 55 · 20 · 5 %. Skewed distributions get discussed in calibration — that’s fine if the evidence is there.</div>`; };
+  const compareView = (p) => { const pid = p.id, rv = S.reviews[pid], goals = S.goals[pid]; const rows = [...goals.map((g) => ({ label: g.title, w: g.weight + '%', s: (rv.self.goals[g.id] || {}).rating, m: (rv.manager.goals[g.id] || {}).rating })), ...COMPS.map((cp) => ({ label: cp.name, w: 'comp', s: (rv.self.comps[cp.id] || {}).rating, m: (rv.manager.comps[cp.id] || {}).rating }))]; return html`<div class="ns-grid main-side"><div class="ns-card"><div class="ns-card-body flush"><table class="ns-table"><thead><tr><th>Item</th><th>Weight</th><th class="num">Self</th><th class="num">Manager</th><th class="num">Gap</th></tr></thead><tbody>${rows.map((r) => { const gap = r.s != null && r.m != null ? r.m - r.s : null; return `<tr><td><b>${NS.esc(r.label)}</b></td><td class="muted">${r.w}</td><td class="num">${r.s == null ? '—' : r.s === 0 ? 'N/A' : r.s}</td><td class="num">${r.m == null ? '—' : r.m === 0 ? 'N/A' : r.m}</td><td class="num">${gap == null ? '—' : `<span class="ns-badge ${Math.abs(gap) >= 2 ? 'warn' : gap === 0 ? 'neutral' : 'info'}">${gap > 0 ? '+' : ''}${gap}</span>`}</td></tr>`; }).join('')}</tbody></table></div></div><div class="grid gap-4">${scoreCard(pid, { who: 'manager' })}<div id="cmpRadar" class="ns-card"><div class="ns-card-head"><div><h3>Competency radar</h3><p>Self vs manager</p></div></div><div class="ns-card-body"><div id="radar"></div></div></div></div></div>`; };
+  const origMgrMounted = R['/review/:id'].mounted;
+  R['/review/:id'].mounted = (c, root) => { origMgrMounted(c, root); const el = root.querySelector('#radar'); if (el) { const rv = S.reviews[c.params.id]; NS.chart.radar(el, { axes: COMPS.map((x) => x.name.split(' ')[0]), series: [{ name: 'Self', values: COMPS.map((x) => (rv.self.comps[x.id] || {}).rating || 0) }, { name: 'Manager', values: COMPS.map((x) => (rv.manager.comps[x.id] || {}).rating || 0) }], max: 5, size: 300 }); } };
+
+  const nudge = (ids) => { const names = ids.map((id) => D.byId(id).first); ids.forEach((id) => { S.nudges[id] = (S.nudges[id] || 0) + 1; }); save(); log(`Nudged ${names.join(', ')}`); NS.toast(`Nudge sent to ${names.length === 1 ? names[0] : names.length + ' people'}`, { desc: 'A friendly reminder with the deadline and a direct link.', type: 'info' }); };
+  P.nudge = nudge; P.managerReviewIndex = managerReviewIndex;
+  document.addEventListener('click', (e) => { const b = e.target.closest('[data-nudge]'); if (b) nudge([b.dataset.nudge]); });
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const P = window.__PN, D = NSData, U = NS.util, F = NS.fmt, raw = NS.raw, ic = NS.ic; const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const { S, save, R, STATUS, SCALE, COMPS, CATS, CAT_COLORS, NINE, TRAPS, goalScore, compScore, overall, completion, statusOf, statusBadge, personLink, labelFor, clsFor, teamOf, meFor, daysLeft, log, TODAY, nudge, downloadCsv } = P;
+
+  /* TEAM QUEUE --------------------------------------------------------- */
+  R['/team'] = {
+    title: 'Team reviews', personas: ['manager'],
+    render: (c) => {
+      const me = meFor(c.persona), team = teamOf(me.id);
+      const counts = U.countBy(team, (p) => statusOf(p.id));
+      const f = c.query.status || 'all';
+      return html`${raw(NS.pageHead({ eyebrow: 'Manager review', title: 'Team reviews', sub: `${team.length} reports · self review closes ${F.date(D.cycle.selfReviewCloses)} · your review window ${F.date(S.settings.phases[3].start, 'short')} – ${F.date(S.settings.phases[3].end)}.`, actions: `<button class="ns-btn secondary" data-nudge-all>${ic('megaphone')}Nudge everyone not started</button><a class="ns-btn primary" href="${NS.link('/calibration')}">${ic('grid')}Calibration</a>` }))}
+        <div class="ns-stats mb-4">${raw(NS.stat({ label: 'Ready for you', value: counts.self_submitted || 0, icon: 'inbox', sub: 'self reviews submitted' }))}${raw(NS.stat({ label: 'In progress', value: counts.manager_in_progress || 0, icon: 'pencil', sub: 'your drafts' }))}${raw(NS.stat({ label: 'Submitted', value: (counts.manager_submitted || 0) + (counts.calibrated || 0), icon: 'check-circle', sub: 'awaiting calibration' }))}${raw(NS.stat({ label: 'Waiting on employee', value: (counts.not_started || 0) + (counts.self_in_progress || 0), icon: 'hourglass', sub: `${counts.not_started || 0} not started` }))}</div>
+        <div class="ns-toolbar"><div class="ns-chips">${[['all', 'All'], ['self_submitted', 'Ready'], ['manager_in_progress', 'In progress'], ['manager_submitted', 'Submitted'], ['self_in_progress', 'Employee drafting'], ['not_started', 'Not started']].map(([k, l]) => `<a class="ns-chip" aria-pressed="${f === k}" href="${NS.link('/team', { status: k === 'all' ? '' : k })}">${l} <span class="n">${k === 'all' ? team.length : counts[k] || 0}</span></a>`).join('')}</div></div>
+        <div id="teamTable"></div>`;
+    },
+    mounted: (c, root) => {
+      const me = meFor(c.persona), team = teamOf(me.id); const f = c.query.status;
+      NS.table(root.querySelector('#teamTable'), { rows: team.filter((p) => !f || statusOf(p.id) === f), rowKey: 'id', pageSize: 12, sort: { key: 'status' }, columns: [
+        { key: 'name', label: 'Person', render: (p) => personLink(p, `${D.levelLabel(p.level)} · ${p.city}`), sort: (p) => p.name },
+        { key: 'status', label: 'Status', render: (p) => statusBadge(statusOf(p.id)), sort: (p) => -STATUS[statusOf(p.id)].step },
+        { key: 'progress', label: 'Self review', render: (p) => { const cp = completion(p.id); return `<div style="min-width:120px"><div class="flex justify-between xs muted"><span>${cp.done}/${cp.total}</span><span>${cp.pct}%</span></div>${NS.progress(cp.pct, { cls: 'xs mt-1' })}</div>`; }, sort: (p) => completion(p.id).pct },
+        { key: 'self', label: 'Self score', align: 'right', render: (p) => { const v = overall(p.id, 'self'); return v == null ? '<span class="faint">—</span>' : `<b>${v.toFixed(1)}</b>`; }, sort: (p) => overall(p.id, 'self') || 0 },
+        { key: 'mgr', label: 'Your score', align: 'right', render: (p) => { const v = overall(p.id, 'manager'); return v == null ? '<span class="faint">—</span>' : `<b>${v.toFixed(1)}</b> <span class="xs muted">${labelFor(v)}</span>`; }, sort: (p) => overall(p.id, 'manager') || 0 },
+        { key: 'goals', label: 'Goal progress', align: 'right', render: (p) => { const g = S.goals[p.id]; return `${Math.round(U.avg(g, 'progress'))}% <span class="xs muted">· ${g.filter((x) => x.status === 'behind' || x.status === 'risk').length} at risk</span>`; }, sort: (p) => U.avg(S.goals[p.id], 'progress') },
+        { key: 'act', label: '', sort: false, align: 'right', render: (p) => { const st = statusOf(p.id); return st === 'self_submitted' || st === 'manager_in_progress' ? `<a class="ns-btn sm primary" href="${NS.link('/review/' + p.id)}">${st === 'self_submitted' ? 'Start review' : 'Continue'}</a>` : st === 'manager_submitted' || st === 'calibrated' ? `<a class="ns-btn sm secondary" href="${NS.link('/review/' + p.id)}">View</a>` : `<button class="ns-btn sm ghost" data-nudge="${p.id}">${ic('bell')}Nudge${S.nudges[p.id] ? ` (${S.nudges[p.id]})` : ''}</button>`; } },
+      ], empty: { icon: 'inbox', title: 'No one in this state', body: 'Try another filter.' } });
+      const na = root.querySelector('[data-nudge-all]'); if (na) na.onclick = () => { const ids = team.filter((p) => statusOf(p.id) === 'not_started' || statusOf(p.id) === 'self_in_progress').map((p) => p.id); if (!ids.length) { NS.toast('Everyone has submitted', { type: 'info' }); return; } nudge(ids); };
+    },
+  };
+
+  /* CALIBRATION ------------------------------------------------------- */
+  P.calRating = (pid) => (S.calib[pid] ? S.calib[pid].rating : overall(pid, 'manager'));
+  P.calPotential = (pid) => (S.calib[pid] ? S.calib[pid].potential : S.reviews[pid].manager.potential);
+  P.perfBucket = (pid) => { const v = P.calRating(pid); return v == null ? 1 : v < 2.5 ? 0 : v < 3.75 ? 1 : 2; };
+  const engOrgs = () => U.uniq(D.people.filter((p) => p.dept === 'Engineering' && p.org !== 'Engineering Leadership').map((p) => p.org));
+  R['/calibration'] = {
+    title: 'Calibration', personas: ['manager', 'hrbp'],
+    render: (c) => {
+      const isHR = c.persona.id === 'hrbp';
+      const me = meFor(c.persona);
+      const org = c.query.org || 'Platform';
+      const pool = isHR ? D.people.filter((p) => p.org === org) : teamOf(me.id);
+      const rated = pool.filter((p) => overall(p.id, 'manager') != null);
+      const cell = (perfIdx, potIdx) => rated.filter((p) => P.perfBucket(p.id) === perfIdx && (P.calPotential(p.id) || 2) === 3 - potIdx);
+      const adjustments = Object.entries(S.calib).filter(([k]) => pool.some((p) => p.id === k));
+      return html`${raw(NS.pageHead({ eyebrow: 'Calibration', title: isHR ? `Calibration · ${org}` : 'Team calibration', sub: 'Drag people between boxes to propose an adjustment. Performance comes from the manager’s overall score; potential from the manager’s readiness call. Nothing is final until the roundtable locks it.', actions: `${isHR ? `<select class="ns-select" style="width:auto" id="orgSel">${engOrgs().map((o) => `<option ${o === org ? 'selected' : ''}>${o}</option>`).join('')}</select>` : ''}<button class="ns-btn secondary" data-export-cal>${ic('download')}Export</button><button class="ns-btn primary" data-lock>${ic('lock')}Lock calibration</button>` }))}
+        <div class="ns-grid main-side">
+          <div class="grid gap-4">
+            <div class="ns-card"><div class="ns-card-head"><div><h3>9-box · performance × potential</h3><p>${rated.length} of ${pool.length} rated · ${pool.length - rated.length} pending manager review</p></div><span class="ns-badge brand">${adjustments.length} adjustment${adjustments.length === 1 ? '' : 's'} proposed</span></div><div class="ns-card-body"><div class="ns-ninebox" id="ninebox"><div></div><div class="ax">Low performance</div><div class="ax">Medium performance</div><div class="ax">High performance</div>${[0, 1, 2].map((potIdx) => `<div class="ax y">${['High', 'Medium', 'Low'][potIdx]} potential</div>${[0, 1, 2].map((perfIdx) => { const ppl = cell(perfIdx, potIdx); const hi = (perfIdx === 2 && potIdx === 0), lo = (perfIdx === 0 && potIdx === 2); return `<div class="cell ${hi ? 'hi' : lo ? 'lo' : ''}" data-perf="${perfIdx}" data-pot="${3 - potIdx}"><div class="lbl">${NINE[potIdx][perfIdx]}</div>${ppl.map((p) => `<div class="cal-person" draggable="true" data-id="${p.id}" data-tip="${NS.esc(p.title)} · ${P.calRating(p.id).toFixed(1)}">${NS.avatar(p)}<b>${NS.esc(p.first)} ${NS.esc(p.last[0])}.</b><span class="sc">${P.calRating(p.id).toFixed(1)}</span></div>`).join('')}</div>`; }).join('')}`).join('')}</div></div></div>
+            <div class="ns-card"><div class="ns-card-head"><div><h3>Rating distribution</h3><p>Rounded overall rating vs guideline — a skew is a prompt for discussion, not a quota</p></div></div><div class="ns-card-body"><div id="distChart"></div></div></div>
+          </div>
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Proposed adjustments', sub: 'Changes made on this grid', body: adjustments.length ? `<div class="grid gap-2">${adjustments.map(([k, v]) => { const p = D.byId(k); const orig = overall(k, 'manager'); return `<div class="flex items-center gap-2 sm"><span class="grow truncate"><b>${NS.esc(p.name)}</b> <span class="muted">${orig.toFixed(1)} → ${v.rating.toFixed(1)} · potential ${['Low', 'Medium', 'High'][v.potential - 1]}</span></span><button class="ns-btn xs ghost" data-undo="${k}" aria-label="Undo">${ic('undo')}</button></div>`; }).join('')}</div>` : '<div class="sm muted">No adjustments yet. Drag a person to a different box.</div>' }))}
+            ${raw(NS.card({ title: 'Roundtable prompt', body: `<div class="ns-quote">“Based on results <b>and</b> behaviours, where does this person sit compared to peers at the same level?”</div><div class="xs muted mt-3">Three minutes of evidence per person, then vote. Managers defend their outliers first.</div>` }))}
+            ${raw(NS.card({ title: 'Calibration traps', body: `<div class="grid gap-2">${TRAPS.map(([t, b]) => `<div class="trap">${ic('alert-triangle')}<div><b>${t}</b>${b}</div></div>`).join('')}</div>` }))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const isHR = c.persona.id === 'hrbp'; const me = meFor(c.persona); const org = c.query.org || 'Platform';
+      const pool = isHR ? D.people.filter((p) => p.org === org) : teamOf(me.id);
+      const rated = pool.filter((p) => overall(p.id, 'manager') != null);
+      const counts = [0, 0, 0, 0, 0]; rated.forEach((p) => counts[U.clamp(Math.round(P.calRating(p.id)), 1, 5) - 1]++);
+      NS.chart.bars(root.querySelector('#distChart'), { labels: SCALE.map((s) => s.label), series: [{ name: isHR ? 'This org' : 'Your team', values: counts.map((n) => (rated.length ? Math.round((n / rated.length) * 100) : 0)) }, { name: 'Guideline', values: [5, 15, 55, 20, 5], color: 'var(--ink-4)' }], yFormat: (v) => v + '%', height: 220, showValues: 'all', yMax: 80 });
+      NS.dnd(root.querySelector('#ninebox'), { item: '.cal-person', zone: '.cell', onDrop: (item, zone) => { const id = item.dataset.id; const perf = +zone.dataset.perf, pot = +zone.dataset.pot; const curPerf = P.perfBucket(id), curPot = P.calPotential(id) || 2; if (curPerf === perf && curPot === pot) return; S.calib[id] = { rating: curPerf === perf ? P.calRating(id) : [1.8, 3.0, 4.3][perf], potential: pot, by: me.name, at: TODAY.toISOString() }; save(); log(`Proposed calibration change for ${D.byId(id).name}`); NS.toast(`Adjustment proposed for ${D.byId(id).first}`, { desc: `${NINE[3 - pot][perf]} · rating ${S.calib[id].rating.toFixed(1)}`, type: 'info' }); NS.refresh(); } });
+      root.querySelectorAll('[data-undo]').forEach((b) => b.onclick = () => { delete S.calib[b.dataset.undo]; save(); NS.refresh(); });
+      const sel = root.querySelector('#orgSel'); if (sel) sel.onchange = () => NS.go('/calibration', { org: sel.value });
+      root.querySelector('[data-export-cal]').onclick = () => downloadCsv('calibration.csv', [['Person', 'Level', 'Team', 'Manager score', 'Calibrated', 'Potential', 'Box'], ...rated.map((p) => [p.name, p.level, p.team, overall(p.id, 'manager').toFixed(2), P.calRating(p.id).toFixed(2), ['Low', 'Medium', 'High'][(P.calPotential(p.id) || 2) - 1], NINE[3 - (P.calPotential(p.id) || 2)][P.perfBucket(p.id)]])]);
+      root.querySelector('[data-lock]').onclick = async () => { if (await NS.confirm({ title: 'Lock calibration for this group?', body: `${rated.length} ratings become final and managers can schedule rating conversations. ${pool.length - rated.length} people without a manager review will be excluded.`, confirmLabel: 'Lock ratings' })) { rated.forEach((p) => { S.reviews[p.id].status = 'calibrated'; S.reviews[p.id].calibrated = { rating: P.calRating(p.id), potential: P.calPotential(p.id) || 2 }; }); save(); log('Locked calibration'); NS.toast('Calibration locked', { desc: `${rated.length} ratings finalised.` }); NS.refresh(); } };
+    },
+  };
+
+  /* FEEDBACK ---------------------------------------------------------- */
+  const fbFor = (id) => S.feedback[id] || (S.feedback[id] = { requested: [], received: [], toGive: [] });
+  R['/feedback'] = {
+    title: 'Feedback', personas: ['employee', 'manager'],
+    render: (c) => {
+      const me = meFor(c.persona); const fb = fbFor(me.id);
+      return html`${raw(NS.pageHead({ eyebrow: '360° feedback', title: 'Feedback', sub: `Peer input feeds the ${D.cycle.short} review. ${S.settings.anonymousPeer ? 'Peer feedback is shown to managers anonymously' : 'Peer feedback is attributed'} · minimum ${S.settings.minPeer} responses for a summary.`, actions: `<button class="ns-btn primary" data-request>${ic('user-plus')}Request feedback</button>` }))}
+        <div class="ns-grid main-side">
+          <div class="grid gap-4">
+            <div class="ns-section-title" style="margin-top:0"><h2>Received <span class="muted medium">· ${fb.received.length}</span></h2></div>
+            ${fb.received.length ? fb.received.map((f) => { const p = D.byId(f.from); return `<div class="ns-card"><div class="ns-card-body feedback-card"><div class="flex justify-between items-start gap-3 wrap"><div class="ns-person">${NS.avatar(S.settings.anonymousPeer ? '?' : p, { size: 'sm' })}<div><div class="nm">${S.settings.anonymousPeer ? 'Peer (anonymous)' : NS.esc(p.name)}</div><div class="sb">${S.settings.anonymousPeer ? p.org : p.title} · ${F.date(f.date)}</div></div></div><div class="tags">${(f.tags || []).map((t) => `<span class="ns-tag">${NS.esc(t)}</span>`).join('')}</div></div><div><div class="ns-eyebrow" style="color:var(--ok)">Keep doing</div><p class="md ink2">${NS.esc(f.strengths)}</p></div><div><div class="ns-eyebrow" style="color:var(--warn)">Try next</div><p class="md ink2">${NS.esc(f.growth)}</p></div></div></div>`; }).join('') : NS.empty({ icon: 'message-square', title: 'No feedback received yet', body: 'Request feedback from three to five people who saw your work this year.' })}
+            <div class="ns-section-title"><h2>Requests you sent</h2></div>
+            <div class="ns-card"><div class="ns-card-body flush">${fb.requested.length ? `<div style="padding:6px 20px">${fb.requested.map((r) => { const p = D.byId(r.from); return `<div class="ns-row">${personLink(p)}<div class="grow"></div>${r.status === 'received' ? NS.badge('Received', 'ok', true) : NS.badge('Pending', 'warn', true)}${r.status !== 'received' ? `<button class="ns-btn xs ghost" data-remind="${p.id}">Remind</button>` : ''}</div>`; }).join('')}</div>` : '<div class="p-5 sm muted">No requests yet.</div>'}</div></div>
+          </div>
+          <div class="grid gap-4">
+            ${raw(NS.card({ title: 'Feedback to give', sub: 'Colleagues who asked for your input', body: fb.toGive.length ? `<div class="grid gap-3">${fb.toGive.map((t) => { const p = D.byId(t.for); return `<div class="flex items-center gap-3">${NS.avatar(p, { size: 'sm' })}<div class="grow min-w-0"><div class="sm semibold truncate">${NS.esc(p.name)}</div><div class="xs muted">Due ${F.date(t.due, 'short')}</div></div>${t.status === 'done' ? NS.badge('Sent', 'ok') : `<button class="ns-btn xs primary" data-give="${p.id}">Write</button>`}</div>`; }).join('')}</div>` : '<div class="sm muted">Nothing pending.</div>' }))}
+            ${raw(NS.card({ title: 'What good feedback looks like', body: `<div class="grid gap-2 sm ink2"><div><b>Situation → behaviour → impact.</b> “In the June incident review, you summarised three threads into one decision, and the room aligned in five minutes.”</div><div><b>One thing to keep, one to try.</b> Not a list of ten.</div><div><b>Recent and specific</b> beats general and glowing.</div></div>` }))}
+          </div>
+        </div>`;
+    },
+    mounted: (c, root) => {
+      const me = meFor(c.persona); const fb = fbFor(me.id);
+      const peers = U.uniq(D.reports(me.managerId).filter((p) => p.id !== me.id).concat(D.people.filter((p) => p.org === me.org && p.team !== me.team && p.track === 'IC').slice(0, 8)));
+      root.querySelector('[data-request]').onclick = () => NS.modal({ title: 'Request feedback', sub: 'Pick three to five people who worked closely with you this year.', body: `<div class="grid gap-2" style="max-height:320px;overflow:auto">${peers.map((p) => `<label class="ns-check" style="padding:8px 10px;border:1px solid var(--line);border-radius:10px"><input type="checkbox" value="${p.id}" ${fb.requested.some((r) => r.from === p.id) ? 'disabled checked' : ''}>${NS.avatar(p, { size: 'xs' })}<span class="grow"><b class="sm">${NS.esc(p.name)}</b><span class="xs muted"> · ${NS.esc(p.title)}</span></span></label>`).join('')}</div><label class="ns-field mt-3"><span class="ns-label">Message <span class="opt">optional</span></span><textarea class="ns-textarea" style="min-height:70px" id="msg">Hi — would you share a few lines of feedback on our work together this year? One thing to keep doing, one to try. Thanks!</textarea></label>`, actions: [{ label: 'Cancel' }, { label: 'Send requests', cls: 'primary', onClick: (m) => { const ids = Array.from(m.el.querySelectorAll('input:checked:not(:disabled)')).map((i) => i.value); if (!ids.length) { NS.toast('Pick at least one person', { type: 'warn' }); return false; } ids.forEach((id) => fb.requested.push({ from: id, status: 'pending' })); save(); log(`Requested feedback from ${ids.length} people`); NS.toast(`Requests sent to ${ids.length} ${ids.length === 1 ? 'person' : 'people'}`); NS.refresh(); } }] });
+      root.querySelectorAll('[data-remind]').forEach((b) => b.onclick = () => NS.toast(`Reminder sent to ${D.byId(b.dataset.remind).first}`, { type: 'info' }));
+      root.querySelectorAll('[data-give]').forEach((b) => b.onclick = () => { const p = D.byId(b.dataset.give); NS.modal({ title: `Feedback for ${p.first}`, sub: `${p.title} · ${p.team}`, size: 'lg', body: `<div class="grid gap-4"><div class="ns-field"><span class="ns-label">Which competencies did you see most?</span><div class="ns-chips" id="ctags">${COMPS.map((cp) => `<button type="button" class="ns-chip" data-tag="${cp.name}">${cp.name}</button>`).join('')}</div></div><label class="ns-field"><span class="ns-label">Keep doing</span><textarea class="ns-textarea" id="k" placeholder="Situation → behaviour → impact"></textarea></label><label class="ns-field"><span class="ns-label">Try next</span><textarea class="ns-textarea" id="t" placeholder="One concrete suggestion"></textarea></label><div class="ns-alert brand">${ic('sparkles')}<div><b>Coach</b><p id="coach">Aim for a specific situation and its impact. Avoid personality labels.</p></div></div></div>`, actions: [{ label: 'Cancel' }, { label: 'Send feedback', cls: 'primary', onClick: (m) => { const k = m.el.querySelector('#k').value.trim(), t = m.el.querySelector('#t').value.trim(); if (k.length < 20 || t.length < 10) { NS.toast('Add a little more detail', { type: 'warn', desc: 'A sentence for each section helps the receiver act on it.' }); return false; } const item = fb.toGive.find((x) => x.for === p.id); if (item) item.status = 'done'; fbFor(p.id).received.push({ from: me.id, date: TODAY.toISOString().slice(0, 10), strengths: k, growth: t, tags: Array.from(m.el.querySelectorAll('#ctags [aria-pressed="true"]')).map((x) => x.dataset.tag) }); save(); log(`Gave feedback to ${p.name}`); NS.toast(`Feedback sent to ${p.first}`); NS.refresh(); } }], mounted: (body) => { body.querySelectorAll('#ctags .ns-chip').forEach((ch) => ch.onclick = () => ch.setAttribute('aria-pressed', ch.getAttribute('aria-pressed') !== 'true')); const coach = body.querySelector('#coach'); const chk = U.debounce(() => { const txt = body.querySelector('#k').value + ' ' + body.querySelector('#t').value; const flags = P.biasCheck(txt); coach.textContent = flags.length ? flags.map((f) => `“${f.word}” — ${f.msg}`).join(' ') : txt.length > 40 ? 'Reads specific and actionable. 👍' : 'Aim for a specific situation and its impact. Avoid personality labels.'; }, 250); body.querySelectorAll('textarea').forEach((t) => t.oninput = chk); } }); });
+    },
+  };
+
+  /* INSIGHTS ----------------------------------------------------------- */
+  R['/insights'] = {
+    title: 'Insights', personas: ['manager', 'hrbp'],
+    render: (c) => {
+      const isHR = c.persona.id === 'hrbp'; const me = meFor(c.persona);
+      const pool = isHR ? D.people.filter((p) => p.level !== 'E2') : teamOf(me.id);
+      const gap = pool.filter((p) => overall(p.id, 'self') != null && overall(p.id, 'manager') != null);
+      const allGoals = pool.flatMap((p) => S.goals[p.id]);
+      return html`${raw(NS.pageHead({ eyebrow: 'Insights', title: isHR ? 'Cycle insights' : 'Team insights', sub: isHR ? 'Where the cycle is flowing, where it is stuck, and how ratings are shaping up.' : 'How your team is progressing through the cycle and how ratings compare.' }))}
+        <div class="ns-stats mb-4">${raw(NS.stat({ label: 'Median days to submit self review', value: '6.5', icon: 'timer', sub: 'FY25: 9 days' }))}${raw(NS.stat({ label: 'Self–manager score gap', value: gap.length ? U.avg(gap, (p) => Math.abs(overall(p.id, 'self') - overall(p.id, 'manager'))).toFixed(2) : '—', icon: 'arrow-left-right', sub: `across ${gap.length} completed pairs` }))}${raw(NS.stat({ label: 'Goals with a recent check-in', value: Math.round(U.pctOf(allGoals.filter((g) => g.checkins.length).length, allGoals.length)), unit: '%', icon: 'activity', sub: 'healthy is above 70%' }))}${raw(NS.stat({ label: 'Peer feedback coverage', value: '61', unit: '%', icon: 'message-square', sub: 'people with 3+ responses' }))}</div>
+        <div class="ns-grid c2">
+          ${raw(NS.card({ title: 'Cycle funnel', sub: 'Cumulative progress through the stages', body: '<div id="funnel"></div>' }))}
+          ${raw(NS.card({ title: 'Rating distribution · FY23 → FY25', sub: 'Share of people at each rating', body: '<div id="ratingTrend"></div>' }))}
+          ${raw(NS.card({ title: isHR ? 'Completion by org × stage' : 'Self review completion by person', sub: isHR ? 'Percent of people at or past each stage' : 'Sections completed', body: '<div id="heat"></div>' }))}
+          ${raw(NS.card({ title: 'Self vs manager score', sub: 'Each dot is a completed review · above the diagonal, the manager rated higher', body: '<div id="gapScatter"></div>' }))}
+        </div>
+        <div class="ns-ai mt-4"><div><div class="ns-ai-head">${ic('sparkles')} What the data says <span class="ns-badge">Generated</span></div><p>${isHR ? 'Managers who held weekly 1:1s all year show a self–manager gap of 0.3 on average; managers on monthly cadences sit at 0.9. Central tendency is visible in two orgs where 70%+ of provisional ratings are “Meets” — worth a calibration conversation before ratings lock. Completion is fastest in teams that used goal check-ins at least monthly.' : 'Your team’s self scores run about 0.4 higher than your provisional ratings — a normal gap, but flag it in conversations early. Two goals in the Business category are behind pace and both sit with people in the 18–42 month tenure window; a short scope reset now beats a hard rating conversation in November.'}</p></div></div>`;
+    },
+    mounted: (c, root) => {
+      const isHR = c.persona.id === 'hrbp'; const me = meFor(c.persona);
+      const pool = isHR ? D.people.filter((p) => p.level !== 'E2') : teamOf(me.id);
+      const steps = [['not_started', 'In cycle'], ['self_in_progress', 'Self review started'], ['self_submitted', 'Self review submitted'], ['manager_in_progress', 'Manager review started'], ['manager_submitted', 'Manager review submitted'], ['calibrated', 'Calibrated']];
+      NS.chart.funnel(root.querySelector('#funnel'), { stages: steps.map(([s, l], i) => ({ label: l, value: pool.filter((p) => STATUS[statusOf(p.id)].step >= i).length })) });
+      const dist = (idx) => { const v = pool.map((p) => p.ratings[idx]).filter((x) => x); return [1, 2, 3, 4, 5].map((r) => Math.round(U.pctOf(v.filter((x) => x === r).length, v.length))); };
+      NS.chart.bars(root.querySelector('#ratingTrend'), { labels: SCALE.map((s) => s.short), series: [{ name: 'FY23', values: dist(0) }, { name: 'FY24', values: dist(1) }, { name: 'FY25', values: dist(2) }], yFormat: (v) => v + '%', height: 220 });
+      if (isHR) { const orgs = engOrgs(); NS.chart.heatmap(root.querySelector('#heat'), { rows: orgs, cols: ['Started', 'Self done', 'Mgr started', 'Mgr done'], values: orgs.map((o) => { const ps = D.people.filter((p) => p.org === o); return [1, 2, 3, 4].map((st) => Math.round(U.pctOf(ps.filter((p) => STATUS[statusOf(p.id)].step >= st).length, ps.length))); }), format: (v) => v + '%', min: 0, max: 100, valueLabel: 'Share' }); }
+      else { NS.chart.hbars(root.querySelector('#heat'), { items: pool.map((p) => ({ label: p.name, value: completion(p.id).pct, sub: STATUS[statusOf(p.id)].label })).sort((a, b) => b.value - a.value), max: 100, format: (v) => v + '%' }); }
+      const pairs = pool.filter((p) => overall(p.id, 'self') != null && overall(p.id, 'manager') != null).slice(0, 220);
+      NS.chart.scatter(root.querySelector('#gapScatter'), { points: pairs.map((p) => ({ x: overall(p.id, 'self'), y: overall(p.id, 'manager'), label: p.name, sub: p.title, group: p.dept === 'Engineering' ? 'Engineering' : 'Other functions' })), xLabel: 'Self score', yLabel: 'Manager score', xMin: 1, xMax: 5, yMin: 1, yMax: 5, xFormat: (v) => v.toFixed(1), yFormat: (v) => v.toFixed(1), quadrants: { x: 3, y: 3, labels: ['Manager higher', 'Aligned high', 'Aligned low', 'Self higher'] }, onPoint: (pt) => { const p = pairs.find((q) => q.name === pt.label); if (p) NS.go('/people/' + p.id); } });
+    },
+  };
+
+  /* CYCLE CONSOLE (HRBP) ---------------------------------------------- */
+  R['/console'] = {
+    title: 'Cycle console', personas: ['hrbp'],
+    render: (c) => {
+      const all = D.people.filter((p) => p.level !== 'E2');
+      const counts = U.countBy(all, (p) => statusOf(p.id));
+      return html`${raw(NS.pageHead({ eyebrow: D.cycle.name, title: 'Cycle console', sub: `${F.int(all.length)} participants · ${D.managers.length} managers · filter, nudge and export. Bulk nudges go out as one digest per manager.`, actions: `<button class="ns-btn secondary" data-export>${ic('download')}Export CSV</button><button class="ns-btn secondary" data-extend>${ic('calendar')}Extend deadline</button><button class="ns-btn primary" data-bulk disabled>${ic('megaphone')}Nudge selected</button>` }))}
+        <div class="ns-stats mb-4">${['not_started', 'self_in_progress', 'self_submitted', 'manager_in_progress', 'manager_submitted'].map((s) => NS.stat({ label: STATUS[s].label, value: F.int(counts[s] || 0), sub: `${Math.round(U.pctOf(counts[s] || 0, all.length))}% of participants` })).join('')}</div>
+        <div class="ns-toolbar"><div class="ns-input-wrap grow" style="max-width:360px">${ic('search')}<input class="ns-input" id="q" placeholder="Search by name, team or manager…"></div><select class="ns-select" style="width:auto" id="fDept"><option value="">All departments</option>${D.departments.map((d) => `<option>${d.name}</option>`).join('')}</select><select class="ns-select" style="width:auto" id="fStatus"><option value="">All statuses</option>${Object.entries(STATUS).map(([k, v]) => `<option value="${k}">${v.label}</option>`).join('')}</select><select class="ns-select" style="width:auto" id="fRegion"><option value="">All regions</option>${Object.entries(D.regions).map(([k, v]) => `<option value="${k}">${v}</option>`).join('')}</select><span class="sm muted" id="selCount"></span></div>
+        <div id="consoleTable"></div>`;
+    },
+    mounted: (c, root) => {
+      const all = D.people.filter((p) => p.level !== 'E2'); const sel = new Set();
+      const bulk = root.querySelector('[data-bulk]'), selCount = root.querySelector('#selCount');
+      const updSel = () => { bulk.disabled = !sel.size; bulk.innerHTML = `${ic('megaphone')}Nudge selected${sel.size ? ` (${sel.size})` : ''}`; selCount.textContent = sel.size ? `${sel.size} selected` : ''; };
+      const tbl = NS.table(root.querySelector('#consoleTable'), { rows: all, rowKey: 'id', pageSize: 15, sort: { key: 'status' }, searchKeys: ['name', 'team', 'org', (p) => (D.byId(p.managerId) || {}).name || ''], columns: [
+        { key: 'sel', label: '', sort: false, width: '36px', render: (p) => `<input type="checkbox" data-sel="${p.id}" ${sel.has(p.id) ? 'checked' : ''} aria-label="Select ${NS.esc(p.name)}">` },
+        { key: 'name', label: 'Person', render: (p) => personLink(p, `${p.title} · ${p.city}`), sort: (p) => p.name },
+        { key: 'team', label: 'Team', render: (p) => `<div class="sm">${NS.esc(p.team)}</div><div class="xs muted">${NS.esc(p.dept)}</div>` },
+        { key: 'manager', label: 'Manager', render: (p) => { const m = D.byId(p.managerId); return m ? `<div class="flex items-center gap-2">${NS.avatar(m, { size: 'xs' })}<span class="sm">${NS.esc(m.name)}</span></div>` : '—'; }, sort: (p) => (D.byId(p.managerId) || {}).name || '' },
+        { key: 'status', label: 'Status', render: (p) => statusBadge(statusOf(p.id)), sort: (p) => STATUS[statusOf(p.id)].step },
+        { key: 'self', label: 'Self', align: 'right', render: (p) => { const v = overall(p.id, 'self'); return v == null ? '<span class="faint">—</span>' : v.toFixed(1); }, sort: (p) => overall(p.id, 'self') || 0 },
+        { key: 'mgr', label: 'Manager', align: 'right', render: (p) => { const v = overall(p.id, 'manager'); return v == null ? '<span class="faint">—</span>' : `<b>${v.toFixed(1)}</b>`; }, sort: (p) => overall(p.id, 'manager') || 0 },
+        { key: 'nudges', label: 'Nudges', align: 'right', render: (p) => (S.nudges[p.id] ? `<span class="ns-badge warn">${S.nudges[p.id]}</span>` : '<span class="faint">0</span>'), sort: (p) => S.nudges[p.id] || 0 },
+        { key: 'act', label: '', sort: false, align: 'right', render: (p) => (STATUS[statusOf(p.id)].step < 2 ? `<button class="ns-btn xs ghost" data-nudge="${p.id}">${ic('bell')}Nudge</button>` : `<a class="ns-btn xs ghost" href="${NS.link('/people/' + p.id)}">View</a>`) },
+      ] });
+      const applyFilters = () => { const dept = root.querySelector('#fDept').value, st = root.querySelector('#fStatus').value, rg = root.querySelector('#fRegion').value; tbl.setFilter((p) => (!dept || p.dept === dept) && (!st || statusOf(p.id) === st) && (!rg || p.region === rg)); };
+      ['#fDept', '#fStatus', '#fRegion'].forEach((id) => root.querySelector(id).onchange = applyFilters);
+      root.querySelector('#q').oninput = (e) => tbl.setSearch(e.target.value);
+      root.addEventListener('change', (e) => { const cb = e.target.closest('[data-sel]'); if (cb) { if (cb.checked) sel.add(cb.dataset.sel); else sel.delete(cb.dataset.sel); updSel(); } });
+      bulk.onclick = () => { nudge(Array.from(sel)); sel.clear(); updSel(); tbl.refresh(); };
+      root.querySelector('[data-export]').onclick = () => downloadCsv('FY26-cycle-status.csv', [['Employee ID', 'Name', 'Title', 'Level', 'Department', 'Team', 'Location', 'Manager', 'Status', 'Self score', 'Manager score'], ...tbl.rows().map((p) => [p.id, p.name, p.title, p.level, p.dept, p.team, p.city, (D.byId(p.managerId) || {}).name || '', STATUS[statusOf(p.id)].label, overall(p.id, 'self') ? overall(p.id, 'self').toFixed(2) : '', overall(p.id, 'manager') ? overall(p.id, 'manager').toFixed(2) : ''])]);
+      root.querySelector('[data-extend]').onclick = () => NS.modal({ title: 'Extend self-review deadline', sub: 'Applies to the selected scope only. Managers are notified automatically.', body: `<div class="grid gap-4"><label class="ns-field"><span class="ns-label">Scope</span><select class="ns-select" id="scope"><option>Sales — all teams</option><option>Customer Success — Technical Support</option><option>Everyone</option></select></label><label class="ns-field"><span class="ns-label">New deadline</span><input class="ns-input" type="date" id="dl" value="2026-10-06"></label><label class="ns-field"><span class="ns-label">Reason <span class="opt">shown to managers</span></span><input class="ns-input" id="why" value="Quarter-end close — field teams travelling"></label></div>`, actions: [{ label: 'Cancel' }, { label: 'Extend', cls: 'primary', onClick: (m) => { log(`Extended deadline for ${m.el.querySelector('#scope').value} to ${m.el.querySelector('#dl').value}`); NS.toast('Deadline extended', { desc: `${m.el.querySelector('#scope').value} · ${F.date(m.el.querySelector('#dl').value)}` }); } }] });
+    },
+  };
+
+  /* SETTINGS (HRBP) --------------------------------------------------- */
+  R['/settings'] = {
+    title: 'Cycle settings', personas: ['hrbp'],
+    render: (c) => { const st = S.settings; return html`${raw(NS.pageHead({ eyebrow: 'Administration', title: 'Cycle settings', sub: 'Configuration for the FY26 cycle. Changes apply to reviews that have not been submitted.', actions: `<button class="ns-btn primary" data-save-settings>${ic('save')}Save changes</button>` }))}
+      <div class="ns-grid c2">
+        ${raw(NS.card({ title: 'Scoring weights', sub: 'How the overall score is composed', body: `<label class="ns-field"><span class="ns-label">Goals <b id="wg">${st.weights.goals}%</b> · Competencies <b id="wc">${st.weights.comps}%</b></span><input type="range" class="ns-range" min="30" max="80" step="5" value="${st.weights.goals}" id="wslider" style="--p:${((st.weights.goals - 30) / 50) * 100}%"></label><div class="ns-alert info mt-3">${ic('info')}<div><b>Example</b><p id="wex">Goals 4.2 and competencies 3.6 → overall ${((4.2 * st.weights.goals + 3.6 * st.weights.comps) / 100).toFixed(2)}</p></div></div>` }))}
+        ${raw(NS.card({ title: 'Options', body: `<div class="grid gap-3"><label class="ns-switch"><input type="checkbox" data-opt="anonymousPeer" ${st.anonymousPeer ? 'checked' : ''}><i></i><span><b class="sm">Anonymous peer feedback</b><div class="xs muted">Managers see themes, not names.</div></span></label><label class="ns-switch"><input type="checkbox" data-opt="allowNA" ${st.allowNA ? 'checked' : ''}><i></i><span><b class="sm">Allow “N/A” on competencies</b><div class="xs muted">Excluded from the competency average.</div></span></label><label class="ns-field"><span class="ns-label">Minimum peer responses for a summary</span><input class="ns-input sm" type="number" min="1" max="6" value="${st.minPeer}" data-opt-num="minPeer" style="width:100px"></label></div>` }))}
+        ${raw(NS.card({ title: 'Cycle phases', sub: 'Dates drive countdowns, nudges and what each persona can do', body: `<div class="grid gap-2">${st.phases.map((p, i) => `<div class="grid" style="grid-template-columns:1fr auto auto;gap:8px;align-items:center"><span class="sm semibold">${p.label}</span><input class="ns-input sm" type="date" value="${p.start}" data-ph="${i}" data-k="start"><input class="ns-input sm" type="date" value="${p.end}" data-ph="${i}" data-k="end"></div>`).join('')}</div>` }))}
+        ${raw(NS.card({ title: 'Rating scale', sub: 'Labels and descriptors shown to everyone', body: `<div class="grid gap-2">${SCALE.map((s) => `<div class="grid" style="grid-template-columns:32px 1fr;gap:10px;align-items:start"><span class="ns-badge ${s.v >= 4 ? 'ok' : s.v === 3 ? 'brand' : 'warn'} sq" style="justify-content:center">${s.v}</span><div><input class="ns-input sm" value="${NS.esc(s.label)}" data-scale="${s.v}" data-k="label"><textarea class="ns-textarea mt-1" style="min-height:52px;font-size:12.5px" data-scale="${s.v}" data-k="desc">${NS.esc(s.desc)}</textarea></div></div>`).join('')}</div>` }))}
+        ${raw(NS.card({ title: 'Competency library', sub: 'Shared with the Competency Portal', body: `<div class="grid gap-2">${COMPS.map((cp) => `<div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic(cp.icon)}</span><div><b class="sm">${cp.name}</b><div class="xs muted">${cp.desc}</div></div></div>`).join('')}</div>` }))}
+        ${raw(NS.card({ title: 'Activity log', sub: 'Recent actions in this prototype', body: S.activity.length ? `<div class="grid gap-2">${S.activity.slice(0, 10).map((a) => `<div class="flex justify-between gap-3 sm"><span class="ink2">${NS.esc(a.msg)}</span><span class="xs faint nowrap">${F.rel(a.t)}</span></div>`).join('')}</div>` : '<div class="sm muted">No activity yet.</div>' }))}
+      </div>`; },
+    mounted: (c, root) => {
+      const st = S.settings; const sl = root.querySelector('#wslider');
+      sl.oninput = () => { const g = +sl.value; root.querySelector('#wg').textContent = g + '%'; root.querySelector('#wc').textContent = (100 - g) + '%'; sl.style.setProperty('--p', ((g - 30) / 50) * 100 + '%'); root.querySelector('#wex').textContent = `Goals 4.2 and competencies 3.6 → overall ${((4.2 * g + 3.6 * (100 - g)) / 100).toFixed(2)}`; };
+      root.querySelector('[data-save-settings]').onclick = () => { st.weights = { goals: +sl.value, comps: 100 - sl.value }; root.querySelectorAll('[data-opt]').forEach((i) => st[i.dataset.opt] = i.checked); root.querySelectorAll('[data-opt-num]').forEach((i) => st[i.dataset.optNum] = +i.value); root.querySelectorAll('[data-ph]').forEach((i) => st.phases[+i.dataset.ph][i.dataset.k] = i.value); root.querySelectorAll('[data-scale]').forEach((i) => { const s = SCALE[+i.dataset.scale - 1]; s[i.dataset.k] = i.value; }); save(); log('Updated cycle settings'); NS.toast('Settings saved', { desc: `Goals ${st.weights.goals}% · competencies ${st.weights.comps}%` }); };
+    },
+  };
+
+  /* PEOPLE PROFILE ----------------------------------------------------- */
+  R['/people/:id'] = {
+    title: (c) => (D.byId(c.params.id) || {}).name || 'Person', nav: 'people',
+    crumbs: (c) => [{ label: 'People' }, { label: (D.byId(c.params.id) || {}).name || '' }],
+    render: (c) => { const p = D.byId(c.params.id); if (!p) return NS.empty({ title: 'Not found' }); const pid = p.id, rv = S.reviews[pid], goals = S.goals[pid], mgr = D.byId(p.managerId); const fb = fbFor(pid); const me = meFor(c.persona);
+      return html`<div class="ns-card mb-4"><div class="ns-card-body flex gap-5 items-center wrap">${raw(NS.avatar(p, { size: 'xxl' }))}<div class="grow min-w-0"><div class="flex items-center gap-2 wrap"><h1 style="font-size:24px">${NS.esc(p.name)}</h1>${raw(statusBadge(statusOf(pid)))}</div><div class="md muted mt-1">${NS.esc(p.title)} · ${D.levelLabel(p.level)} · ${NS.esc(p.team)}</div><div class="flex gap-4 wrap mt-3 sm"><span class="flex items-center gap-2">${raw(ic('map-pin', { size: 14 }))}${p.city} · ${D.regions[p.region]}</span><span class="flex items-center gap-2">${raw(ic('calendar', { size: 14 }))}Joined ${F.date(p.hireDate, 'my')} · ${F.tenure(p.tenure)}</span>${mgr ? raw(`<span class="flex items-center gap-2">${ic('user', { size: 14 })}Reports to <a href="${NS.link('/people/' + mgr.id)}">${NS.esc(mgr.name)}</a></span>`) : ''}<span class="flex items-center gap-2">${raw(ic('mail', { size: 14 }))}${p.email}</span></div></div><div class="flex gap-2 wrap">${c.persona.id !== 'employee' && STATUS[statusOf(pid)].step >= 2 && p.managerId === me.id ? raw(`<a class="ns-btn primary" href="${NS.link('/review/' + pid)}">${ic('clipboard-check')}Open review</a>`) : ''}${raw(`<a class="ns-btn secondary" href="../competency-portal/index.html#/level/${p.level}" target="_blank" rel="noopener">${ic('layers')}Level expectations</a>`)}</div></div></div>
+        <div class="ns-grid c3">
+          ${raw(NS.card({ title: 'Rating history', sub: 'FY23 · FY24 · FY25', body: `<div class="flex items-end gap-4"><div class="ratings-hist grow">${p.ratings.map((r) => `<i style="height:${r ? r * 8 : 2}px;opacity:${r ? 1 : .3}" data-tip="${r ? SCALE[r - 1].label : 'No rating'}"></i>`).join('')}</div><div class="right"><div class="ns-hero-num" style="font-size:36px">${p.rating || '—'}</div><div class="xs muted">${p.rating ? SCALE[p.rating - 1].label : 'Not yet rated'}</div></div></div><div class="xs muted mt-3">Trend: ${p.trend === 'up' ? '↑ improving' : p.trend === 'down' ? '↓ declining' : '→ steady'} · time in level ${p.timeInLevel} yrs</div>` }))}
+          ${raw(NS.card({ title: 'FY26 scorecard', sub: 'Provisional', body: (() => { const os = overall(pid, 'self'), om = overall(pid, 'manager'); return `<div class="grid gap-2 sm"><div class="flex justify-between"><span class="muted">Self overall</span><b>${os != null ? os.toFixed(1) : '—'}</b></div><div class="flex justify-between"><span class="muted">Manager overall</span><b>${om != null ? om.toFixed(1) + ' · ' + labelFor(om) : '—'}</b></div><div class="flex justify-between"><span class="muted">Potential</span><b>${rv.manager.potential ? ['Low', 'Medium', 'High'][rv.manager.potential - 1] : '—'}</b></div><div class="flex justify-between"><span class="muted">Goal progress</span><b>${Math.round(U.avg(goals, 'progress'))}%</b></div></div>`; })() }))}
+          ${raw(NS.card({ title: 'Competency profile', sub: 'Self assessment (FY26)', body: '<div id="profRadar"></div>' }))}
+          <div class="span-2">${raw(NS.card({ title: 'Goals', sub: `${goals.length} goals · weighted`, bodyCls: 'flush', body: `<table class="ns-table"><thead><tr><th>Goal</th><th>Category</th><th class="num">Weight</th><th class="num">Progress</th><th>Status</th></tr></thead><tbody>${goals.map((g) => `<tr><td><b>${NS.esc(g.title)}</b></td><td><span class="ns-badge ${CATS[g.cat]} sq">${g.cat}</span></td><td class="num">${g.weight}%</td><td class="num">${g.progress}%</td><td>${P.goalStatusBadge(g)}</td></tr>`).join('')}</tbody></table>` }))}</div>
+          ${raw(NS.card({ title: 'Peer feedback themes', sub: `${fb.received.length} responses`, body: fb.received.length ? `<div class="ns-chips">${U.uniq(fb.received.flatMap((f) => f.tags || [])).map((t) => `<span class="ns-tag">${NS.esc(t)}</span>`).join('')}</div><p class="sm ink2 mt-3">“${NS.esc(fb.received[0].strengths)}”</p>` : '<div class="sm muted">No peer feedback collected yet.</div>' }))}
+        </div>`; },
+    mounted: (c, root) => { const rv = S.reviews[c.params.id]; const el = root.querySelector('#profRadar'); if (el && rv) NS.chart.radar(el, { axes: COMPS.map((x) => x.name.split(' ')[0]), series: [{ name: 'Self', values: COMPS.map((x) => (rv.self.comps[x.id] || {}).rating || 0) }], max: 5, size: 260, legend: false }); },
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* 5. Boot                                                             */
+  /* ------------------------------------------------------------------ */
+  const store = NS.store('performance-nexus');
+  const personas = [
+    { ...D.personas.employee, note: 'Self review, goals, feedback' },
+    { ...D.personas.manager, note: 'Team reviews & calibration' },
+    { ...D.personas.hrbp, note: 'Cycle console & insights' },
+  ];
+  const selfSub = () => D.people.filter((p) => STATUS[statusOf(p.id)].step >= 2).length;
+  NS.app({
+    id: 'performance-nexus', name: 'Performance Nexus', sub: 'Northstar Labs', brand: 'indigo', version: '3.0',
+    mark: ic('target', { size: 20 }),
+    about: { tagline: 'Goals, reviews and calibration that people actually finish.', description: 'A performance-management system designed around the review cycle as it really happens: goals with weighted key results and check-ins, a self review that autosaves and drafts evidence from your own data, a manager review with a live scorecard and a language check, drag-and-drop calibration against a guideline distribution, and a cycle console for the People team.', highlights: [{ icon: 'target', title: 'Weighted goals & KRs', body: 'Categories, weights and check-ins that feed the scorecard.' }, { icon: 'sparkles', title: 'Evidence-based AI drafts', body: 'Drafts anchored to ratings, key results and check-in notes.' }, { icon: 'grid', title: 'Calibration 9-box', body: 'Drag to propose, compare against the guideline curve, lock.' }, { icon: 'shield-check', title: 'Language check', body: 'Flags vague, absolute and coded words in manager comments.' }] },
+    personas, defaultPersona: 'employee',
+    nav: (persona) => persona.id === 'employee' ? [{ group: 'My cycle', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'goals', label: 'My goals', icon: 'target' }, { id: 'review', label: 'Self review', icon: 'clipboard-check', badge: (() => { const cp = completion('NS-1207'); return cp.pct < 100 ? `${cp.done}/${cp.total}` : ''; })() }, { id: 'feedback', label: 'Feedback', icon: 'message-square', badge: fbFor('NS-1207').toGive.filter((x) => x.status === 'pending').length || '' }] }, { group: 'Me', items: [{ id: 'people', label: 'My profile', icon: 'id-card', route: '/people/NS-1207' }] }]
+      : persona.id === 'manager' ? [{ group: 'Team', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'team', label: 'Team reviews', icon: 'clipboard-list', badge: teamOf('NS-1180').filter((p) => statusOf(p.id) === 'self_submitted' || statusOf(p.id) === 'manager_in_progress').length || '' }, { id: 'goals', label: 'Team goals', icon: 'target' }, { id: 'calibration', label: 'Calibration', icon: 'grid' }, { id: 'feedback', label: 'Feedback', icon: 'message-square' }] }, { group: 'Analytics', items: [{ id: 'insights', label: 'Insights', icon: 'bar-chart' }] }]
+      : [{ group: 'Cycle operations', items: [{ id: 'home', label: 'Cycle health', icon: 'home' }, { id: 'console', label: 'Cycle console', icon: 'table' }, { id: 'calibration', label: 'Calibration', icon: 'grid' }, { id: 'insights', label: 'Insights', icon: 'bar-chart' }] }, { group: 'Administration', items: [{ id: 'settings', label: 'Cycle settings', icon: 'settings' }] }],
+    promo: (persona) => persona.id === 'employee' ? (() => { const cp = completion('NS-1207'); return cp.pct < 100 ? { title: 'Self review open', body: `${cp.done} of ${cp.total} sections complete · closes ${F.date(D.cycle.selfReviewCloses, 'short')}`, progress: cp.pct, cta: { label: 'Continue review', route: '/review' } } : null; })() : persona.id === 'manager' ? { title: 'Reviews waiting', body: `${teamOf('NS-1180').filter((p) => statusOf(p.id) === 'self_submitted').length} self reviews are ready for you.`, cta: { label: 'Open queue', route: '/team' } } : { title: 'Cycle health', body: `${Math.round(U.pctOf(selfSub(), D.people.length))}% of self reviews submitted.`, progress: Math.round(U.pctOf(selfSub(), D.people.length)), cta: { label: 'Console', route: '/console' } },
+    notifications: [{ icon: 'clipboard-check', title: 'Self review closes in 8 days', body: 'Finish your remaining sections before Oct 2, 18:00 IST.', time: 'Today', route: '/review' }, { icon: 'message-square', title: 'New peer feedback received', body: '“The clearest ADR I read this year…”', time: 'Yesterday', route: '/feedback' }, { icon: 'target', title: 'Check-in reminder', body: 'No update on “Own the Q3 on-call reliability review” for 9 days.', time: '2 days ago', route: '/goals' }, { icon: 'calendar', title: 'Calibration roundtable scheduled', body: 'Platform org · Oct 22, 14:00 CET.', time: '3 days ago', route: '/calibration' }],
+    routes: R, default: '/home',
+    commands: (persona) => [{ label: 'New goal', icon: 'plus', group: 'Actions', run: () => NS.go('/goals') }, { label: 'Request peer feedback', icon: 'user-plus', group: 'Actions', run: () => NS.go('/feedback') }, ...(persona.id !== 'employee' ? [{ label: 'Export cycle status (CSV)', icon: 'download', group: 'Actions', run: () => NS.go('/console') }, { label: 'Nudge everyone not started', icon: 'megaphone', group: 'Actions', run: () => NS.go('/team') }] : [])],
+    search: (q) => (q.length < 2 ? [] : D.people.filter((p) => p.name.toLowerCase().includes(q.toLowerCase())).slice(0, 6).map((p) => ({ group: 'People', label: p.name, hint: p.title, avatar: NS.avatar(p, { size: 'xs' }), run: () => NS.go('/people/' + p.id) }))),
+    onReset: () => store.clear(),
+  });
+})();
+</script>
+</body>
+</html>
