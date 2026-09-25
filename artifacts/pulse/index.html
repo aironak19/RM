@@ -1,0 +1,1325 @@
+<!doctype html>
+<html lang="en" data-brand="pink">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pulse · Northstar Labs</title>
+<meta name="description" content="Pulse — continuous engagement and eNPS listening for Northstar Labs: monthly pulses, driver analytics, anonymised comments and team action plans. Concept prototype with illustrative data.">
+<meta name="theme-color" content="#DB2777">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%23DB2777'/%3E%3Cpath d='M9 25h7l3-8 5 15 4-11 3 4h8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../shared/ns.css">
+<script src="../shared/ns.js"></script>
+<script src="../shared/ns-data.js"></script>
+<style>
+  /* hero */
+  .hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:center}
+  .hero-panel{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);border-radius:16px;padding:16px;backdrop-filter:blur(8px)}
+  .hero-panel .cell{display:grid;gap:8px;align-content:start;min-width:0}
+  .hero-panel .lbl{font-size:10.5px;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.72);font-weight:700}
+  .hero-panel .big{font-size:38px;font-weight:700;letter-spacing:-.03em;line-height:1;font-family:var(--font-display)}
+  .hero-panel .big small{font-size:14px;font-weight:600;letter-spacing:0;opacity:.8;margin-left:2px}
+  .hero-panel .note{font-size:11.5px;color:rgba(255,255,255,.75)}
+  .ns-hero .ns-ring circle:first-child{stroke:rgba(255,255,255,.22)}
+  .ns-hero .ns-ring .c,.ns-hero .ns-ring .c b,.ns-hero .ns-ring .c span{color:#fff}
+  .segbar{display:flex;height:10px;border-radius:99px;overflow:hidden;background:rgba(255,255,255,.15);gap:2px}
+  .segbar i{display:block;height:100%}
+  .segbar.viz{background:var(--surface-3)}
+  .seg-legend{display:flex;gap:10px;flex-wrap:wrap;font-size:11.5px;color:rgba(255,255,255,.85)}
+  .seg-legend.ink{color:var(--ink-3)}
+  .seg-legend i{display:inline-block;width:8px;height:8px;border-radius:2px;margin-right:5px;vertical-align:1px}
+  @media (max-width:980px){.hero-grid{grid-template-columns:minmax(0,1fr)}}
+  @media (max-width:520px){.hero-panel{grid-template-columns:repeat(2,minmax(0,1fr))}.hero-panel .cell:last-child{grid-column:1/-1}}
+  /* survey */
+  .survey-wrap{max-width:760px;margin:0 auto}
+  .q-num{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--brand-text)}
+  .q-text{font-family:var(--font-display);font-size:22px;font-weight:700;letter-spacing:-.02em;line-height:1.25;margin:8px 0 22px}
+  .faces{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:10px}
+  .faces button{display:grid;justify-items:center;gap:8px;padding:16px 6px 12px;border-radius:14px;border:1px solid var(--line-strong);background:var(--surface);font-size:12px;font-weight:500;color:var(--ink-3);transition:all var(--dur);text-align:center;line-height:1.2}
+  .faces button .em{font-size:30px;line-height:1;filter:grayscale(1);opacity:.65;transition:all var(--dur)}
+  .faces button:hover{border-color:var(--brand);color:var(--ink)}
+  .faces button:hover .em{filter:none;opacity:1}
+  .faces button[aria-pressed="true"]{border-color:var(--brand);background:var(--brand-soft);color:var(--brand-text);box-shadow:0 0 0 3px var(--brand-line)}
+  .faces button[aria-pressed="true"] .em{filter:none;opacity:1;transform:scale(1.12)}
+  .nps{display:grid;grid-template-columns:repeat(11,minmax(0,1fr));gap:6px}
+  .nps button{height:44px;border-radius:10px;border:1px solid var(--line-strong);background:var(--surface);font-weight:600;font-size:14px;color:var(--ink-2);transition:all var(--dur)}
+  .nps button:hover{border-color:var(--brand);color:var(--brand-text)}
+  .nps button[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--on-brand)}
+  .nps-lbl{display:flex;justify-content:space-between;font-size:11.5px;color:var(--ink-3);margin-top:8px}
+  .survey-foot{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-top:22px;padding-top:16px;border-top:1px solid var(--line-2)}
+  .autosave{font-size:12px;color:var(--ink-4);display:inline-flex;align-items:center;gap:6px}
+  .autosave svg{width:13px;height:13px}
+  .thanks{text-align:center;padding:10px 0 4px}
+  .thanks .em{font-size:44px;line-height:1}
+  .cmp-row{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+  .cmp-row:last-child{border-bottom:0}
+  .cmp-row .bars{grid-column:1/-1;display:grid;gap:4px}
+  .cmp-row .bars > div{display:grid;grid-template-columns:64px 1fr 30px;gap:8px;align-items:center;font-size:11.5px;color:var(--ink-3)}
+  @media (max-width:520px){.faces button .em{font-size:22px}.faces button{padding:10px 3px 8px;font-size:10px;gap:5px}.nps{gap:4px}.nps button{height:34px;font-size:12px;border-radius:8px}.q-text{font-size:19px}}
+  /* comments */
+  .cmt{display:grid;gap:9px;padding:14px 16px;border:1px solid var(--line);border-radius:14px;background:var(--surface);transition:box-shadow var(--dur)}
+  .cmt:hover{box-shadow:var(--shadow-sm)}
+  .cmt p{font-size:13.5px;line-height:1.55;color:var(--ink)}
+  .cmt .meta{display:flex;gap:8px;align-items:center;flex-wrap:wrap;font-size:12px;color:var(--ink-3)}
+  .sdot{width:8px;height:8px;border-radius:50%;display:inline-block;flex:none}
+  .sdot.pos{background:var(--viz-good)}.sdot.neu{background:var(--ink-4)}.sdot.neg{background:var(--viz-serious)}
+  .theme-row{display:grid;grid-template-columns:1fr auto;gap:4px 10px;padding:10px 0;border-bottom:1px solid var(--line-2);cursor:pointer;border-radius:8px}
+  .theme-row:hover{background:var(--surface-2);margin:0 -8px;padding:10px 8px}
+  .theme-row:last-child{border-bottom:0}
+  .theme-row .nm{font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+  .theme-row .ct{font-size:12px;color:var(--ink-3);font-variant-numeric:tabular-nums;display:flex;gap:6px;align-items:center}
+  .mix{display:flex;height:6px;border-radius:99px;overflow:hidden;background:var(--surface-3);grid-column:1/-1;gap:1px}
+  .mix i{display:block;height:100%}
+  .mix .pos{background:var(--viz-good)}.mix .neu{background:var(--ink-4)}.mix .neg{background:var(--viz-serious)}
+  .dchip{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:600;padding:2px 8px;border-radius:99px;background:var(--surface-3);color:var(--ink-2)}
+  .dchip i{width:7px;height:7px;border-radius:50%;display:inline-block}
+  /* movers & lists */
+  .mover{display:grid;grid-template-columns:1fr auto;gap:2px 12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-2)}
+  .mover:last-child{border-bottom:0}
+  .mover .t{font-weight:600;font-size:13px}.mover .s{font-size:11.5px;color:var(--ink-3)}
+  .mover .d{font-weight:700;font-variant-numeric:tabular-nums;font-size:13px;display:inline-flex;align-items:center;gap:2px}
+  .mover .d svg{width:14px;height:14px}
+  .mover .d.up{color:var(--ok)}.mover .d.down{color:var(--bad)}
+  .kv{display:grid;grid-template-columns:1fr auto;gap:8px 14px;font-size:13px;padding:7px 0;border-bottom:1px solid var(--line-2)}
+  .kv:last-child{border-bottom:0}
+  .kv b{font-variant-numeric:tabular-nums}
+  .heat-legend{display:flex;align-items:center;gap:8px;font-size:11.5px;color:var(--ink-3)}
+  .heat-legend i{display:block;width:88px;height:8px;border-radius:99px;background:linear-gradient(90deg,var(--viz-seq-100),var(--viz-seq-700))}
+  .masked{font-size:12px;color:var(--ink-3);display:inline-flex;align-items:center;gap:6px}
+  .masked svg{width:13px;height:13px}
+  /* drivers */
+  .qrow{display:grid;grid-template-columns:1fr 140px 44px;gap:12px;align-items:center;padding:9px 0;border-bottom:1px solid var(--line-2);font-size:13px}
+  .qrow:last-child{border-bottom:0}
+  .qrow b{font-variant-numeric:tabular-nums;text-align:right}
+  @media (max-width:640px){.qrow{grid-template-columns:1fr 44px}.qrow .ns-progress{display:none}}
+  .bench-row{display:grid;grid-template-columns:1fr auto auto;gap:8px 16px;align-items:center;font-size:13px;padding:8px 0;border-bottom:1px solid var(--line-2)}
+  .bench-row:last-child{border-bottom:0}
+  /* action plans */
+  .plan-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-start;flex-wrap:wrap}
+  .act{display:flex;gap:10px;align-items:flex-start;padding:9px 0;border-top:1px solid var(--line-2);font-size:13px}
+  .act .st{width:20px;height:20px;border-radius:6px;border:1.5px solid var(--line-strong);display:grid;place-items:center;flex:none;cursor:pointer;color:transparent;margin-top:1px;transition:all var(--dur)}
+  .act .st:hover{border-color:var(--brand)}
+  .act .st.doing{border-color:var(--warn);background:var(--warn-bg)}
+  .act .st.doing::after{content:"";width:8px;height:8px;border-radius:2px;background:var(--warn)}
+  .act .st.done{background:var(--ok);border-color:var(--ok);color:#fff}
+  .act .st svg{width:12px;height:12px}
+  .act.done .t{text-decoration:line-through;color:var(--ink-3)}
+  .act .t{font-weight:500}.act .s{font-size:11.5px;color:var(--ink-3);margin-top:1px}
+  .tpl{display:grid;gap:6px;padding:12px 14px;border:1px dashed var(--line-strong);border-radius:12px;background:var(--surface-2)}
+  .tpl b{font-size:13px}.tpl p{font-size:12.5px;color:var(--ink-2)}
+  .tpl ul{margin:0;padding-left:16px;font-size:12px;color:var(--ink-3)}
+  .note-box{display:flex;gap:10px;align-items:flex-start;font-size:13px;padding:10px 12px;border-radius:12px;background:var(--surface-2)}
+  .note-box .ns-avatar{flex:none}
+  /* misc */
+  .part-day{display:grid;grid-template-columns:repeat(9,1fr);gap:6px;align-items:end;height:90px}
+  .part-day div{display:grid;justify-items:center;gap:4px;align-content:end;height:100%;font-size:10.5px;color:var(--ink-3)}
+  .part-day i{width:100%;border-radius:4px 4px 0 0;background:var(--brand)}
+  .ns-hero .stat-inline{display:flex;gap:18px;flex-wrap:wrap;margin-top:14px}
+  .ns-hero .stat-inline b{display:block;font-size:22px;font-weight:700;letter-spacing:-.02em}
+  .ns-hero .stat-inline span{font-size:11.5px;color:rgba(255,255,255,.75)}
+  .hist{display:flex;gap:4px;align-items:flex-end;height:36px}
+  .hist i{flex:1;border-radius:3px 3px 0 0;background:var(--brand);opacity:.85}
+  /* view layer additions */
+  .stepdots{display:flex;gap:8px;flex-wrap:wrap;justify-content:center}
+  .stepdots button{width:9px;height:9px;border-radius:50%;background:var(--surface-4);padding:0;transition:all var(--dur)}
+  .stepdots button.done{background:var(--brand-400)}
+  .stepdots button.cur{background:var(--brand);transform:scale(1.4)}
+  .mini-stats{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+  .mini-stats > div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:3px;min-width:0}
+  .mini-stats b{font-family:var(--font-display);font-size:20px;letter-spacing:-.02em;line-height:1.1}
+  .mini-stats span{font-size:11.5px;color:var(--ink-3)}
+  .board-msg{display:grid;grid-template-columns:28px minmax(0,1fr);gap:12px;padding:11px 0;border-bottom:1px solid var(--line-2);font-size:13.5px;line-height:1.5}
+  .board-msg:last-child{border-bottom:0}
+  .board-msg .n{width:28px;height:28px;border-radius:9px;display:grid;place-items:center;background:var(--brand-soft);color:var(--brand-text);font-weight:700;font-size:13px}
+  .cmt [data-flag]{width:28px;height:28px;margin-left:auto}
+  .cmt [data-flag] svg{width:14px;height:14px}
+  .cmt [data-flag][aria-pressed="true"]{color:var(--brand-text);background:var(--brand-soft)}
+  .cmt-list{display:grid;gap:10px}
+  .tracker{display:flex;gap:22px;align-items:center;flex-wrap:wrap}
+  .tracker .ns-ring b{font-size:24px}
+  .q-toggle{display:flex;justify-content:space-between;gap:14px;align-items:center;padding:10px 0;border-bottom:1px solid var(--line-2)}
+  .q-toggle:last-child{border-bottom:0}
+  .heat-scroll{overflow-x:auto;-webkit-overflow-scrolling:touch}
+  .heat-scroll > div{min-width:500px}
+  .tpl .ns-btn{justify-self:start;margin-top:4px}
+  .tpl .dchip{justify-self:start}
+  .pct-cell{display:grid;grid-template-columns:34px minmax(40px,1fr);gap:8px;align-items:center}
+  .survey-card{padding:28px 30px}
+  .hero-emp{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:24px;align-items:center}
+  .hero-emp .ns-ring b{font-size:22px}
+  .flag-list li{margin:4px 0}
+  @media (max-width:720px){.hero-emp{grid-template-columns:minmax(0,1fr)}.survey-card{padding:20px 16px}.mini-stats b{font-size:17px}}
+  @media (max-width:420px){.mini-stats{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  .ns-content{overflow-x:clip}
+  .checklist{display:grid;gap:6px}
+  .checklist label{display:flex;gap:12px;align-items:flex-start;padding:10px 12px;border-radius:12px;border:1px solid var(--line-2);transition:background var(--dur)}
+  .checklist label:hover{background:var(--surface-2)}
+  .checklist label.done{opacity:.55}
+  .checklist .ns-check{align-items:flex-start;flex:1}
+  .checklist .t{font-weight:600;font-size:13.5px}
+  .checklist .s{font-size:12px;color:var(--ink-3);margin-top:2px}
+</style>
+</head>
+<body>
+<script>
+(function () {
+  'use strict';
+  const D = NSData, U = NS.util, F = NS.fmt, raw = NS.raw, ic = NS.ic; const html = (st, ...v) => st.reduce((a, x, i) => a + x + (i < v.length ? (Array.isArray(v[i]) ? v[i].map(NS.str).join('') : NS.str(v[i] == null || v[i] === false ? '' : v[i])) : ''), '');
+  const store = NS.store('pulse');
+  const TODAY = new Date('2026-09-24T10:00:00');
+  const P = D.people;
+
+  /* ------------------------------------------------------------------ */
+  /* 1. Domain content                                                   */
+  /* ------------------------------------------------------------------ */
+  const DRIVERS = [
+    { id: 'growth', name: 'Growth', icon: 'trending-up', bench: 3.7, desc: 'Learning, career paths and stretch opportunities', color: 'var(--viz-1)' },
+    { id: 'manager', name: 'Manager', icon: 'user-check', bench: 3.8, desc: 'Feedback, support and 1:1 quality', color: 'var(--viz-2)' },
+    { id: 'recognition', name: 'Recognition', icon: 'award', bench: 3.6, desc: 'Being seen and valued for good work', color: 'var(--viz-3)' },
+    { id: 'workload', name: 'Workload', icon: 'activity', bench: 3.6, desc: 'Sustainable pace and the ability to disconnect', color: 'var(--viz-4)' },
+    { id: 'pay', name: 'Pay', icon: 'banknote', bench: 3.4, desc: 'Perceived fairness of compensation', color: 'var(--viz-5)' },
+    { id: 'belonging', name: 'Belonging', icon: 'heart', bench: 3.9, desc: 'Inclusion, safety and being yourself at work', color: 'var(--viz-6)' },
+    { id: 'clarity', name: 'Clarity', icon: 'compass', bench: 3.8, desc: 'Knowing what is expected and why it matters', color: 'var(--viz-7)' },
+  ];
+  const DM = Object.fromEntries(DRIVERS.map((d) => [d.id, d]));
+  const DKEY = { g: 'growth', m: 'manager', r: 'recognition', w: 'workload', p: 'pay', b: 'belonging', c: 'clarity', o: 'other' };
+  const OTHER = { id: 'other', name: 'Tools & ways of working', icon: 'puzzle', color: 'var(--viz-8)' };
+  const themeOf = (id) => DM[id] || OTHER;
+  const BENCH = { enps: 24, enpsTop: 45, engagement: 72, participation: 78 };
+  // 12-question bank mapped to drivers; `off` is the question's deterministic offset from its driver mean
+  const QUESTIONS = [
+    { id: 'q_growth1', driver: 'growth', text: 'I have opportunities to learn and grow here', off: 0.08 },
+    { id: 'q_growth2', driver: 'growth', text: 'I can see a path to progress my career at Northstar', off: -0.21 },
+    { id: 'q_manager1', driver: 'manager', text: 'My manager gives me useful feedback', off: -0.06 },
+    { id: 'q_manager2', driver: 'manager', text: 'My manager genuinely cares about my wellbeing', off: 0.14 },
+    { id: 'q_recog1', driver: 'recognition', text: 'I get recognised when I do good work', off: 0 },
+    { id: 'q_work1', driver: 'workload', text: 'My workload is sustainable', off: -0.04 },
+    { id: 'q_work2', driver: 'workload', text: 'I can disconnect from work outside working hours', off: -0.17 },
+    { id: 'q_pay1', driver: 'pay', text: 'I am paid fairly for the work I do', off: 0 },
+    { id: 'q_belong1', driver: 'belonging', text: 'I feel I belong at Northstar', off: 0.05 },
+    { id: 'q_belong2', driver: 'belonging', text: 'I can be myself at work', off: 0.11 },
+    { id: 'q_clarity1', driver: 'clarity', text: 'I know what is expected of me', off: 0.12 },
+    { id: 'q_clarity2', driver: 'clarity', text: 'I understand how my work contributes to company goals', off: -0.19 },
+  ];
+  const Q_ENPS = { id: 'enps', type: 'enps', text: 'How likely are you to recommend Northstar as a place to work?' };
+  const Q_OPEN = { id: 'open', type: 'open', text: 'What is one thing that would make Northstar a better place to work?' };
+  const FACES = [['😞', 'Strongly disagree'], ['🙁', 'Disagree'], ['😐', 'Neutral'], ['🙂', 'Agree'], ['😄', 'Strongly agree']];
+  const PERIODS = [{ id: 'sep', label: 'September pulse', short: 'Sep ’26' }, { id: 'aug', label: 'August pulse', short: 'Aug ’26' }, { id: 'jul', label: 'July pulse', short: 'Jul ’26' }, { id: 'h1', label: 'H1 ’26 engagement survey', short: 'H1 ’26' }];
+  const MONTHS6 = ['Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep'];
+
+  // Comment corpus — driver | sentiment | team | text. Attributed to teams only, never to a person.
+  const COMMENT_SRC = `g|+|Applied AI|The internal ML course and the paper-reading group are the best learning setup I have had at any employer.
+g|+|Design Systems|Being trusted to lead the token migration end to end stretched me more than any training could.
+g|+|Search|The rotation into the ranking team was exactly the kind of growth opportunity I had asked for last pulse.
+g|+|Talent Acquisition|Getting to own the interviewer certification programme has been a real step up in scope.
+g|+|Customer Success Management|Shadowing enterprise renewals with a senior CSM has taught me more in two months than the whole of last year.
+g|+|Web App|Conference budget was approved without a fight, which made me feel invested in.
+g|+|Sales Engineering|Certification budget plus a real sandbox environment made levelling up practical, not theoretical.
+g|0|Core Product|Growth is there if you go and find it, but nothing comes to you. A clearer menu of options would help.
+g|0|Accounting|I have learned a lot, though mostly by necessity during close rather than by design.
+g|0|Android|Would love a mentor outside my team. The programme exists but pairing takes months.
+g|-|Technical Support|There is no visible path from support into engineering or product, so people leave to get one.
+g|-|Sales Development|The SDR to AE promotion criteria change every quarter. Hard to aim at a moving target.
+g|-|QA Automation|Three years at the same level with strong reviews. I have stopped asking what is missing.
+g|-|Compute|Learning budget is fine, but there is never time to use it between incident load and roadmap.
+g|-|Mid-Market Sales|Every stretch project goes to the same two people. The rest of us are quota machines.
+g|-|Data Governance|Career conversations happen once a year and then nothing changes until the next one.
+g|-|Renewals|Would love to move into CSM. The internal mobility policy requires 18 months in role, which feels arbitrary.
+m|+|Identity & Access|My manager gives feedback in the moment and makes it specific. It is the reason I stayed through the reorg.
+m|+|Observability|Weekly 1:1s never get cancelled here. That consistency matters more than any perk.
+m|+|Product Design|My lead shields us from thrash and explains the why when priorities change.
+m|+|Storage|Got a hard piece of feedback last month and it was delivered with care and a plan. Grateful for that.
+m|+|Renewals|Our manager fights for our comp cases and tells us honestly when the answer is no.
+m|+|ML Platform|Career conversations are separate from performance reviews, which makes them actually useful.
+m|+|UX Research|My manager actively finds visibility opportunities for the team rather than presenting our work herself.
+m|+|Security Operations|New manager, six months in, and the team already feels calmer and better led.
+m|+|Analytics Platform|My manager admitted a planning mistake in front of the team and fixed it. That earned real respect.
+m|0|Messaging|My manager is very supportive but very stretched. Fourteen directs is too many for anyone.
+m|0|Corporate IT|Good intentions, but 1:1s are mostly status updates. I would like more coaching.
+m|-|Billing Platform|Decisions get made above us and communicated as done deals. We find out in sprint planning.
+m|-|Technical Support|Feedback only arrives at review time, and by then it is a surprise.
+m|-|Mid-Market Sales|Public call-outs on pipeline numbers in the team channel do not motivate anyone.
+m|-|Enterprise Sales — APAC|Our manager sits in a different time zone and we rarely get more than a fortnightly 15 minutes.
+m|-|Workflow Engine|I have had three managers in eighteen months. Each one restarted my growth plan from scratch.
+r|+|Onboarding Experience|The launch retro called out individual contributions by name. Small thing, big difference.
+r|+|Cloud Infrastructure|The peer kudos channel has genuinely changed the tone of the team.
+r|+|Content & Community|Leadership reshared our community report to the whole company. Felt seen.
+r|+|Solutions Architecture|Spot bonus after the migration rescue was unexpected and appreciated.
+r|+|People Operations|Being thanked in the all-hands for the payroll migration meant a lot to the team.
+r|0|Analytics Platform|Recognition is warm inside the team, but the platform work is invisible beyond it.
+r|0|iOS|Praise is frequent; what I want is for it to show up in the promotion packet.
+r|0|Legal|We hear thanks when a deal closes, and silence for the ten risks we prevented.
+r|-|Technical Support|We hit record CSAT and the only company-wide mention went to the product launch.
+r|-|Billing Platform|Invoicing has run flawlessly through two quarter closes. Nobody notices reliability until it breaks.
+r|-|Database Reliability|Recognition flows to whoever presents, not whoever does the work.
+r|-|Test Infrastructure|The test platform saved every team hours a week and it never appears in any update.
+r|-|Sales Development|Only closed deals get celebrated. The booked meetings that made them happen do not.
+r|-|Accounting|Close week is thankless. A simple acknowledgement from finance leadership would go a long way.
+r|-|Caching & Edge|Awards went to the flashy project again. Quiet infrastructure work is taken for granted.
+r|-|Documentation|Docs are praised by customers constantly and never mentioned internally.
+r|-|Release Engineering|We ship every release on time and the credit goes to the feature teams every time.
+w|+|Design Systems|Meeting-free Wednesdays have given me back a full day of focused work.
+w|+|Product Ops|Workload is heavy but predictable, and I can plan my week around it.
+w|+|Brand & Creative|The new intake process stopped the drive-by requests. Evenings are mine again.
+w|+|Search|The interrupt triage rota from our action plan has cut random pings by half. Please keep it.
+w|0|Console|Fine most quarters, brutal in launch quarters. Averaging out is not the same as sustainable.
+w|0|Data Pipelines|Manageable now that the backfill is done, but we are one incident away from the old pattern.
+w|0|FP&A|Planning season is intense by design. Outside of it, the pace is reasonable.
+w|0|Search|The backlog is still scary, but at least interrupts are triaged now instead of landing on whoever is online.
+w|-|Billing Platform|The invoicing rewrite plus on-call plus the compliance audit is three jobs. Something has to give.
+w|-|Billing Platform|On-call is every other week right now because two people left and were not backfilled.
+w|-|Billing Platform|Two weekend incidents this month and we were still expected to hit the sprint commitment.
+w|-|Billing Platform|We keep being told the crunch is temporary. It has been temporary since March.
+w|-|SRE|Page volume doubled after the region expansion and the rota did not change with it.
+w|-|SRE|Comp time for weekend incidents exists on paper. In practice nobody can take it.
+w|-|Technical Support|Queue targets went up when headcount went down. The maths does not work.
+w|-|Technical Support|Back-to-back chats for eight hours with no buffer. People are burning out quietly.
+w|-|Mid-Market Sales|Quota went up 20% with the same territory and one fewer SDR supporting us.
+w|-|Release Engineering|Every team's deadline becomes our emergency the week before release.
+w|-|Enterprise Sales — NA|Travel plus late-night calls with APAC customers means I rarely have a real weekend.
+w|-|Customer Success Management|Book size has grown to 40 accounts. Proactive work is impossible; it is all firefighting.
+w|-|Growth Engineering|Experiment velocity targets ignore the cleanup cost of every test we ship.
+w|-|Security Operations|Alert fatigue is real. Half the pages are noise and we have no time to tune them.
+p|+|Applied AI|The market adjustment this year was fair and it was explained clearly. Credit where due.
+p|+|Legal|Compensation is competitive and the band conversation with Total Rewards was transparent.
+p|0|Web App|Base is fine; the equity refresh policy is opaque and that is what I actually worry about.
+p|0|Demand Generation|Pay is okay for the city, but bonuses have paid out below target two years running.
+p|0|Platform Product|I would trade some base for a clearer bonus formula I can actually influence.
+p|0|Recommendations|Not unhappy, just unsure. Publish the bands and most of the anxiety goes away.
+p|-|Identity & Access|Fully aware that new hires at my level are offered more than I make after three years here.
+p|-|Technical Support|Support pay has not moved in two years while the cost of living certainly has.
+p|-|Enterprise Sales — Europe|The comp plan changed mid-year and the accelerators got harder. Trust took a hit.
+p|-|QA Automation|Same level, same work, different pay depending on when you joined. Fix the compression.
+p|-|Sales Development|OTE looks good on paper but the quota is set so that almost nobody hits it.
+p|-|Android|I was told I am at the top of the band, so the only way to earn more is a promotion that is not available.
+p|-|Accounting|Finance sees every salary in the company. It is hard not to compare.
+p|-|Performance & Reliability|Pay review gave 2.5% while inflation and rent went up far more than that.
+p|-|Customer Education|Our team was benchmarked against training roles, not the technical work we actually do.
+p|-|Cloud Infrastructure|Cloud engineers get poached weekly. Counter-offers happen only after people resign.
+p|-|Events & Field|Bonus criteria were never written down, so the payout felt arbitrary.
+p|-|Mid-Market Sales|Commission statements arrive late and with errors every quarter. That is a pay problem too.
+p|-|Data Pipelines|Data engineers are benchmarked against analysts in the band, not against the engineers we sit next to.
+b|+|Design Systems|This is the first team where I have not had to translate myself to fit in.
+b|+|Identity & Access|We disagree loudly and then get lunch. Psychological safety is real here.
+b|+|People Partners|The ERG budget increase showed that inclusion is more than a slide.
+b|+|Data Pipelines|Remote and in Toronto, and I still feel like a full member of a Mumbai-based team.
+b|+|Partnerships|Culture of assuming good intent. I have never seen anyone thrown under a bus.
+b|+|Mobile Platform|Small team, big trust. Everyone knows what everyone is working on.
+b|+|Product Marketing|Returning from parental leave was smooth and welcomed. That is not universal in tech.
+b|+|Storage|The team offsite was the first time in years I felt properly connected to colleagues.
+b|+|Build & CI|Our retro format lets quieter people speak first. It works.
+b|+|Search|The team charter exercise from the last action plan actually stuck. We reference it in retros.
+b|0|Enterprise Sales — APAC|I belong to my team; I do not always feel Northstar belongs to APAC.
+b|0|Console|Hybrid works, but the in-office crowd get the corridor decisions.
+b|0|Revenue Operations|Friendly team, though as one of few non-engineers in the building I sometimes feel peripheral.
+b|-|Mid-Market Sales|Banter crosses lines regularly and nobody senior calls it out.
+b|-|Compute|As the only woman on the team I am still asked to take notes in design reviews.
+b|-|Technical Support|Support is treated as a cost centre, socially as much as financially.
+b|-|Sales Engineering|Being contract staff means being left out of offsites and swag. It stings more than it should.
+b|-|Analytics Platform|Team chat is in a language I do not speak. Small thing daily, big thing over a year.
+c|+|Identity & Access|Quarterly goals are written down, ranked and revisited. I always know the top priority.
+c|+|Observability|The service ownership map finally answers who owns what. Huge clarity win.
+c|+|Core Product|The new roadmap review made trade-offs explicit for the first time.
+c|+|Renewals|Targets, territories and comp were all clear from day one this year.
+c|0|Web App|I know what my team is doing. I am less sure how it ladders up to the company strategy.
+c|0|Data Governance|Expectations of my role are clear; expectations of the team from the rest of the company are not.
+c|0|Talent Acquisition|Priorities are clear for the quarter and then shift after every leadership offsite.
+c|0|Internal Tools|We know the what. The why behind the platform consolidation could be shared better.
+c|-|Billing Platform|Three different leaders have told us three different top priorities this quarter.
+c|-|Workflow Engine|The reorg happened in June and we still do not have a written charter.
+c|-|Sales Development|Lead routing rules changed twice this month with no announcement.
+c|-|Applied AI|Are we a research team or a product team? The answer changes depending on who is asking.
+c|-|Growth Product|Success metrics for my area were never agreed, so every review is a negotiation.
+c|-|Performance & Reliability|We get pulled onto whichever fire is loudest. There is no stated mandate.
+c|-|Enterprise Sales — Europe|Territory boundaries overlap with the mid-market team and deals get contested every week.
+c|-|Cost Engineering|Our targets are set in dollars by finance and in features by engineering. They conflict.
+c|-|Corporate IT|Nobody has told us whether the office consolidation is happening. Planning is impossible.
+c|-|Test Infrastructure|Promotion expectations at senior level are a mystery. The rubric says one thing, decisions say another.
+c|-|Recommendations|Half the team thinks we are optimising for engagement, half for revenue. Leadership has not chosen.
+o|+|Developer Productivity|The new CI cache cut my build wait from 40 minutes to 6. Best change this year.
+o|+|People Operations|Benefits enrolment was painless this year. Whoever fixed the portal, thank you.
+o|+|Demand Generation|All-hands Q&A actually answers the hard questions now instead of dodging them.
+o|+|Customer Success Management|Product finally ships the fixes we escalate. Customers have noticed.
+o|+|iOS|Leadership shared the revenue numbers, good and bad. That transparency builds trust.
+o|0|Marketing Operations|Too many tools that half overlap. Consolidating would save everyone time.
+o|0|Accounting|The Austin office refresh is nice; the Pune office still has the broken air conditioning.
+o|0|Platform Product|Strategy is clear at the top and fuzzy by the time it reaches individual roadmaps.
+o|-|Messaging|The laptop refresh cycle is four years. Compiling on a four-year-old machine is a daily tax.
+o|-|Events & Field|Expense reimbursement takes six weeks. Field staff are effectively lending the company money.
+o|-|Security Operations|Security is asked to approve things after they are built, then blamed for slowing them down.
+o|-|Technical Support|Internal tooling for support has not been updated since I joined. We work around it daily.`;
+
+  // "What works" template library — actions with evidence from earlier pulses
+  const TEMPLATES = [
+    { id: 't_kudos', driver: 'recognition', title: 'Peer kudos ritual', body: 'Five minutes at the end of the weekly team meeting for peer-to-peer thanks, plus a monthly written round-up shared with the org.', steps: ['Add a standing kudos slot to the weekly meeting', 'Nominate a rotating kudos captain', 'Share a monthly highlights note with the director'], evidence: 'Cloud Infrastructure: recognition +0.6 over two pulses' },
+    { id: 't_visible', driver: 'recognition', title: 'Make invisible work visible', body: 'Reliability, docs and platform work rarely get a launch moment. Give them one.', steps: ['Monthly “quiet wins” segment in the org all-hands', 'Include platform metrics in the product launch notes', 'Spot-bonus budget owned by the team lead'], evidence: 'Observability: +0.4 recognition after two quiet-wins segments' },
+    { id: 't_oncall', driver: 'workload', title: 'On-call rebalance', body: 'Right-size the rota to the actual page volume before asking for more resilience.', steps: ['Measure pages per person per week; set a budget', 'Add a secondary rota or merge with a sister team', 'Guarantee comp time within two weeks of a weekend incident', 'Review alert noise: mute or fix the top 10 noisy alerts'], evidence: 'Observability: workload +0.7 in one quarter after alert tuning' },
+    { id: 't_meeting', driver: 'workload', title: 'Meeting diet', body: 'Protect focus time and cut recurring meetings by a third.', steps: ['One meeting-free day per week', 'Audit recurring meetings; cancel any without a decision owner', 'Default 25/50-minute slots'], evidence: 'Design Systems: workload +0.5; 82% would keep the change' },
+    { id: 't_growth', driver: 'growth', title: 'Growth conversations & stretch rotation', body: 'Separate growth from performance and give people a concrete next step.', steps: ['Quarterly growth conversation with a written next step', 'One stretch assignment per person per half', 'Publish the internal mobility board to the team'], evidence: 'Search: growth +0.7 after two quarterly conversations' },
+    { id: 't_mgr', driver: 'manager', title: 'Feedback skills & 1:1 reset', body: 'Most manager scores move when feedback becomes frequent, specific and kind.', steps: ['Manager attends the feedback workshop', '1:1s weekly, 30 minutes, never cancelled — rescheduled', 'Skip-level once a quarter with the director'], evidence: 'Security Operations: manager +0.9 in six months' },
+    { id: 't_pay', driver: 'pay', title: 'Band transparency session', body: 'Pay scores respond to clarity as much as to money. Explain how pay works.', steps: ['Total Rewards presents bands and progression to the team', 'Each person gets their position-in-band in writing', 'Explain the bonus formula with a worked example'], evidence: 'Legal: pay +0.5 with no change to budget' },
+    { id: 't_belong', driver: 'belonging', title: 'Team charter & inclusion moments', body: 'Agree how the team works together and make room for everyone to be heard.', steps: ['Write a one-page team charter together', 'Rotate meeting facilitation', 'Retro format where quieter voices speak first'], evidence: 'Build & CI: belonging +0.4 after the charter exercise' },
+    { id: 't_clarity', driver: 'clarity', title: 'Written priorities, weekly', body: 'Clarity is a writing habit: ranked quarterly goals and a short weekly priorities note.', steps: ['Publish ranked quarterly goals with owners', 'Friday priorities note from the manager', 'Retire priorities explicitly when they change'], evidence: 'Identity & Access: clarity 4.3, highest in Platform' },
+  ];
+  const ONBOARD_THEMES = [['Access & tooling not ready on day one', 31], ['Unclear first-month goals', 24], ['Too many intro meetings, too little pairing', 19], ['Buddy assigned late or not at all', 14], ['Documentation out of date', 12]];
+  const EXIT_REASONS = [['Compensation', 28], ['Growth', 22], ['Manager', 14], ['Better offer', 12], ['Burnout', 10], ['Relocation', 9], ['Other', 5]];
+
+  /* ------------------------------------------------------------------ */
+  /* 2. Responses — deterministic September pulse, tuned to the series   */
+  /* ------------------------------------------------------------------ */
+  const teamRate = (t) => (t === 'Billing Platform' ? 0.74 : t === 'Technical Support' ? 0.8 : t === 'Mid-Market Sales' ? 0.83 : t === 'Search' ? 0.98 : 0.93 + (((NS.hashStr(t) % 15) - 7) / 100));
+  const resp = {};
+  P.forEach((p) => { resp[p.id] = NS.rng(NS.hashStr(p.id + 'resp'))() < teamRate(p.team); });
+  const IA = D.reports('NS-1180');
+  IA.forEach((p, i) => { resp[p.id] = !(p.id === 'NS-1207' || i === IA.length - 1); });
+  resp['NS-1180'] = true;
+  const fixedIds = new Set([...IA.map((p) => p.id), 'NS-1180']);
+  const npsCat = (p) => (p.enps >= 9 ? 'pro' : p.enps <= 6 ? 'det' : 'pas');
+  const tuneStat = () => { const rs = P.filter((p) => resp[p.id]); const pr = rs.filter((p) => npsCat(p) === 'pro').length, de = rs.filter((p) => npsCat(p) === 'det').length; return { enps: Math.round(((pr - de) / rs.length) * 100), part: Math.round((rs.length / P.length) * 100) }; };
+  const tuneOrder = U.sortBy(P.filter((p) => !fixedIds.has(p.id)), (p) => NS.hashStr(p.id + 'tune'));
+  for (let i = 0; i < 400; i++) {
+    const s = tuneStat(); if (s.enps === 67 && s.part === 91) break;
+    let flipTo, want;
+    if (s.part > 91) { flipTo = false; want = s.enps > 67 ? 'pro' : s.enps < 67 ? 'det' : 'pas'; }
+    else if (s.part < 91) { flipTo = true; want = s.enps > 67 ? 'det' : s.enps < 67 ? 'pro' : 'pas'; }
+    else { flipTo = false; want = s.enps > 67 ? 'pro' : 'det'; }
+    const c = tuneOrder.find((p) => resp[p.id] !== flipTo && npsCat(p) === want); if (!c) break; resp[c.id] = flipTo;
+    if (s.part === 91) { const c2 = tuneOrder.find((p) => !resp[p.id] && npsCat(p) === 'pas'); if (c2) resp[c2.id] = true; }
+  }
+  const RS = P.filter((p) => resp[p.id]);
+  const TEAMS = D.teams.map((t) => ({ ...t, mgr: D.byId(t.managerId) }));
+  const teamByName = Object.fromEntries(TEAMS.map((t) => [t.name, t]));
+  const ENG_ORGS = D.departments[0].orgs.map((o) => o.name);
+  const OTHER_DEPTS = D.departments.slice(1).map((d) => d.name);
+  const UNITS = [...ENG_ORGS.map((o) => ({ id: o, label: o, sub: 'Engineering org', dept: 'Engineering', org: o, people: () => RS.filter((p) => p.org === o) })), ...OTHER_DEPTS.map((d) => ({ id: d, label: d, sub: 'Department', dept: d, people: () => RS.filter((p) => p.dept === d) }))];
+
+  /* metrics */
+  const enpsOf = (ps) => { if (!ps.length) return null; const pr = ps.filter((p) => p.enps >= 9).length, de = ps.filter((p) => p.enps <= 6).length; return Math.round(((pr - de) / ps.length) * 100); };
+  const segOf = (ps) => { const n = ps.length || 1; const pr = ps.filter((p) => p.enps >= 9).length, de = ps.filter((p) => p.enps <= 6).length; const pro = Math.round((pr / n) * 100), det = Math.round((de / n) * 100); return { pro, det, pas: 100 - pro - det, nPro: pr, nDet: de, nPas: ps.length - pr - de }; };
+  const dscore = (ps, k) => (ps.length ? U.round(U.avg(ps, (p) => p.drivers[k]), 2) : null);
+  const fav = (ps, k) => (ps.length ? Math.round((ps.filter((p) => p.drivers[k] >= 4).length / ps.length) * 100) : null);
+  const engOf = (ps) => (ps.length ? Math.round(U.avg(ps, 'engagement')) : null);
+  const qscore = (ps, q) => { const s = dscore(ps, q.driver); return s == null ? null : U.round(U.clamp(s + q.off, 1, 5), 2); };
+  const teamR = (name) => { const t = teamByName[name]; return RS.filter((p) => p.team === name && (!t || p.id !== t.managerId)); };
+  const thr = () => S.settings.threshold;
+  const visible = (ps) => ps.length >= thr();
+  const COMPANY = { enps: enpsOf(RS), seg: segOf(RS), eng: engOf(RS), part: Math.round((RS.length / P.length) * 100), n: RS.length };
+  const MONTHLY = MONTHS6.map((m, i) => Math.round(U.avg(RS, (p) => p.pulse[i])));
+  const SCORE_DELTA = { growth: 0.06, manager: 0.03, recognition: 0.04, workload: -0.09, pay: 0.01, belonging: 0.02, clarity: 0.05 }; // vs August pulse (mean score)
+  const CHANGE_OVERRIDE = { 'Billing Platform|workload': -9, 'Billing Platform|clarity': -6, 'Search|growth': 7, 'Search|workload': 6, 'Technical Support|recognition': -5, 'Security Operations|manager': 8, 'Design Systems|workload': 5, 'Mid-Market Sales|belonging': -4, 'Cloud Infrastructure|recognition': 6, 'Workflow Engine|clarity': -5, 'Data Pipelines|clarity': 6 };
+  const favChange = (key, k) => (CHANGE_OVERRIDE[key + '|' + k] != null ? CHANGE_OVERRIDE[key + '|' + k] : Math.round(((NS.hashStr(key + '|' + k) % 13) - 6) * 0.7)); // % favourable points since August
+  const tenureBand = (p) => (p.tenure < 1 ? '< 1 yr' : p.tenure < 3 ? '1–3 yrs' : p.tenure < 6 ? '3–6 yrs' : '6+ yrs');
+  const TENURE_BANDS = ['< 1 yr', '1–3 yrs', '3–6 yrs', '6+ yrs'];
+  const levelBand = (p) => { const L = D.levelMap[p.level]; if (L.track === 'E') return 'Executives'; if (L.track === 'M') return 'People managers'; return L.order <= 2 ? 'Early career (P0–P2)' : L.order === 3 ? 'Senior (P3)' : 'Staff and above (P4+)'; };
+  const LEVEL_BANDS = ['Early career (P0–P2)', 'Senior (P3)', 'Staff and above (P4+)', 'People managers', 'Executives'];
+  const pearson = (pts) => { const n = pts.length; if (n < 3) return { r: 0, slope: 0 }; const mx = U.avg(pts, 'x'), my = U.avg(pts, 'y'); let sxy = 0, sxx = 0, syy = 0; pts.forEach((p) => { sxy += (p.x - mx) * (p.y - my); sxx += (p.x - mx) ** 2; syy += (p.y - my) ** 2; }); return { r: sxx && syy ? sxy / Math.sqrt(sxx * syy) : 0, slope: sxx ? sxy / sxx : 0 }; };
+  const teamStatsCache = {};
+  const teamStats = (name) => { const key = name + '|' + thr(); if (teamStatsCache[key]) return teamStatsCache[key]; const t = teamByName[name]; const ps = teamR(name); const size = t ? t.size : ps.length; const st = { name, team: t, n: ps.length, size, part: size ? Math.round((ps.length / size) * 100) : 0, visible: visible(ps), enps: enpsOf(ps), seg: segOf(ps), eng: engOf(ps), scores: {}, fav: {}, lowest: null, highest: null }; DRIVERS.forEach((d) => { st.scores[d.id] = dscore(ps, d.id); st.fav[d.id] = fav(ps, d.id); }); if (ps.length) { const sorted = DRIVERS.slice().sort((a, b) => st.scores[a.id] - st.scores[b.id]); st.lowest = sorted[0].id; st.highest = sorted[sorted.length - 1].id; } teamStatsCache[key] = st; return st; };
+  const orgScore = (org, k) => dscore(RS.filter((p) => p.org === org), k);
+
+  /* comments */
+  const COMMENTS = COMMENT_SRC.split('\n').map((line, i) => { const [k, s, team, text] = line.split('|'); const t = teamByName[team]; if (!t) console.warn('Pulse: unknown team in comment corpus', team); const h = NS.hashStr(text); const forced = (team === 'Billing Platform' && k === 'w') || team === 'Search'; const period = forced ? 'sep' : h % 20 < 11 ? 'sep' : h % 20 < 15 ? 'aug' : h % 20 < 17 ? 'jul' : 'h1'; const day = period === 'h1' ? 8 + (h % 12) : 15 + (h % (period === 'sep' ? 9 : 8)); const month = { sep: '09', aug: '08', jul: '07', h1: '06' }[period]; return { id: 'c' + (i + 1), theme: DKEY[k], sent: s === '+' ? 'pos' : s === '-' ? 'neg' : 'neu', team, org: t ? t.org : '', dept: t ? t.dept : '', text, period, date: `2026-${month}-${String(day).padStart(2, '0')}` }; });
+  const THEMES = [...DRIVERS, OTHER];
+  const scopeOf = (c) => (visible(teamR(c.team)) ? `${c.team} · ${c.org}` : `${c.org} · team hidden`);
+  const clusters = (list) => THEMES.map((t) => { const cs = list.filter((c) => c.theme === t.id); const pos = cs.filter((c) => c.sent === 'pos').length, neg = cs.filter((c) => c.sent === 'neg').length; return { theme: t, n: cs.length, pos, neg, neu: cs.length - pos - neg, negShare: cs.length ? Math.round((neg / cs.length) * 100) : 0, items: cs }; }).filter((x) => x.n).sort((a, b) => b.n - a.n);
+  const themeTrend = (themeId, base) => { const share = (per) => { const cs = base.filter((c) => c.theme === themeId && c.period === per); return cs.length ? (cs.filter((c) => c.sent === 'neg').length / cs.length) * 100 : null; }; const sep = share('sep'), aug = share('aug'); if (sep == null || aug == null) return 0; const d = Math.round(sep - aug); return Math.abs(d) >= 10 ? d : 0; }; // negative-share change vs August, in points (±10 pt dead band)
+
+  /* action plans */
+  const seedPlans = () => [
+    { id: 'p1', team: 'Identity & Access', driver: 'growth', title: 'Growth conversations & stretch rotation', lift: 0.3, due: '2026-12-18', created: '2026-07-06', status: 'active', actions: [['Quarterly growth conversation with each engineer', 'done', '2026-07-31'], ['Publish the H2 stretch-assignment board', 'done', '2026-08-14'], ['Pair two engineers with Identity Security on the passkeys project', 'doing', '2026-10-15'], ['Internal mobility session with Talent Acquisition', 'todo', '2026-11-06']], updates: [{ date: '2026-09-12', text: 'Stretch board live; 6 of 9 signed up for a rotation.' }, { date: '2026-08-02', text: 'All nine growth conversations held; next steps written.' }] },
+    { id: 'p2', team: 'Billing Platform', driver: 'workload', title: 'On-call rebalance & backfill', lift: 0.6, due: '2026-12-18', created: '2026-09-18', status: 'active', actions: [['Approve two backfill requisitions', 'doing', '2026-09-30'], ['Merge on-call rota with Workflow Engine as secondary', 'todo', '2026-10-09'], ['Mute or fix the 10 noisiest alerts', 'todo', '2026-10-16'], ['Guaranteed comp time within two weeks of weekend incidents', 'todo', '2026-10-02']], updates: [{ date: '2026-09-18', text: 'Plan opened after the September pulse flagged a 9-point workload drop.' }] },
+    { id: 'p3', team: 'Search', driver: 'workload', title: 'Interrupt triage rota', lift: 0.4, due: '2026-11-27', created: '2026-09-21', status: 'active', actions: [['Weekly interrupt-triage rota (one engineer, one day)', 'done', '2026-09-22'], ['Move ad-hoc requests to a request form', 'doing', '2026-10-03'], ['Retro on the rota after four weeks', 'todo', '2026-10-24']], updates: [] },
+    { id: 'p4', team: 'Technical Support', driver: 'recognition', title: 'Make support wins visible', lift: 0.5, due: '2026-12-18', created: '2026-08-10', status: 'active', actions: [['Monthly CSAT highlights in the CS all-hands', 'done', '2026-08-28'], ['Spot-bonus budget for the support leads', 'doing', '2026-10-01'], ['Support-to-product rotation pilot (2 people)', 'todo', '2026-11-13']], updates: [{ date: '2026-09-01', text: 'First highlights segment landed well; two shout-outs from the CRO.' }] },
+    { id: 'p5', team: 'Mid-Market Sales', driver: 'manager', title: 'Feedback skills & 1:1 reset', lift: 0.6, due: '2026-12-18', created: '2026-08-24', status: 'active', actions: [['Manager completes the feedback workshop', 'done', '2026-09-05'], ['Weekly 1:1s, never cancelled', 'doing', '2026-12-18'], ['Pipeline reviews move to private 1:1s', 'done', '2026-09-01'], ['Quarterly skip-level with the sales director', 'todo', '2026-10-30']], updates: [] },
+    { id: 'p6', team: 'Data Pipelines', driver: 'clarity', title: 'Written priorities, weekly', lift: 0.4, due: '2026-11-27', created: '2026-07-20', status: 'done', actions: [['Ranked quarterly goals published', 'done', '2026-07-24'], ['Friday priorities note', 'done', '2026-09-19'], ['Retire the legacy backlog explicitly', 'done', '2026-08-29']], updates: [{ date: '2026-09-19', text: 'Clarity favourability +6 pts since August. Closing the plan; the Friday note continues.' }] },
+    { id: 'p7', team: 'SRE', driver: 'workload', title: 'Alert noise & page budget', lift: 0.6, due: '2026-12-18', created: '2026-09-02', status: 'active', actions: [['Page budget: max 4 pages per person per week', 'done', '2026-09-10'], ['Alert tuning sprint', 'doing', '2026-10-10'], ['Secondary rota with Observability', 'todo', '2026-10-20']], updates: [] },
+    { id: 'p8', team: 'Enterprise Sales — Europe', driver: 'clarity', title: 'Territory rules of engagement', lift: 0.6, due: '2026-11-27', created: '2026-09-08', status: 'draft', actions: [['Publish written territory boundaries with mid-market', 'todo', '2026-10-02'], ['Deal-conflict escalation path (48h SLA)', 'todo', '2026-10-09']], updates: [] },
+  ].map((p) => { const t = teamByName[p.team]; return { ...p, ownerId: t.managerId, org: t.org, actions: p.actions.map((a, i) => ({ id: p.id + 'a' + i, t: a[0], status: a[1], due: a[2] })), comments: [] }; });
+  const INITIATIVES = [
+    { id: 'i1', title: 'Publish pay bands to every employee', driver: 'pay', sponsor: 'Total Rewards', progress: 65, due: '2026-11-30', body: 'Every person sees their band, position in band and what moves pay. Bonus formula explained with worked examples.' },
+    { id: 'i2', title: 'Manager feedback programme', driver: 'manager', sponsor: 'Learning & Development', progress: 48, due: '2026-12-15', body: `All ${D.managers.length} people managers complete the feedback workshop; 1:1 cadence is tracked through the pulse.` },
+    { id: 'i3', title: 'Quiet-wins segment & quarterly awards', driver: 'recognition', sponsor: 'People Partners', progress: 30, due: '2026-12-18', body: 'A quiet-wins segment in every org all-hands; quarterly awards weighted toward reliability, documentation and support.' },
+    { id: 'i4', title: 'Focus Fridays', driver: 'workload', sponsor: 'Office of the CPeO', progress: 82, due: '2026-10-01', body: 'No recurring internal meetings on Fridays; exceptions need a director’s sign-off.' },
+  ];
+
+  /* ------------------------------------------------------------------ */
+  /* 3. State — seeded then persisted                                    */
+  /* ------------------------------------------------------------------ */
+  const defaultSettings = () => ({ cadence: 'monthly', openDay: 1, windowDays: 27, threshold: 5, closeDate: '2026-09-27', questions: Object.fromEntries(QUESTIONS.map((q) => [q.id, true])), reminders: { d3: true, d1: true, digest: true, channel: 'Email + chat' } });
+  const buildState = () => ({ v: 2, settings: defaultSettings(), survey: { answers: {}, step: 0, submitted: false, submittedAt: null }, plans: seedPlans(), reminders: {}, activity: [], checklist: {} });
+  let S = store.get('state');
+  if (!S || S.v !== 2) S = buildState();
+  const save = U.debounce(() => store.set('state', S), 200);
+  const log = (msg) => { S.activity.unshift({ t: new Date().toISOString(), msg }); S.activity = S.activity.slice(0, 40); save(); };
+  const meFor = (persona) => D.byId(persona.personId);
+  const activeQuestions = () => QUESTIONS.filter((q) => S.settings.questions[q.id] !== false);
+  const daysToClose = () => Math.max(0, Math.ceil((new Date(S.settings.closeDate + 'T18:00:00') - TODAY) / 86400000));
+
+  /* employee's own answers → driver averages / engagement */
+  const myDriverScores = () => { const a = S.survey.answers, out = {}; DRIVERS.forEach((d) => { const qs = activeQuestions().filter((q) => q.driver === d.id && a[q.id]); out[d.id] = qs.length ? U.round(U.avg(qs, (q) => a[q.id]), 1) : null; }); return out; };
+  const myEngagement = () => { const a = S.survey.answers; const vals = activeQuestions().map((q) => a[q.id]).filter((v) => v); return vals.length ? Math.round(((U.avg(vals) - 1) / 4) * 100) : null; };
+
+  /* ------------------------------------------------------------------ */
+  /* 4. Shared UI pieces                                                 */
+  /* ------------------------------------------------------------------ */
+  const f1 = (v) => (v == null ? '—' : Number(v).toFixed(1));
+  const signed = (n, d = 0, suf = '') => (n == null ? '—' : (n > 0 ? '+' : n < 0 ? '−' : '±') + Math.abs(n).toFixed(d) + suf);
+  const segbar = (seg, o = {}) => `<div class="segbar ${o.viz ? 'viz' : ''}" role="img" aria-label="Promoters ${seg.pro}%, passives ${seg.pas}%, detractors ${seg.det}%"><i style="width:${seg.pro}%;background:${o.viz ? 'var(--viz-good)' : '#fff'}"></i><i style="width:${seg.pas}%;background:${o.viz ? 'var(--ink-4)' : 'rgba(255,255,255,.55)'}"></i><i style="width:${seg.det}%;background:${o.viz ? 'var(--viz-serious)' : 'rgba(255,255,255,.25)'}"></i></div>`;
+  const segLegend = (seg, o = {}) => `<div class="seg-legend ${o.viz ? 'ink' : ''}"><span><i style="background:${o.viz ? 'var(--viz-good)' : '#fff'}"></i>Promoters ${seg.pro}%</span><span><i style="background:${o.viz ? 'var(--ink-4)' : 'rgba(255,255,255,.55)'}"></i>Passives ${seg.pas}%</span><span><i style="background:${o.viz ? 'var(--viz-serious)' : 'rgba(255,255,255,.25)'}"></i>Detractors ${seg.det}%</span></div>`;
+  const dchip = (id) => { const t = themeOf(id); return `<span class="dchip"><i style="background:${t.color}"></i>${NS.esc(t.name)}</span>`; };
+  const sdot = (s) => `<span class="sdot ${s}" data-tip="${s === 'pos' ? 'Positive' : s === 'neg' ? 'Negative' : 'Neutral'}"></span>`;
+  const benchBadge = (v, bench) => { if (v == null) return NS.badge('n/a'); const d = Math.round((v - bench) * 10) / 10; return d === 0 ? '<span class="ns-badge neutral">At median</span>' : `<span class="ns-badge ${d >= 0.3 ? 'ok' : d > 0 ? 'info' : 'warn'}">${signed(d, 1)} vs median</span>`; };
+  const changeTxt = (n, o = {}) => (n == null ? '<span class="faint">—</span>' : `<span class="d ${n > 0 ? 'up' : n < 0 ? 'down' : ''}">${n > 0 ? ic('arrow-up-right') : n < 0 ? ic('arrow-down-right') : ''}${signed(n, o.d || 0, o.suf || ' pts')}</span>`);
+  const heatFmt = (v) => (v == null ? 'n/a' : Number(v).toFixed(1));
+  const masked = (n) => `<span class="masked">${ic('lock')} n/a · ${n} of ${thr()} responses needed</span>`;
+  const enpsBadge = (v) => (v == null ? NS.badge('n/a') : `<span class="ns-badge ${v >= 50 ? 'ok' : v >= 20 ? 'brand' : v >= 0 ? 'warn' : 'bad'}">eNPS ${signed(v)}</span>`);
+  const planBadge = (st) => ({ active: NS.badge('Active', 'ok', true), draft: NS.badge('Draft', 'neutral', true), done: NS.badge('Completed', 'brand', true) }[st] || NS.badge(st));
+  const planProgress = (p) => Math.round((p.actions.filter((a) => a.status === 'done').length + p.actions.filter((a) => a.status === 'doing').length * 0.5) / (p.actions.length || 1) * 100);
+  const planFor = (team) => S.plans.find((p) => p.team === team && p.status !== 'done') || S.plans.find((p) => p.team === team);
+  const downloadCsv = (name, rows) => { const csv = rows.map((r) => r.map((v) => { const s = String(v == null ? '' : v); return /[",\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(',')).join('\n'); const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob([csv], { type: 'text/csv' })); a.download = name; document.body.appendChild(a); a.click(); a.remove(); NS.toast('Export ready', { desc: `${name} · ${rows.length - 1} rows` }); };
+  const aiBox = (id, title, o = {}) => `<div class="ns-ai"><div><div class="ns-ai-head">${ic('sparkles')}${NS.esc(title)}${NS.badge(o.badge || 'Generated from pulse data', 'outline')}</div><p id="${id}"><span class="typing"><i></i><i></i><i></i></span></p>${o.foot ? `<div class="xs faint mt-2">${o.foot}</div>` : ''}</div></div>`;
+  const runAi = (root, id, text) => { const el = root.querySelector('#' + id); if (el) setTimeout(() => NS.aiTyping(el, text, { delay: 6 }), 120); };
+  const questionRows = (qs, ps, o = {}) => qs.map((q) => { const v = qscore(ps, q); return `<div class="qrow"><div><div>${NS.esc(q.text)}</div>${o.driver ? `<div class="xs muted mt-1">${dchip(q.driver)}</div>` : ''}</div>${NS.progress(v == null ? 0 : ((v - 1) / 4) * 100, { color: themeOf(q.driver).color })}<b>${f1(v)}</b></div>`; }).join('');
+  const themeList = (cl, o = {}) => cl.map((x) => `<div class="theme-row" data-theme="${x.theme.id}"><div class="nm"><i class="sdot" style="background:${x.theme.color}"></i>${NS.esc(x.theme.name)}</div><div class="ct"><span>${x.n}</span>${o.trend !== false ? (() => { const t = themeTrend(x.theme.id, o.base || COMMENTS); return t ? `<span style="color:${t > 0 ? 'var(--bad)' : 'var(--ok)'};display:inline-flex" title="Negative share ${t > 0 ? '+' : '−'}${Math.abs(t)} pts vs August" aria-label="Negative share ${t > 0 ? 'up' : 'down'} ${Math.abs(t)} points vs August">${ic(t > 0 ? 'trending-up' : 'trending-down', { size: 13 })}</span>` : '<span class="faint" title="Negative share within ±10 pts of August">—</span>'; })() : ''}</div><div class="mix" data-tip="${x.pos} positive · ${x.neu} neutral · ${x.neg} negative"><i class="pos" style="width:${(x.pos / x.n) * 100}%"></i><i class="neu" style="width:${(x.neu / x.n) * 100}%"></i><i class="neg" style="width:${(x.neg / x.n) * 100}%"></i></div></div>`).join('');
+  const themeSummary = (cl, o = {}) => { const t = cl.theme; const byTeam = U.countBy(cl.items.filter((c) => c.sent === 'neg'), (c) => (visible(teamR(c.team)) ? c.team : c.org)); const top = Object.entries(byTeam).sort((a, b) => b[1] - a[1]).slice(0, 2); const tpl = TEMPLATES.find((x) => x.driver === t.id); const quotes = o.quotes === false ? [] : [cl.items.find((c) => c.sent === 'neg'), cl.items.find((c) => c.sent === 'pos')].filter(Boolean); const tone = cl.negShare >= 60 ? 'predominantly critical' : cl.negShare >= 35 ? 'mixed' : 'largely positive'; return `${t.name} drew ${cl.n} comment${cl.n === 1 ? '' : 's'} in this view — ${cl.neg} negative, ${cl.neu} neutral and ${cl.pos} positive, a ${tone} picture.${top.length ? ` Critical feedback concentrates in ${top.map(([k, v]) => `${k} (${v})`).join(' and ')}.` : ''}${quotes.length ? ` Representative voices: ${quotes.map((q) => `“${q.text}”`).join(' ')}` : ''}${tpl ? ` A proven response from the template library is “${tpl.title}” — ${tpl.evidence}.` : ''}`; };
+  const planCard = (p, o = {}) => { const owner = D.byId(p.ownerId), st = teamStats(p.team), cur = st.scores[p.driver], d = DM[p.driver]; const prog = planProgress(p); return `<div class="ns-card"><div class="ns-card-body plan" data-plan="${p.id}"><div class="plan-head"><div class="min-w-0"><div class="flex gap-2 items-center wrap">${dchip(p.driver)}${planBadge(p.status)}<span class="xs muted">Opened ${F.date(p.created, 'short')}</span></div><div class="semibold md mt-2">${NS.esc(p.title)}</div><div class="sm muted mt-1">${NS.esc(p.team)} · ${NS.esc(p.org)} · target ${d.name.toLowerCase()} ${st.visible && cur != null ? `${f1(cur)} → ${f1(Math.min(5, cur + p.lift))}` : `+${p.lift.toFixed(1)}`} by ${F.date(p.due, 'short')}</div></div><div class="flex items-center gap-3 flex-none">${NS.avatar(owner, { size: 'sm', tip: true })}<div class="xs muted hide-sm"><b class="ink">${NS.esc(owner.name)}</b><br>Owner</div></div></div><div><div class="flex justify-between xs muted mb-1"><span>${p.actions.filter((a) => a.status === 'done').length} of ${p.actions.length} actions done</span><b class="ink">${prog}%</b></div>${NS.progress(prog, { cls: prog === 100 ? '' : prog < 30 ? 'warn' : '' })}</div><div>${p.actions.map((a) => `<div class="act ${a.status}"><span class="st ${a.status}" data-act="${a.id}" data-tip="${o.readOnly ? a.status : 'Click to advance: to do → doing → done'}" ${o.readOnly ? 'style="cursor:default"' : ''}>${ic('check')}</span><div class="grow min-w-0"><div class="t">${NS.esc(a.t)}</div><div class="s">${a.status === 'done' ? 'Done' : 'Due ' + F.date(a.due, 'short')}${a.status !== 'done' && new Date(a.due) < TODAY ? ' · <span style="color:var(--bad)">overdue</span>' : ''}</div></div></div>`).join('')}</div>${p.updates.length ? `<div class="grid gap-2">${p.updates.slice(0, 2).map((u) => `<div class="note-box">${ic('history')}<div class="sm"><b class="xs muted">${F.date(u.date, 'short')}</b> · ${NS.esc(u.text)}</div></div>`).join('')}</div>` : ''}${p.comments.length ? `<div class="grid gap-2">${p.comments.map((cm) => `<div class="note-box">${NS.avatar('Team member', { size: 'xs' })}<div class="sm"><b class="xs muted">Team member · ${F.date(cm.t, 'short')}</b><div>${NS.esc(cm.text)}</div></div></div>`).join('')}</div>` : ''}${o.actions ? `<div class="flex gap-2 wrap">${o.actions}</div>` : ''}</div></div>`; };
+  const advanceAction = (actId) => { for (const p of S.plans) { const a = p.actions.find((x) => x.id === actId); if (a) { a.status = a.status === 'todo' ? 'doing' : a.status === 'doing' ? 'done' : 'todo'; if (p.actions.every((x) => x.status === 'done')) { p.status = 'done'; NS.toast('Plan completed', { desc: `${p.team} · ${p.title}`, type: 'ok' }); } else if (p.status === 'done') p.status = 'active'; save(); log(`${p.team}: “${a.t}” → ${a.status}`); return p; } } };
+  const planModal = (existing, o = {}) => { const p = existing || { team: o.team || '', driver: o.driver || 'workload', title: '', lift: 0.4, due: '2026-12-18', actions: [] }; const tpl = (d) => TEMPLATES.filter((t) => t.driver === d); NS.modal({ title: existing ? 'Edit action plan' : 'New action plan', sub: 'Plans are visible to the team as soon as they are active. The owner is the team’s manager.', size: 'lg', body: `<div class="grid gap-4"><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Team</span><select class="ns-select" id="pm-team" ${existing ? 'disabled' : ''}>${TEAMS.filter((t) => !o.lockTeam || t.name === o.team).map((t) => `<option ${t.name === p.team ? 'selected' : ''}>${NS.esc(t.name)}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Driver targeted</span><select class="ns-select" id="pm-driver">${DRIVERS.map((d) => `<option value="${d.id}" ${d.id === p.driver ? 'selected' : ''}>${d.name}</option>`).join('')}</select></label></div><label class="ns-field"><span class="ns-label">Plan title</span><input class="ns-input" id="pm-title" value="${NS.esc(p.title)}" placeholder="e.g. On-call rebalance"></label><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Target lift (score points)</span><select class="ns-select" id="pm-lift">${[0.2, 0.3, 0.4, 0.5, 0.6, 0.8].map((v) => `<option value="${v}" ${v === p.lift ? 'selected' : ''}>+${v.toFixed(1)}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Target date</span><input class="ns-input" type="date" id="pm-due" value="${p.due}"></label></div><label class="ns-field"><span class="ns-label">Actions <span class="opt">one per line</span></span><textarea class="ns-textarea" id="pm-actions" style="min-height:110px" placeholder="One action per line">${NS.esc(p.actions.map((a) => a.t).join('\n'))}</textarea></label><div><div class="ns-label mb-2">Start from a template</div><div class="ns-chips" id="pm-tpls">${tpl(p.driver).map((t) => `<button class="ns-chip" data-tpl="${t.id}">${ic('wand')}${NS.esc(t.title)}</button>`).join('')}</div></div></div>`, mounted: (body) => { const drv = body.querySelector('#pm-driver'); const paint = () => { body.querySelector('#pm-tpls').innerHTML = tpl(drv.value).map((t) => `<button class="ns-chip" data-tpl="${t.id}">${ic('wand')}${NS.esc(t.title)}</button>`).join(''); }; drv.onchange = paint; body.querySelector('#pm-tpls').addEventListener('click', (e) => { const b = e.target.closest('[data-tpl]'); if (!b) return; const t = TEMPLATES.find((x) => x.id === b.dataset.tpl); body.querySelector('#pm-title').value = t.title; body.querySelector('#pm-actions').value = t.steps.join('\n'); NS.toast('Template applied', { desc: t.title }); }); }, actions: [{ label: 'Cancel' }, { label: existing ? 'Save changes' : 'Create plan', cls: 'primary', onClick: (m) => { const team = m.el.querySelector('#pm-team').value, title = m.el.querySelector('#pm-title').value.trim(), lines = m.el.querySelector('#pm-actions').value.split('\n').map((s) => s.trim()).filter(Boolean); if (!title || !lines.length) { NS.toast('Add a title and at least one action', { type: 'warn' }); return false; } const t = teamByName[team]; const due = m.el.querySelector('#pm-due').value; if (existing) { existing.title = title; existing.driver = m.el.querySelector('#pm-driver').value; existing.lift = +m.el.querySelector('#pm-lift').value; existing.due = due; const old = existing.actions; existing.actions = lines.map((l, i) => old.find((a) => a.t === l) || { id: existing.id + 'a' + U.uid(), t: l, status: 'todo', due }); log(`Edited plan for ${team}`); NS.toast('Plan updated', { desc: title }); } else { const id = 'p' + U.uid(); S.plans.unshift({ id, team, org: t.org, ownerId: t.managerId, driver: m.el.querySelector('#pm-driver').value, title, lift: +m.el.querySelector('#pm-lift').value, due, created: '2026-09-24', status: 'active', actions: lines.map((l, i) => ({ id: id + 'a' + i, t: l, status: 'todo', due })), updates: [], comments: [] }); log(`New action plan: ${team} · ${title}`); NS.toast('Action plan created', { desc: `${team} · ${title}`, type: 'ok' }); } save(); NS.refresh(); } }] }); };
+  const remindTeam = (persona) => { const me = meFor(persona); const pending = D.reports(me.id).filter((p) => !resp[p.id]).length; if (S.reminders[me.id] === '2026-09-24') { NS.toast('Reminder already sent today', { desc: 'One nudge per day keeps the pulse voluntary.', type: 'info' }); return; } S.reminders[me.id] = '2026-09-24'; log(`Reminded ${pending} people who have not responded`); save(); NS.toast('Reminder sent', { desc: `${F.plural(pending, 'person', 'people')} nudged · names stay hidden from you`, type: 'ok' }); NS.refresh(); };
+
+  /* ------------------------------------------------------------------ */
+  /* 5. Expose the domain core to the view layer (next script block)     */
+  /* ------------------------------------------------------------------ */
+  window.PulseCore = {
+    D, U, F, raw, ic, html, store, TODAY, P, DRIVERS, DM, OTHER, themeOf, BENCH, QUESTIONS, Q_ENPS, Q_OPEN, FACES, PERIODS, MONTHS6, TEMPLATES, ONBOARD_THEMES, EXIT_REASONS,
+    resp, IA, RS, TEAMS, teamByName, ENG_ORGS, OTHER_DEPTS, UNITS, enpsOf, segOf, dscore, fav, engOf, qscore, teamR, thr, visible, COMPANY, MONTHLY, SCORE_DELTA, favChange,
+    tenureBand, TENURE_BANDS, levelBand, LEVEL_BANDS, pearson, teamStats, orgScore, COMMENTS, THEMES, scopeOf, clusters, themeTrend, INITIATIVES, defaultSettings, buildState,
+    get S() { return S; }, save, log, meFor, activeQuestions, daysToClose, myDriverScores, myEngagement,
+    f1, signed, segbar, segLegend, dchip, sdot, benchBadge, changeTxt, heatFmt, masked, enpsBadge, planBadge, planProgress, planFor, downloadCsv, aiBox, runAi, questionRows, themeList, themeSummary, planCard, advanceAction, planModal, remindTeam,
+    clearCache: () => Object.keys(teamStatsCache).forEach((k) => delete teamStatsCache[k]),
+  };
+})();
+</script>
+<script>
+(function () {
+  'use strict';
+  const C = window.PulseCore;
+  const { D, U, F, ic, html, TODAY, DRIVERS, DM, themeOf, BENCH, QUESTIONS, Q_ENPS, Q_OPEN, FACES, PERIODS, MONTHS6, TEMPLATES, ONBOARD_THEMES, EXIT_REASONS, resp, RS, TEAMS, teamByName, UNITS, enpsOf, segOf, dscore, fav, engOf, teamR, thr, COMPANY, MONTHLY, SCORE_DELTA, favChange, tenureBand, TENURE_BANDS, levelBand, LEVEL_BANDS, pearson, teamStats, COMMENTS, THEMES, scopeOf, clusters, INITIATIVES, defaultSettings, save, log, meFor, activeQuestions, myDriverScores, myEngagement, f1, signed, segbar, segLegend, dchip, sdot, benchBadge, changeTxt, masked, enpsBadge, planBadge, planProgress, planFor, downloadCsv, aiBox, runAi, questionRows, themeList, themeSummary, planCard, advanceAction, planModal, remindTeam } = C;
+  const S = C.S;
+  if (!S.flags) S.flags = {};
+  if (!S.nudged) S.nudged = {};
+  const P = D.people;
+  const EMP = D.personas.employee.personId, MGR = D.personas.manager.personId;
+  const MY_TEAM = D.byId(MGR).team, MY_ORG = D.byId(MGR).org;
+  resp[EMP] = !!S.survey.submitted; // Priya's submission counts live in participation (results refresh when the pulse closes)
+  const BENCH_TOP = { enps: BENCH.enpsTop, engagement: 81, participation: 88 };
+  const HALVES = D.series.halves, ENPS_H = D.series.enps, PART_H = D.series.participation;
+  const TODAY0 = new Date('2026-09-24T00:00:00');
+  const daysLeft = () => Math.max(0, Math.round((new Date(S.settings.closeDate + 'T00:00:00') - TODAY0) / 864e5));
+  const closeLbl = () => F.date(S.settings.closeDate + 'T12:00:00', 'short');
+  const pct = (a, b) => (b ? Math.round((a / b) * 100) : 0);
+  const sepC = () => COMMENTS.filter((x) => x.period === 'sep');
+  const teamPeople = (name) => { const t = teamByName[name]; return P.filter((p) => p.team === name && (!t || p.id !== t.managerId)); };
+  const liveResp = (name) => teamPeople(name).filter((p) => resp[p.id]).length;
+  const visTeams = () => TEAMS.map((t) => teamStats(t.name)).filter((s) => s.visible);
+  const FAMILY = (dept) => (dept === 'Engineering' ? 'Engineering' : ['Product', 'Design'].includes(dept) ? 'Product & Design' : ['Sales', 'Customer Success', 'Marketing'].includes(dept) ? 'Go-to-market' : 'G&A');
+  const FAMILIES = ['Engineering', 'Product & Design', 'Go-to-market', 'G&A'];
+  const SHORT = { growth: 'Growth', manager: 'Manager', recognition: 'Recog.', workload: 'Workload', pay: 'Pay', belonging: 'Belong.', clarity: 'Clarity' };
+  const HEAT_COLS = DRIVERS.map((d) => (d.id === 'recognition' ? 'Recog\u00ADnition' : d.name));
+  const dLabels = (el) => DRIVERS.map((d) => ((el && el.clientWidth < 560) ? SHORT[d.id] : d.name));
+  const s1 = (v) => (v == null ? '—' : Number(v).toFixed(1));
+  const enpsFmt = (v) => (v == null ? 'n/a' : (v > 0 ? '+' : v < 0 ? '−' : '') + Math.abs(Math.round(v)));
+  const canAdmin = (persona) => persona.id === 'hrbp';
+  const periodLbl = (id) => (PERIODS.find((p) => p.id === id) || {}).short || id;
+  const copyText = (text, what) => { const done = () => NS.toast(`${what} copied`, { desc: 'Paste it into your deck or update.', type: 'ok' }); const fallback = () => { const ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; document.body.appendChild(ta); ta.select(); try { document.execCommand('copy'); } catch (e) { /* ignore */ } ta.remove(); done(); }; try { if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(text).then(done, fallback); else fallback(); } catch (e) { fallback(); } };
+
+  /* movers since August (favourability points), visible teams only */
+  const movers = () => { const out = []; visTeams().forEach((s) => DRIVERS.forEach((d) => out.push({ team: s.name, org: s.team.org, driver: d.id, ch: favChange(s.name, d.id), fav: s.fav[d.id] }))); out.sort((a, b) => b.ch - a.ch); return { up: out.slice(0, 5), down: out.slice(-5).reverse() }; };
+  const moverRow = (m, o = {}) => `<div class="mover ${o.click === false ? '' : 'pointer'}" ${o.click === false ? '' : `data-team="${NS.esc(m.team)}"`}><div class="min-w-0"><div class="t truncate">${NS.esc(m.team)}</div><div class="s">${DM[m.driver].name} · ${m.fav}% favourable now</div></div>${changeTxt(m.ch)}</div>`;
+
+  /* the September narrative, built from the numbers */
+  const narrative = () => {
+    const ds = DRIVERS.map((d) => ({ d, s: dscore(RS, d.id) })).sort((a, b) => b.s - a.s);
+    const top = ds.slice(0, 2), low = ds.slice(-2).reverse();
+    const wl = sepC().filter((x) => x.theme === 'workload' && x.sent === 'neg').length;
+    const mv = movers();
+    return `September pulse: eNPS +${COMPANY.enps} on ${COMPANY.part}% participation (${F.int(COMPANY.n)} of ${F.int(P.length)} people) — level with H1 ’26 and ${COMPANY.enps - BENCH.enps} points above the tech-industry median. ${top.map((x) => `${x.d.name} (${f1(x.s)})`).join(' and ')} are the strongest drivers; ${low.map((x) => `${x.d.name.toLowerCase()} (${f1(x.s)})`).join(' and ')} trail. Workload is the only driver that fell since August (${signed(SCORE_DELTA.workload, 2)}), and the drop is concentrated: ${mv.down[0].team} lost ${Math.abs(mv.down[0].ch)} points of ${DM[mv.down[0].driver].name.toLowerCase()} favourability, and ${wl} of this month’s ${sepC().length} comments describe unsustainable load. ${mv.up[0].team} (+${mv.up[0].ch} on ${DM[mv.up[0].driver].name.toLowerCase()}) and ${mv.up[1].team} (+${mv.up[1].ch} on ${DM[mv.up[1].driver].name.toLowerCase()}) show action plans paying off. Suggested focus: unblock the Billing Platform backfills and take the Search interrupt-triage rota to SRE and Technical Support.`;
+  };
+  const boardMsgs = () => [
+    `<b>Engagement is a durable strength.</b> eNPS is +${COMPANY.enps}, up ${COMPANY.enps - ENPS_H[0]} points since H1 ’23 and ${COMPANY.enps - BENCH.enps} above the tech-industry median (+${BENCH.enps}); top quartile starts at +${BENCH.enpsTop}.`,
+    `<b>People trust the listening.</b> ${COMPANY.part}% participation (median ${BENCH.participation}%) — ${F.int(COMPANY.n)} voices this month — because every result becomes a visible team plan: ${S.plans.filter((p) => p.status === 'active').length} are live.`,
+    `<b>One watch-item: workload.</b> It is the only driver that fell (${signed(SCORE_DELTA.workload, 2)}), concentrated in on-call teams. Plans are live in Billing Platform and SRE with a Q4 target of +0.6.`,
+  ];
+  const boardText = () => `Pulse · September 2026 board summary\n\n` + boardMsgs().map((m, i) => `${i + 1}. ${m.replace(/<[^>]+>/g, '')}`).join('\n') + `\n\neNPS +${COMPANY.enps} · participation ${COMPANY.part}% · engagement ${COMPANY.eng}/100`;
+
+  /* ------------------------------------------------------------------ */
+  /* Team drawer (used by /teams, home movers, drivers scatter, search)  */
+  /* ------------------------------------------------------------------ */
+  const openTeam = (name, persona) => {
+    const t = teamByName[name]; if (!t) return;
+    const st = teamStats(name), mgr = t.mgr, live = liveResp(name), size = teamPeople(name).length, plan = planFor(name);
+    const cl = clusters(COMMENTS.filter((x) => x.team === name));
+    const admin = persona && canAdmin(persona);
+    const planHtml = plan ? `<div class="grid gap-2"><div class="flex justify-between items-center gap-3 wrap"><div class="min-w-0"><div class="flex gap-2 items-center wrap">${dchip(plan.driver)}${planBadge(plan.status)}</div><div class="semibold mt-1">${NS.esc(plan.title)}</div><div class="xs muted">${plan.actions.filter((a) => a.status === 'done').length} of ${plan.actions.length} actions done · target ${F.date(plan.due, 'short')}</div></div><b class="tnum">${planProgress(plan)}%</b></div>${NS.progress(planProgress(plan))}</div>` : `<div class="ns-alert warn">${ic('alert-triangle')}<div><b>No action plan yet</b><p>${st.visible ? `Lowest driver: ${DM[st.lowest].name} (${f1(st.scores[st.lowest])}).` : 'Results are below the anonymity threshold.'} Teams with a plan improve their lowest driver by +0.4 on average within two pulses.</p></div></div>`;
+    const body = st.visible ? `<div class="grid gap-5">
+        <div class="flex items-center justify-between gap-3 wrap">${NS.person(mgr, { sub: `Manager · ${mgr.title}` })}${enpsBadge(st.enps)}</div>
+        <div class="mini-stats"><div><span>Participation</span><b>${pct(live, size)}%</b><span>${live} of ${size} responded</span></div><div><span>eNPS</span><b>${enpsFmt(st.enps)}</b><span>Company ${enpsFmt(COMPANY.enps)}</span></div><div><span>Engagement</span><b>${st.eng}</b><span>Company ${COMPANY.eng}</span></div></div>
+        <div class="grid gap-2">${segbar(st.seg, { viz: true })}${segLegend(st.seg, { viz: true })}</div>
+        <div><div class="semibold sm mb-2">Drivers vs ${NS.esc(t.org)}</div><div id="tdBars"></div></div>
+        <div><div class="semibold sm mb-1">Comment themes</div><div class="xs muted mb-2">Themes and counts across the last four pulses · verbatims stay in the comment explorer</div>${cl.length ? themeList(cl, { trend: false }) : '<div class="sm muted">No comments tagged to this team yet.</div>'}</div>
+        <div><div class="semibold sm mb-2">Action plan</div>${planHtml}</div>
+      </div>` : `<div class="grid gap-4">
+        <div class="flex items-center justify-between gap-3 wrap">${NS.person(mgr, { sub: `Manager · ${mgr.title}` })}${NS.badge('Below threshold', 'neutral', true)}</div>
+        <div class="ns-alert info">${ic('lock')}<div><b>Results hidden to protect anonymity</b><p>${masked(st.n)}. Pulse only shows a team’s scores and comment themes once ${thr()} or more people respond. Participation counts are always visible.</p></div></div>
+        <div class="mini-stats"><div><span>Participation</span><b>${pct(live, size)}%</b><span>${live} of ${size} responded</span></div><div><span>Scores</span><b>n/a</b><span>Rolled up into ${NS.esc(t.org)}</span></div><div><span>Team size</span><b>${size}</b><span>excluding the manager</span></div></div>
+        <div><div class="semibold sm mb-2">Action plan</div>${planHtml}</div>
+      </div>`;
+    const foot = `<button class="ns-btn secondary" data-close>Close</button>${st.visible ? `<button class="ns-btn ghost" id="tdCsv">${ic('download')}Export</button>` : ''}${admin && !plan ? `<button class="ns-btn primary" id="tdPlan">${ic('plus')}Create action plan</button>` : `<a class="ns-btn primary" href="${NS.link('/actions')}">${ic('clipboard-check')}Open action plans</a>`}`;
+    NS.drawer({ eyebrow: `${NS.esc(t.org)} · ${NS.esc(t.dept)}`, title: NS.esc(name), sub: `${size} people · September pulse`, size: 'lg', body, foot, mounted: (el, api) => {
+      const bars = el.querySelector('#tdBars');
+      if (bars) NS.chart.bars(bars, { labels: dLabels(bars), series: [{ name: name, values: DRIVERS.map((d) => st.scores[d.id]) }, { name: t.org + ' org', values: DRIVERS.map((d) => dscore(RS.filter((p) => p.org === t.org), d.id)), color: 'var(--ink-4)' }], yMax: 5, height: 190, yFormat: (v) => Number(v).toFixed(1) });
+      const csv = api.el.querySelector('#tdCsv'); if (csv) csv.onclick = () => downloadCsv(`pulse-${name.toLowerCase().replace(/[^a-z0-9]+/g, '-')}-sep.csv`, [['Driver', 'Team score', 'Favourable %', 'Org score', 'Change since Aug (pts)'], ...DRIVERS.map((d) => [d.name, st.scores[d.id], st.fav[d.id], dscore(RS.filter((p) => p.org === t.org), d.id), favChange(name, d.id)])]);
+      const pb = api.el.querySelector('#tdPlan'); if (pb) pb.onclick = () => { api.close(); planModal(null, { team: name, driver: st.lowest || 'workload', lockTeam: true }); };
+    } });
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* HOME                                                                */
+  /* ------------------------------------------------------------------ */
+  const heroArt = `<svg class="art" viewBox="0 0 400 300" preserveAspectRatio="xMaxYMid slice" aria-hidden="true"><path d="M0 170 H120 L145 120 L175 230 L205 90 L232 190 L252 160 H400" fill="none" stroke="rgba(255,255,255,.22)" stroke-width="4" stroke-linecap="round" stroke-linejoin="round"/><circle cx="205" cy="90" r="7" fill="rgba(255,255,255,.6)"/></svg>`;
+
+  const homeCompany = (c) => {
+    const isCpo = c.persona.id === 'cpo', me = meFor(c.persona), seg = COMPANY.seg, mv = movers();
+    const acts = S.plans.flatMap((p) => p.actions), doneActs = acts.filter((a) => a.status === 'done').length;
+    const activePlans = S.plans.filter((p) => p.status === 'active').length;
+    const need = mv.down.slice(0, 4).map((m) => ({ ...m, plan: S.plans.find((p) => p.team === m.team && p.status !== 'done') }));
+    const lowPart = TEAMS.map((t) => ({ t, p: pct(liveResp(t.name), teamPeople(t.name).length) })).filter((x) => x.p < 85).length;
+    return html`
+      <div class="ns-hero"><div class="hero-grid"><div>
+        <div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} September pulse · closes ${closeLbl()}</span><span class="ns-badge">${ic('users', { size: 12 })} ${F.int(COMPANY.n)} of ${F.int(P.length)} responded</span></div>
+        <h1>${isCpo ? `eNPS +${COMPANY.enps}, up from +${ENPS_H[0]} in three years` : `${NS.greeting()}, ${NS.esc(me.first)}`}</h1>
+        <p>${isCpo ? `Northstar sits ${COMPANY.enps - BENCH.enps} points above the tech-industry median and inside the top quartile on every headline measure. Workload is the one driver moving the wrong way — plans are already live where it fell.` : `The September pulse is ${COMPANY.part}% in with ${daysLeft()} days to go. eNPS is holding at +${COMPANY.enps}; workload is the only driver that slipped, and it is concentrated in a handful of on-call teams.`}</p>
+        <div class="flex gap-2 wrap mt-4"><a class="ns-btn primary" href="${NS.link('/drivers', { d: 'workload' })}">${isCpo ? 'See the workload story' : 'Explore drivers'} ${ic('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/comments')}">${ic('message-square')}Read ${sepC().length} new comments</a></div>
+      </div>
+      <div class="hero-panel">
+        <div class="cell"><span class="lbl">eNPS</span><span class="big">+${COMPANY.enps}</span>${segbar(seg)}<span class="note">${seg.pro}% promoters · ${seg.pas}% passives · ${seg.det}% detractors</span></div>
+        <div class="cell" style="justify-items:center;text-align:center"><span class="lbl">Participation</span>${NS.ring({ value: COMPANY.part / 100, size: 84, thickness: 8, label: COMPANY.part + '%', color: '#fff' })}<span class="note">Median ${BENCH.participation}%</span></div>
+        <div class="cell"><span class="lbl">Engagement index</span><span class="big">${COMPANY.eng}<small>/100</small></span><span class="note">Tech median ${BENCH.engagement} · top quartile ${BENCH_TOP.engagement}+</span></div>
+      </div></div></div>
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'eNPS', value: '+' + COMPANY.enps, delta: NS.delta(ENPS_H[6] - ENPS_H[5], { suf: ' pts', d: 0 }), sub: `vs H2 ’25 · median +${BENCH.enps}`, spark: ENPS_H })}
+        ${NS.stat({ label: 'Participation', value: COMPANY.part, unit: '%', delta: NS.delta(PART_H[6] - PART_H[5], { suf: ' pts', d: 0 }), sub: `${F.int(COMPANY.n)} responses · ${lowPart} teams below 85%`, spark: PART_H })}
+        ${NS.stat({ label: 'Engagement index', value: COMPANY.eng, unit: '/100', delta: NS.delta(COMPANY.eng - BENCH.engagement, { suf: ' pts', d: 0 }), sub: `vs tech median ${BENCH.engagement} · six-month average`, spark: MONTHLY })}
+        ${NS.stat({ label: 'Action plans live', value: activePlans, icon: 'clipboard-check', sub: `${doneActs} of ${acts.length} actions done · ${INITIATIVES.length} company initiatives` })}
+      </div>
+      ${isCpo ? `<div class="ns-grid main-side mt-4">${NS.card({ title: 'Board summary', sub: 'Three messages for the October board pack', actions: `<button class="ns-btn sm secondary" id="copyBoard">${ic('copy')}Copy</button>`, body: `<div>${boardMsgs().map((m, i) => `<div class="board-msg"><span class="n">${i + 1}</span><div>${m}</div></div>`).join('')}</div>` })}${NS.card({ title: 'External benchmark', sub: 'Tech industry, 1,000–2,500 employees', body: `${[['eNPS', '+' + COMPANY.enps, `median +${BENCH.enps} · top 25% +${BENCH_TOP.enps}`], ['Participation', COMPANY.part + '%', `median ${BENCH.participation}% · top 25% ${BENCH_TOP.participation}%`], ['Engagement', String(COMPANY.eng), `median ${BENCH.engagement} · top 25% ${BENCH_TOP.engagement}`], ['Drivers above median', `${DRIVERS.filter((d) => Math.round((dscore(RS, d.id) - d.bench) * 10) > 0).length} of 7`, 'clarity is at the median']].map(([m, v, x]) => `<div class="kv"><span><span class="semibold">${m}</span><div class="xs muted">${x}</div></span><b class="md">${v}</b></div>`).join('')}` })}</div>` : ''}
+      <div class="ns-grid c2 mt-4">
+        ${NS.card({ title: 'eNPS trend', sub: 'Semi-annual engagement survey · seven halves', body: '<div id="enpsTrend"></div>' })}
+        ${NS.card({ title: 'Participation', sub: 'Share of employees responding · same halves', body: '<div id="partTrend"></div>' })}
+      </div>
+      <div class="mt-4">${NS.card({ title: 'Drivers vs benchmark', sub: 'Mean score (1–5) against the tech-industry median', actions: `<a class="ns-btn sm ghost" href="${NS.link('/drivers')}">Deep-dive ${ic('arrow-right')}</a>`, body: `<div class="ns-grid c2" style="align-items:center"><div id="drvBench"></div><div>${DRIVERS.map((d) => { const v = dscore(RS, d.id); return `<div class="bench-row"><a class="flex items-center gap-2 min-w-0" href="${NS.link('/drivers', { d: d.id })}" style="color:inherit;text-decoration:none">${dchip(d.id)}<span class="xs muted hide-sm">${fav(RS, d.id)}% favourable</span></a><span class="tnum sm"><b>${f1(v)}</b> <span class="faint">/ ${d.bench.toFixed(1)}</span></span>${benchBadge(v, d.bench)}</div>`; }).join('')}</div></div>` })}</div>
+      <div class="ns-grid main-side mt-4">
+        ${NS.card({ title: 'Organisations × drivers', sub: 'Engineering orgs and other departments · mean score · click a row to explore its teams', actions: '<span class="heat-legend hide-sm">Lower<i></i>Higher</span>', body: '<div class="heat-scroll"><div id="orgHeat"></div></div>' })}
+        ${NS.card({ title: 'What changed since August', sub: 'Favourability points · teams at or above threshold', body: `<div class="xs muted semibold mb-1" style="letter-spacing:.06em;text-transform:uppercase">Improved</div>${mv.up.slice(0, 4).map((m) => moverRow(m)).join('')}<div class="xs muted semibold mb-1 mt-3" style="letter-spacing:.06em;text-transform:uppercase">Declined</div>${mv.down.slice(0, 4).map((m) => moverRow(m)).join('')}` })}
+      </div>
+      <div class="ns-grid c2 mt-4">
+        ${NS.card({ title: 'Top comment themes', sub: `${sepC().length} comments this pulse · sentiment mix · arrow = negative trend vs August`, actions: `<a class="ns-btn sm ghost" href="${NS.link('/comments')}">All comments</a>`, body: `<div id="homeThemes">${themeList(clusters(sepC()))}</div>` })}
+        <div class="grid gap-4" style="align-content:start">
+          ${aiBox('homeAi', 'Pulse narrative · September', { foot: 'Rule-based summary of scores, movers and comment counts. Numbers update as the pulse closes.' })}
+          ${NS.card({ title: isCpo ? 'Watch list' : 'Needs attention', sub: 'Largest drops and their plan status', body: need.map((n) => `<div class="mover"><div class="min-w-0"><div class="t truncate">${NS.esc(n.team)} · ${DM[n.driver].name} ${changeTxt(n.ch)}</div><div class="s">${n.plan ? `${NS.esc(n.plan.title)} · ${planProgress(n.plan)}% done` : 'No active plan'}</div></div>${n.plan ? planBadge(n.plan.status) : isCpo ? NS.badge('No plan', 'warn') : `<button class="ns-btn xs soft" data-newplan="${NS.esc(n.team)}" data-driver="${n.driver}">${ic('plus')}Plan</button>`}</div>`).join('') })}
+        </div>
+      </div>`;
+  };
+  const mountCompany = (c, root) => {
+    NS.chart.line(root.querySelector('#enpsTrend'), { labels: HALVES, series: [{ name: 'Northstar eNPS', values: ENPS_H }, { name: 'Tech industry median', values: HALVES.map(() => BENCH.enps), dashed: true, color: 'var(--ink-4)' }], yMin: 0, yMax: 80, height: 220, endLabels: true, markers: [{ i: 2, label: 'Team plans launch' }], yFormat: (v) => enpsFmt(v) });
+    NS.chart.bars(root.querySelector('#partTrend'), { labels: HALVES, series: [{ name: 'Participation', values: PART_H }], yMax: 100, height: 220, showValues: true, yFormat: (v) => v + '%' });
+    const db = root.querySelector('#drvBench'); NS.chart.bars(db, { labels: dLabels(db), series: [{ name: 'Northstar', values: DRIVERS.map((d) => dscore(RS, d.id)) }, { name: 'Tech industry median', values: DRIVERS.map((d) => d.bench), color: 'var(--ink-4)' }], yMax: 5, height: 240, yFormat: (v) => Number(v).toFixed(1) });
+    NS.chart.heatmap(root.querySelector('#orgHeat'), { rows: UNITS.map((u) => u.label), cols: HEAT_COLS, values: UNITS.map((u) => { const ps = u.people(); return DRIVERS.map((d) => dscore(ps, d.id)); }), format: (v) => (v == null ? 'n/a' : Number(v).toFixed(1)), valueLabel: 'Mean score', labelWidth: 'minmax(128px,auto)', colWidth: 44, onCell: (ri) => NS.go('/teams', { u: UNITS[ri].id }) });
+    root.querySelectorAll('[data-team]').forEach((el) => el.onclick = () => openTeam(el.dataset.team, c.persona));
+    root.querySelectorAll('#homeThemes [data-theme]').forEach((el) => el.onclick = () => NS.go('/comments', { theme: el.dataset.theme }));
+    root.querySelectorAll('[data-newplan]').forEach((b) => b.onclick = () => planModal(null, { team: b.dataset.newplan, driver: b.dataset.driver, lockTeam: true }));
+    const cb = root.querySelector('#copyBoard'); if (cb) cb.onclick = () => copyText(boardText(), 'Board summary');
+    runAi(root, 'homeAi', narrative());
+  };
+
+  const homeManager = (c) => {
+    const me = meFor(c.persona), st = teamStats(MY_TEAM), live = liveResp(MY_TEAM), size = teamPeople(MY_TEAM).length, plan = planFor(MY_TEAM);
+    const orgPs = RS.filter((p) => p.org === MY_ORG);
+    const cl = clusters(COMMENTS.filter((x) => x.team === MY_TEAM));
+    const ranked = st.visible ? DRIVERS.slice().sort((a, b) => st.scores[b.id] - st.scores[a.id]) : [];
+    const heroRight = `<div class="hero-panel"><div class="cell"><span class="lbl">Team eNPS</span><span class="big">${st.visible ? enpsFmt(st.enps) : 'n/a'}</span>${st.visible ? segbar(st.seg) : ''}<span class="note">${st.visible ? `${st.seg.nPro} of ${st.n} are promoters` : 'Below threshold'}</span></div><div class="cell" style="justify-items:center;text-align:center"><span class="lbl">Responded</span>${NS.ring({ value: live / size, size: 84, thickness: 8, label: `${live}/${size}`, color: '#fff' })}<span class="note">Closes ${closeLbl()}</span></div><div class="cell"><span class="lbl">Engagement</span><span class="big">${st.visible ? st.eng : 'n/a'}<small>/100</small></span><span class="note">Company ${COMPANY.eng} · ${NS.esc(MY_ORG)} ${engOf(orgPs)}</span></div></div>`;
+    return html`
+      <div class="ns-hero"><div class="hero-grid"><div>
+        <div class="flex gap-2 wrap"><span class="ns-badge">${ic('users', { size: 12 })} ${NS.esc(MY_TEAM)} · ${size} people</span><span class="ns-badge">${ic('shield-check', { size: 12 })} Results shown at ${thr()}+ responses</span></div>
+        <h1>${NS.greeting()}, ${NS.esc(me.first)}</h1>
+        <p>${st.visible ? `Your team’s September results are in with ${st.n} responses. ${DM[ranked[0].id].name} (${f1(st.scores[ranked[0].id])}) is your strongest driver; ${DM[ranked[6].id].name.toLowerCase()} (${f1(st.scores[ranked[6].id])}) is the one to work on — it is also ${st.scores[ranked[6].id] < dscore(orgPs, ranked[6].id) ? 'below' : 'level with'} the ${NS.esc(MY_ORG)} org.` : `Your team has ${st.n} responses so far. Results unlock at ${thr()} — until then you see participation counts only, never names.`}</p>
+        <div class="flex gap-2 wrap mt-4"><a class="ns-btn primary" href="${NS.link('/actions')}">${plan ? 'Update action plan' : 'Create action plan'} ${ic('arrow-right')}</a><a class="ns-btn ghost" href="${NS.link('/survey')}">${ic('activity')}Participation</a></div>
+      </div>${heroRight}</div></div>
+      ${st.visible ? html`
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'Team eNPS', value: enpsFmt(st.enps), delta: NS.delta(st.enps - COMPANY.enps, { suf: ' pts', d: 0 }), sub: `vs company ${enpsFmt(COMPANY.enps)} · ${st.seg.det}% detractors` })}
+        ${NS.stat({ label: 'Participation', value: pct(live, size), unit: '%', delta: NS.delta(pct(live, size) - COMPANY.part, { suf: ' pts', d: 0 }), sub: `${live} of ${size} · company ${COMPANY.part}%` })}
+        ${NS.stat({ label: 'Lowest driver', value: DM[ranked[6].id].name, icon: DM[ranked[6].id].icon, sub: `${f1(st.scores[ranked[6].id])} · ${st.fav[ranked[6].id]}% favourable · median ${DM[ranked[6].id].bench.toFixed(1)}` })}
+        ${NS.stat({ label: 'Action plan', value: plan ? planProgress(plan) : 0, unit: '%', icon: 'clipboard-check', sub: plan ? `${NS.esc(plan.title)}` : 'No plan yet' })}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        ${NS.card({ title: 'Your team vs Platform vs company', sub: 'Mean score by driver (1–5)', body: '<div id="mgrBars"></div>' })}
+        ${NS.card({ title: 'Strengths & opportunities', sub: 'Favourable = agree or strongly agree', body: `${ranked.slice(0, 2).map((d) => `<div class="kv"><span class="flex items-center gap-2">${ic('thumbs-up', { size: 14 })}${d.name}</span><b>${f1(st.scores[d.id])} · ${st.fav[d.id]}%</b></div>`).join('')}${ranked.slice(-2).reverse().map((d) => `<div class="kv"><span class="flex items-center gap-2">${ic('alert-circle', { size: 14 })}${d.name}</span><b>${f1(st.scores[d.id])} · ${st.fav[d.id]}%</b></div>`).join('')}<div class="mt-3">${aiBox('mgrAi', 'Coaching note', { badge: 'Your team' })}</div>` })}
+      </div>
+      <div class="ns-grid c2 mt-4">
+        ${NS.card({ title: 'Engagement trend', sub: 'Six monthly pulses · team average vs company', body: '<div id="mgrTrend"></div>' })}
+        ${NS.card({ title: 'Team comment themes', sub: 'Themes and counts only — verbatims are never shown to managers', actions: `<a class="ns-btn sm ghost" href="${NS.link('/comments')}">Details</a>`, body: cl.length ? themeList(cl, { trend: false }) : NS.empty({ icon: 'message-square', title: 'No comments yet' }) })}
+      </div>` : `<div class="mt-4">${NS.card({ title: 'Results are hidden for now', body: NS.empty({ icon: 'lock', title: `${st.n} of ${thr()} responses`, body: 'Pulse protects anonymity: team scores and themes appear once enough people have answered. Remind the team — without seeing who has responded.', action: `<a class="ns-btn primary" href="${NS.link('/survey')}">Open participation</a>` }) })}</div>`}
+      ${plan ? `<div class="mt-4">${planCard(plan, { actions: `<a class="ns-btn xs secondary" href="${NS.link('/actions')}">${ic('pencil')}Manage plan</a>` })}</div>` : ''}`;
+  };
+  const mountManager = (c, root) => {
+    const st = teamStats(MY_TEAM); if (!st.visible) return;
+    const orgPs = RS.filter((p) => p.org === MY_ORG), tp = RS.filter((p) => p.team === MY_TEAM && p.id !== MGR);
+    const mb = root.querySelector('#mgrBars'); NS.chart.bars(mb, { labels: dLabels(mb), series: [{ name: MY_TEAM, values: DRIVERS.map((d) => st.scores[d.id]) }, { name: MY_ORG + ' org', values: DRIVERS.map((d) => dscore(orgPs, d.id)) }, { name: 'Company', values: DRIVERS.map((d) => dscore(RS, d.id)), color: 'var(--ink-4)' }], yMax: 5, height: 300, yFormat: (v) => Number(v).toFixed(1) });
+    NS.chart.line(root.querySelector('#mgrTrend'), { labels: MONTHS6, series: [{ name: MY_TEAM, values: MONTHS6.map((m, i) => Math.round(U.avg(tp, (p) => p.pulse[i]))) }, { name: 'Company', values: MONTHLY, dashed: true, color: 'var(--ink-4)' }], yMin: 50, yMax: 100, height: 210, endLabels: true });
+    const ranked = DRIVERS.slice().sort((a, b) => st.scores[a.id] - st.scores[b.id]); const low = ranked[0], tpl = TEMPLATES.find((t) => t.driver === low.id);
+    runAi(root, 'mgrAi', `${MY_TEAM} is one of Northstar’s strongest teams: ${st.seg.nPro} of ${st.n} respondents are promoters and ${DM[ranked[6].id].name.toLowerCase()} scores ${f1(st.scores[ranked[6].id])}. ${low.name} is your lowest driver at ${f1(st.scores[low.id])} (${st.fav[low.id]}% favourable), ${st.scores[low.id] < dscore(orgPs, low.id) ? 'below' : 'close to'} the ${MY_ORG} org at ${f1(dscore(orgPs, low.id))}. ${tpl ? `The “${tpl.title}” playbook fits: ${tpl.evidence}. Start with “${tpl.steps[0].toLowerCase()}”.` : ''} Keep your growth plan visible — it is working.`);
+    root.querySelectorAll('.plan [data-act]').forEach((el) => el.onclick = () => { advanceAction(el.dataset.act); NS.refresh(); });
+  };
+
+  const homeEmployee = (c) => {
+    const me = meFor(c.persona), sub = S.survey.submitted, plan = planFor(me.team);
+    const stepsN = activeQuestions().length + 2, answered = answeredCount();
+    const mates = teamPeople(me.team).filter((p) => p.id !== me.id), matesDone = mates.filter((p) => resp[p.id]).length;
+    const hist = sub && myEngagement() != null ? [...me.pulse.slice(0, 5), myEngagement()] : me.pulse.slice(0, 5);
+    const pulsesTaken = 5 + (sub ? 1 : 0);
+    return html`
+      <div class="ns-hero"><div class="hero-emp"><div>
+        <div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('users', { size: 12 })} ${NS.esc(me.team)}</span></div>
+        <h1>${NS.greeting()}, ${NS.esc(me.first)} 👋</h1>
+        <p>${sub ? `Thanks — your September pulse is in. <b>Submitted · next pulse opens Oct 1.</b> Your team’s shared action plan is ${plan ? planProgress(plan) + '% done' : 'being drafted'}.` : `Your September pulse is open: ${stepsN} quick questions, about three minutes. It closes on ${closeLbl()} — ${matesDone} of your ${mates.length} teammates have already answered.`}</p>
+        <div class="flex gap-2 wrap mt-4">${sub ? `<a class="ns-btn primary" href="${NS.link('/survey')}">See how you compare ${ic('arrow-right')}</a>` : `<a class="ns-btn primary" href="${NS.link('/survey')}">${answered ? `Continue pulse · ${answered} of ${stepsN}` : 'Take the September pulse'} ${ic('arrow-right')}</a>`}<a class="ns-btn ghost" href="${NS.link('/actions')}">${ic('clipboard-check')}Team action plan</a></div>
+      </div>${NS.ring({ value: sub ? 1 : answered / stepsN, size: 116, thickness: 10, label: sub ? '✓' : `${Math.round((answered / stepsN) * 100)}%`, sub: sub ? 'submitted' : 'complete', color: '#fff' })}</div></div>
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'Your engagement index', value: hist[hist.length - 1], unit: '/100', sub: sub ? 'From your September answers' : `Last pulse (${MONTHS6[4]}) · company ${MONTHLY[4]}`, spark: hist })}
+        ${NS.stat({ label: 'Pulses taken', value: pulsesTaken, unit: 'of 6', icon: 'heart-pulse', sub: sub ? 'Last six months · all counted' : 'Last six months · September still open' })}
+        ${NS.stat({ label: 'Team participation', value: pct(liveResp(me.team), teamPeople(me.team).length), unit: '%', icon: 'users', sub: `${liveResp(me.team)} of ${teamPeople(me.team).length} · company ${COMPANY.part}%` })}
+        ${NS.stat({ label: 'Team plan progress', value: plan ? planProgress(plan) : 0, unit: '%', icon: 'clipboard-check', sub: plan ? NS.esc(plan.title) : 'No plan yet' })}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Your last six months', sub: sub ? 'Your own engagement index · only you can see this line' : 'Your own engagement index · September appears when you submit', body: '<div id="empTrend"></div>' })}
+          ${plan ? planCard(plan, { readOnly: true, actions: `<a class="ns-btn xs secondary" href="${NS.link('/actions')}">${ic('message-square')}Comment on the plan</a>` }) : ''}
+        </div>
+        <div class="grid gap-4">
+          ${NS.card({ title: 'How your answers are protected', body: `<div class="grid gap-3 sm">${[['lock', `Team results only appear at ${thr()}+ responses`, 'Smaller groups roll up into the org.'], ['user-x', 'No names, ever', 'Managers see counts, scores and themes — never who said what.'], ['message-square', 'Comments go to themes', 'HR sees comments tagged by team; your manager sees theme counts only.']].map(([i, t, s]) => `<div class="flex gap-3 items-start"><span class="ns-icon-box sm">${ic(i)}</span><div><b>${t}</b><div class="xs muted mt-1">${s}</div></div></div>`).join('')}</div>` })}
+          ${NS.card({ title: 'You said, we did', sub: 'Company initiatives from earlier pulses', body: `<div class="grid gap-3">${INITIATIVES.map((x) => `<div class="grid gap-2"><div class="flex justify-between gap-2 sm"><b>${NS.esc(x.title)}</b><span class="tnum muted">${x.progress}%</span></div>${NS.progress(x.progress, { color: themeOf(x.driver).color })}<div class="xs muted">${dchip(x.driver)} · ${NS.esc(x.sponsor)}</div></div>`).join('')}</div>` })}
+        </div>
+      </div>`;
+  };
+  const mountEmployee = (c, root) => {
+    const me = meFor(c.persona), sub = S.survey.submitted && myEngagement() != null;
+    const labels = sub ? MONTHS6 : MONTHS6.slice(0, 5);
+    NS.chart.line(root.querySelector('#empTrend'), { labels, series: [{ name: 'You', values: sub ? [...me.pulse.slice(0, 5), myEngagement()] : me.pulse.slice(0, 5) }, { name: 'Company average', values: MONTHLY.slice(0, labels.length), dashed: true, color: 'var(--ink-4)' }], yMin: 40, yMax: 100, height: 220, endLabels: true });
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* SURVEY — employee takes the pulse; manager & HR track participation */
+  /* ------------------------------------------------------------------ */
+  const steps = () => [...activeQuestions().map((q) => ({ kind: 'likert', q })), { kind: 'enps' }, { kind: 'open' }];
+  const isAnswered = (s) => { const a = S.survey.answers; return s.kind === 'likert' ? !!a[s.q.id] : s.kind === 'enps' ? a.enps != null : !!String(a.open || '').trim(); };
+  const answeredCount = () => steps().filter(isAnswered).length;
+  const firstMissing = () => steps().findIndex((s) => s.kind !== 'open' && !isAnswered(s));
+  const markSaved = (root) => { S.survey.savedAt = new Date().toISOString(); save(); const el = root && root.querySelector('#autosave'); if (el) el.innerHTML = `${ic('check-circle')} Saved ${F.time(S.survey.savedAt)}`; };
+  let advanceTimer = null;
+  const goStep = (i) => { const n = steps().length; S.survey.step = U.clamp(i, 0, n - 1); save(); NS.refresh(); };
+
+  const surveyEmployee = (c) => {
+    if (S.survey.submitted) return surveyThanks(c);
+    const st = steps(), i = U.clamp(S.survey.step || 0, 0, st.length - 1), s = st[i], a = S.survey.answers;
+    const done = answeredCount(), pctDone = Math.round((done / st.length) * 100);
+    const qBody = s.kind === 'likert'
+      ? `<div class="q-num">${ic(DM[s.q.driver].icon, { size: 12 })} ${DM[s.q.driver].name} · question ${i + 1} of ${st.length}</div><div class="q-text">${NS.esc(s.q.text)}</div><div class="faces" role="radiogroup" aria-label="Your answer">${FACES.map(([em, lbl], k) => `<button role="radio" data-v="${k + 1}" aria-pressed="${a[s.q.id] === k + 1}" aria-checked="${a[s.q.id] === k + 1}"><span class="em" aria-hidden="true">${em}</span>${lbl}</button>`).join('')}</div>`
+      : s.kind === 'enps'
+        ? `<div class="q-num">${ic('heart', { size: 12 })} eNPS · question ${i + 1} of ${st.length}</div><div class="q-text">${NS.esc(Q_ENPS.text)}</div><div class="nps" role="radiogroup" aria-label="0 to 10">${U.range(11).map((v) => `<button role="radio" data-v="${v}" aria-pressed="${a.enps === v}" aria-checked="${a.enps === v}">${v}</button>`).join('')}</div><div class="nps-lbl"><span>0 · Not at all likely</span><span>10 · Extremely likely</span></div>`
+        : `<div class="q-num">${ic('message-square', { size: 12 })} Open comment · optional · question ${i + 1} of ${st.length}</div><div class="q-text">${NS.esc(Q_OPEN.text)}</div><textarea class="ns-textarea" id="openTxt" style="min-height:140px" maxlength="1200" placeholder="Be as specific as you like — what happened, and what would help.">${NS.esc(a.open || '')}</textarea><div class="flex justify-between gap-3 xs muted mt-2"><span class="flex items-center gap-1">${ic('shield-check', { size: 13 })}HR sees it tagged to your team; your manager sees only the theme.</span><span id="openCt" class="tnum nowrap">${String(a.open || '').length}/1200</span></div>`;
+    const last = i === st.length - 1;
+    return html`
+      ${NS.pageHead({ eyebrow: 'September pulse', title: 'How is work, really?', sub: `${st.length} questions · about 3 minutes · closes ${closeLbl()} · answers save as you go`, actions: `<span class="ns-badge ok">${ic('lock', { size: 12 })} Anonymous</span>` })}
+      <div class="survey-wrap">
+        <div class="flex justify-between items-center xs muted mb-2"><span>${done} of ${st.length} answered</span><span class="tnum">${pctDone}%</span></div>
+        ${NS.progress(pctDone)}
+        <div class="ns-card mt-4"><div class="ns-card-body survey-card">
+          ${qBody}
+          <div class="survey-foot"><button class="ns-btn secondary" id="svBack" ${i === 0 ? 'disabled' : ''}>${ic('arrow-left')}Back</button><span class="autosave" id="autosave">${ic('check-circle')} ${S.survey.savedAt ? 'Saved ' + F.time(S.survey.savedAt) : 'Autosave on'}</span>${last ? `<button class="ns-btn primary" id="svSubmit">Submit pulse ${ic('send')}</button>` : `<button class="ns-btn primary" id="svNext" ${isAnswered(s) || s.kind === 'open' ? '' : 'disabled'}>Next ${ic('arrow-right')}</button>`}</div>
+        </div></div>
+        <div class="stepdots mt-4" aria-label="Questions">${st.map((x, k) => `<button data-step="${k}" class="${k === i ? 'cur' : ''} ${isAnswered(x) ? 'done' : ''}" aria-label="Question ${k + 1}${isAnswered(x) ? ', answered' : ''}"></button>`).join('')}</div>
+        <p class="center xs faint mt-3 hide-sm">Keyboard: 1–5 to answer · ← → to move · Enter for next</p>
+        <div class="ns-grid c3 mt-5">${[['lock', 'Private by design', `Results only for groups of ${thr()}+; no name is stored with your answers.`], ['clock', 'About three minutes', 'Answers save as you go — close the tab and pick up later.'], ['clipboard-check', 'It leads somewhere', planFor(meFor(c.persona).team) ? `Your team’s “${NS.esc(planFor(meFor(c.persona).team).title)}” plan came from pulse results.` : 'Every team with low scores owns a visible action plan.']].map(([icn, t, x]) => `<div class="note-box">${ic(icn, { size: 16 })}<div><b class="sm">${t}</b><div class="xs muted mt-1">${x}</div></div></div>`).join('')}</div>
+      </div>`;
+  };
+  const submitSurvey = () => {
+    const miss = firstMissing();
+    if (miss >= 0) { NS.toast('A few questions still need an answer', { desc: `Question ${miss + 1} is unanswered — the open comment is the only optional one.`, type: 'warn' }); goStep(miss); return; }
+    S.survey.submitted = true; S.survey.submittedAt = '2026-09-24T' + new Date().toTimeString().slice(0, 8); resp[EMP] = true; save(); log('Submitted the September pulse');
+    NS.toast('Pulse submitted — thank you', { desc: 'Next pulse opens Oct 1. You can edit until it closes.', type: 'ok' }); window.scrollTo({ top: 0 }); NS.refresh();
+  };
+  const mountSurveyEmployee = (c, root) => {
+    if (S.survey.submitted) return mountThanks(c, root);
+    const st = steps(), i = U.clamp(S.survey.step || 0, 0, st.length - 1), s = st[i];
+    root.querySelectorAll('.faces [data-v], .nps [data-v]').forEach((b) => b.onclick = () => {
+      const v = +b.dataset.v; if (s.kind === 'likert') S.survey.answers[s.q.id] = v; else S.survey.answers.enps = v;
+      b.parentElement.querySelectorAll('[data-v]').forEach((x) => { x.setAttribute('aria-pressed', x === b); x.setAttribute('aria-checked', x === b); });
+      markSaved(root); const nx = root.querySelector('#svNext'); if (nx) nx.disabled = false;
+      clearTimeout(advanceTimer); if (i < st.length - 1) advanceTimer = setTimeout(() => goStep(i + 1), 280);
+    });
+    const ta = root.querySelector('#openTxt');
+    if (ta) { const deb = U.debounce(() => markSaved(root), 500); ta.oninput = () => { S.survey.answers.open = ta.value; root.querySelector('#openCt').textContent = `${ta.value.length}/1200`; deb(); }; }
+    const back = root.querySelector('#svBack'); if (back) back.onclick = () => goStep(i - 1);
+    const next = root.querySelector('#svNext'); if (next) next.onclick = () => goStep(i + 1);
+    const subm = root.querySelector('#svSubmit'); if (subm) subm.onclick = submitSurvey;
+    root.querySelectorAll('[data-step]').forEach((b) => b.onclick = () => goStep(+b.dataset.step));
+  };
+  // keyboard answering (bound once; only active on the employee survey)
+  document.addEventListener('keydown', (e) => {
+    if (!NS.route || NS.route.path !== '/survey' || !NS.persona || NS.persona.id !== 'employee' || S.survey.submitted) return;
+    if (/input|textarea|select/i.test(e.target.tagName) || document.querySelector('.ns-overlay, .ns-drawer-wrap, .ns-palette')) return;
+    if (e.key === 'Enter' && /button|a/i.test(e.target.tagName)) return;
+    const content = document.querySelector('.ns-content'); if (!content) return;
+    const btn = content.querySelector(`.faces [data-v="${e.key}"], .nps [data-v="${e.key}"]`);
+    if (btn) { btn.click(); e.preventDefault(); return; }
+    if (e.key === 'ArrowRight' || e.key === 'Enter') { const n = content.querySelector('#svNext:not([disabled]), #svSubmit'); if (n) { n.click(); e.preventDefault(); } }
+    if (e.key === 'ArrowLeft') { const b = content.querySelector('#svBack:not([disabled])'); if (b) { b.click(); e.preventDefault(); } }
+  });
+
+  const cmpBar = (lbl, v, color) => `<div><span>${lbl}</span>${NS.progress(v == null ? 0 : ((v - 1) / 4) * 100, { color })}<b class="tnum right">${v == null ? 'n/a' : s1(v)}</b></div>`;
+  const surveyThanks = (c) => {
+    const me = meFor(c.persona), mine = myDriverScores(), st = teamStats(me.team), size = teamPeople(me.team).length, live = liveResp(me.team);
+    const tl = [['check', `Submitted ${F.date(S.survey.submittedAt, 'short')}`, 'Your answers are stored without your name.', 'done'], ['clock', `Pulse closes ${closeLbl()}`, `You can edit your answers until then · ${daysLeft()} days left.`, 'now'], ['bar-chart', 'Results reach managers 30 Sept', `Team results only at ${thr()}+ responses; comments go into themes.`, ''], ['calendar', 'Next pulse opens 1 Oct', 'Five questions rotate each month; eNPS stays.', '']];
+    return html`
+      <div class="survey-wrap">
+        <div class="ns-card"><div class="ns-card-body thanks">
+          <div class="em" aria-hidden="true">🎉</div>
+          <h2 class="mt-3" style="font-size:24px">Thank you, ${NS.esc(me.first)}</h2>
+          <div class="mt-3">${NS.badge('Submitted · next pulse opens Oct 1', 'ok', true)}</div>
+          <p class="sm muted mt-3 mx-auto max-w-prose">Your answers are anonymous. ${live} of ${size} people in ${NS.esc(me.team)} have responded; team results only show when ${thr()} or more have answered, and your comment will appear only as part of a theme.</p>
+          <div class="flex gap-2 justify-center wrap mt-4"><a class="ns-btn primary" href="${NS.link('/actions')}">${ic('clipboard-check')}Your team’s action plan</a><button class="ns-btn secondary" id="svEdit">${ic('pencil')}Edit my answers</button></div>
+        </div></div>
+      </div>
+      <div class="ns-grid c2 mt-4">
+        ${NS.card({ title: 'You vs your team vs company', sub: `Driver averages (1–5) · team shown at ${thr()}+ responses`, body: `<div class="seg-legend ink mb-2"><span><i style="background:var(--viz-1)"></i>You</span><span><i style="background:var(--viz-2)"></i>${NS.esc(me.team)}</span><span><i style="background:var(--ink-4)"></i>Company</span></div>${DRIVERS.map((d) => { const you = mine[d.id], tm = st.visible ? st.scores[d.id] : null, co = dscore(RS, d.id); return `<div class="cmp-row"><b class="sm">${d.name}</b><span class="xs muted">${you == null ? 'Not asked this month' : Math.round((you - co) * 10) === 0 ? 'You are level with the company' : `You ${signed(Math.round((you - co) * 10) / 10, 1)} vs company`}</span><div class="bars">${cmpBar('You', you, 'var(--viz-1)')}${cmpBar('Team', tm, 'var(--viz-2)')}${cmpBar('Company', co, 'var(--ink-4)')}</div></div>`; }).join('')}` })}
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Your last six months', sub: 'Your engagement index (0–100) · private to you', body: '<div id="thxTrend"></div>' })}
+          ${NS.card({ title: 'What happens next', body: `<div class="ns-timeline">${tl.map(([i, t, s, cls]) => `<div class="ns-tl-item ${cls}"><span class="pt">${ic(i)}</span><div><div class="ttl">${t}</div><div class="sub">${s}</div></div></div>`).join('')}</div>` })}
+        </div>
+      </div>`;
+  };
+  const mountThanks = (c, root) => {
+    const me = meFor(c.persona), mine = myEngagement();
+    NS.chart.line(root.querySelector('#thxTrend'), { labels: MONTHS6, series: [{ name: 'You', values: [...me.pulse.slice(0, 5), mine == null ? me.pulse[5] : mine] }, { name: 'Company average', values: MONTHLY, dashed: true, color: 'var(--ink-4)' }], yMin: 40, yMax: 100, height: 200, endLabels: true });
+    const ed = root.querySelector('#svEdit'); if (ed) ed.onclick = () => { S.survey.submitted = false; S.survey.step = 0; resp[EMP] = false; save(); log('Reopened the September pulse to edit'); NS.toast('Your answers are open for editing', { desc: `Submit again before ${closeLbl()}.`, type: 'info' }); NS.refresh(); };
+  };
+
+  const weekOf = (p) => { const h = NS.hashStr(p.id + 'wk') % 10; return h < 4 ? 0 : h < 7 ? 1 : h < 9 ? 2 : 3; };
+  const WEEKS = ['1–7 Sep', '8–14 Sep', '15–21 Sep', '22–24 Sep'];
+  const surveyManager = (c) => {
+    const me = meFor(c.persona), team = teamPeople(MY_TEAM), size = team.length, live = liveResp(MY_TEAM), pend = size - live, reminded = S.reminders[me.id] === '2026-09-24';
+    const logs = S.activity.filter((x) => /Reminded/.test(x.msg)).slice(0, 4);
+    return html`
+      ${NS.pageHead({ eyebrow: 'September pulse', title: 'Team participation', sub: 'Counts only — Pulse never tells a manager who has or hasn’t responded.', actions: `<button class="ns-btn primary" id="remind" ${pend === 0 ? 'disabled' : ''}>${ic('megaphone')}${reminded ? 'Reminded today' : 'Remind team'}</button>` })}
+      <div class="ns-grid main-side">
+        <div class="grid gap-4">
+          ${NS.card({ body: `<div class="tracker">${NS.ring({ value: live / size, size: 120, thickness: 11, label: `${pct(live, size)}%`, sub: 'responded' })}<div class="grow min-w-0"><div class="ns-eyebrow">${NS.esc(MY_TEAM)}</div><div style="font-family:var(--font-display);font-size:26px;font-weight:700;letter-spacing:-.02em">${live} of ${size} have responded</div><p class="sm muted mt-1">${pend ? `${F.plural(pend, 'person', 'people')} still to respond` : 'Everyone has responded'} · closes ${closeLbl()} (${F.days(daysLeft())} left)</p><div class="flex gap-2 wrap mt-3">${live >= thr() ? NS.badge(`Results visible · ${thr()}+ responses`, 'ok', true) : NS.badge(`Results unlock at ${thr()} responses`, 'warn', true)}${reminded ? NS.badge('Reminder sent today', 'brand') : ''}</div></div></div>` })}
+          <div class="ns-grid c2">
+            ${NS.card({ title: 'Responses by week', sub: 'When your team answered · counts only', body: '<div id="wkBars"></div>' })}
+            ${NS.card({ title: 'How you compare', sub: 'Participation rate', body: '<div id="cmpPart"></div>' })}
+          </div>
+          ${NS.card({ title: 'Participation history', sub: 'Last six pulses · your team vs company', body: '<div id="partHist"></div>' })}
+        </div>
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Reminder rules', sub: 'Set by People Partners', body: `<div class="grid gap-2 sm">${[['Automatic nudge 3 days before close', S.settings.reminders.d3], ['Final nudge on the last day', S.settings.reminders.d1], ['Weekly manager digest (counts only)', S.settings.reminders.digest]].map(([t, on]) => `<div class="flex justify-between gap-3"><span>${t}</span>${on ? NS.badge('On', 'ok') : NS.badge('Off', 'neutral')}</div>`).join('')}<div class="xs muted mt-2">Channel: ${NS.esc(S.settings.reminders.channel)} · one manual reminder per day.</div></div>` })}
+          ${NS.card({ title: 'Reminder history', body: logs.length ? `<div class="grid gap-2">${logs.map((x) => `<div class="flex justify-between gap-3 sm"><span class="ink2">${NS.esc(x.msg)}</span><span class="xs faint nowrap">${F.rel(x.t)}</span></div>`).join('')}</div>` : '<div class="sm muted">No manual reminders yet this pulse. Automatic nudges went out on 20 Sept.</div>' })}
+          ${NS.card({ title: 'Why no names?', body: '<p class="sm ink2">People answer honestly when they know they can’t be singled out. Participation is shown as a count, results appear only above the anonymity threshold, and comments reach you as themes. Reminders go to everyone who hasn’t answered — you never learn who that is.</p>' })}
+        </div>
+      </div>`;
+  };
+  const mountSurveyManager = (c, root) => {
+    const team = teamPeople(MY_TEAM), weeks = [0, 0, 0, 0]; team.filter((p) => resp[p.id]).forEach((p) => { weeks[p.id === EMP ? 3 : weekOf(p)]++; });
+    NS.chart.bars(root.querySelector('#wkBars'), { labels: WEEKS, series: [{ name: 'Responses', values: weeks, color: 'var(--viz-1)' }], height: 190, showValues: true, yFormat: (v) => String(Math.round(v)) });
+    const orgAll = P.filter((p) => p.org === MY_ORG), eng = P.filter((p) => p.dept === 'Engineering');
+    NS.chart.hbars(root.querySelector('#cmpPart'), { items: [{ label: MY_TEAM, value: pct(liveResp(MY_TEAM), team.length), color: 'var(--viz-1)', sub: 'Your team' }, { label: MY_ORG, value: pct(orgAll.filter((p) => resp[p.id]).length, orgAll.length), color: 'var(--ink-4)', sub: 'Org' }, { label: 'Engineering', value: pct(eng.filter((p) => resp[p.id]).length, eng.length), color: 'var(--ink-4)', sub: 'Department' }, { label: 'Northstar', value: pct(P.filter((p) => resp[p.id]).length, P.length), color: 'var(--ink-4)', sub: 'Company' }], max: 100, format: (v) => v + '%', valueLabel: 'Participation' });
+    NS.chart.line(root.querySelector('#partHist'), { labels: MONTHS6, series: [{ name: MY_TEAM, values: [89, 100, 89, 100, 89, pct(liveResp(MY_TEAM), team.length)] }, { name: 'Company', values: [86, 88, 87, 89, 89, pct(P.filter((p) => resp[p.id]).length, P.length)], dashed: true, color: 'var(--ink-4)' }], yMin: 50, yMax: 100, height: 200, endLabels: true, yFormat: (v) => v + '%' });
+    const rb = root.querySelector('#remind'); if (rb) rb.onclick = () => remindTeam(c.persona);
+  };
+
+  const cumCurve = (end, days, total, tau = 5.2) => U.range(days).map((i) => Math.round(end * (1 - Math.exp(-(i + 1) / tau)) / (1 - Math.exp(-total / tau))));
+  const surveyHr = (c) => {
+    const liveAll = P.filter((p) => resp[p.id]).length, below = TEAMS.filter((t) => pct(liveResp(t.name), teamPeople(t.name).length) < 85);
+    return html`
+      ${NS.pageHead({ eyebrow: 'September pulse', title: 'Participation', sub: `Opened 1 Sep · closes ${closeLbl()} · ${activeQuestions().length} driver questions + eNPS + one open comment`, actions: `<button class="ns-btn secondary" id="partCsv">${ic('download')}Export</button><button class="ns-btn primary" id="nudgeAll">${ic('megaphone')}Nudge ${below.filter((t) => !S.nudged[t.name]).length} managers</button>` })}
+      <div class="ns-stats">
+        ${NS.stat({ label: 'Participation', value: pct(liveAll, P.length), unit: '%', delta: NS.delta(pct(liveAll, P.length) - 89, { suf: ' pts vs Aug', d: 0 }), sub: `${F.int(liveAll)} of ${F.int(P.length)} employees` })}
+        ${NS.stat({ label: 'Closes in', value: daysLeft(), unit: 'days', icon: 'clock', sub: `${closeLbl()} · 18:00 local time` })}
+        ${NS.stat({ label: 'Teams below 85%', value: below.length, unit: `of ${TEAMS.length}`, icon: 'alert-triangle', sub: `${Object.keys(S.nudged).length} managers nudged this pulse` })}
+        ${NS.stat({ label: 'Open comments', value: sepC().length, icon: 'message-square', sub: `${pct(sepC().length, COMPANY.n)}% of respondents left one` })}
+      </div>
+      <div class="ns-grid c2 mt-4">
+        ${NS.card({ title: 'Response curve', sub: 'Cumulative participation by day · September vs August · target 85%', body: '<div id="cumLine"></div>' })}
+        ${NS.card({ title: 'By department', sub: 'Participation rate · lowest first', body: '<div id="deptPart"></div>' })}
+      </div>
+      <div class="mt-4">${NS.card({ title: 'Teams by participation', sub: 'Counts only — individual response status is never stored against a name', actions: '<div class="ns-input-wrap">' + ic('search') + '<input class="ns-input" id="teamQ" placeholder="Search teams or managers…"></div>', bodyCls: 'flush', body: '<div id="partTable"></div>' })}</div>`;
+  };
+  const mountSurveyHr = (c, root) => {
+    const aug = cumCurve(89, 24, 27, 7), sep = cumCurve(pct(P.filter((p) => resp[p.id]).length, P.length), 24, 24, 3.4);
+    NS.chart.line(root.querySelector('#cumLine'), { labels: U.range(24).map((i) => `${i + 1} Sep`), series: [{ name: 'September', values: sep }, { name: 'August (same day)', values: aug, dashed: true, color: 'var(--ink-4)' }], yMin: 0, yMax: 100, height: 330, yFormat: (v) => v + '%' });
+    NS.chart.hbars(root.querySelector('#deptPart'), { items: D.departments.map((d) => { const ps = P.filter((p) => p.dept === d.name), n = ps.filter((p) => resp[p.id]).length; return { label: d.name, value: pct(n, ps.length), sub: `${n} of ${ps.length}`, color: pct(n, ps.length) < 85 ? 'var(--viz-warn)' : 'var(--viz-1)' }; }).sort((a, b) => a.value - b.value), max: 100, format: (v) => v + '%', valueLabel: 'Participation' });
+    const rows = TEAMS.map((t) => { const size = teamPeople(t.name).length, n = liveResp(t.name); return { name: t.name, org: t.org, mgr: t.mgr, n, size, part: pct(n, size) }; });
+    const el = root.querySelector('#partTable');
+    const tbl = NS.table(el, { rows, rowKey: 'name', pageSize: 10, sort: { key: 'part', dir: 1 }, searchKeys: ['name', 'org', (r) => r.mgr.name], columns: [
+      { key: 'name', label: 'Team', render: (r) => `<b>${NS.esc(r.name)}</b><div class="xs muted">${NS.esc(r.org)}</div>` },
+      { key: 'mgr', label: 'Manager', sort: (r) => r.mgr.name, render: (r) => `<span class="flex items-center gap-2">${NS.avatar(r.mgr, { size: 'xs' })}<span class="truncate">${NS.esc(r.mgr.name)}</span></span>` },
+      { key: 'n', label: 'Responded', align: 'right', render: (r) => `${r.n} / ${r.size}` },
+      { key: 'part', label: 'Rate', align: 'right', width: '150px', render: (r) => `<div class="pct-cell"><b class="tnum">${r.part}%</b>${NS.progress(r.part, { cls: r.part < 85 ? 'warn' : '' })}</div>` },
+      { key: 'vis', label: 'Results', sort: (r) => (r.n >= thr() ? 1 : 0), render: (r) => (teamR(r.name).length >= thr() ? NS.badge('Visible', 'ok') : NS.badge('Below threshold', 'neutral')) },
+      { key: 'act', label: '', sort: false, align: 'right', render: (r) => (S.nudged[r.name] ? `<span class="xs muted nowrap">${ic('check', { size: 12 })} Nudged</span>` : r.part < 100 ? `<button class="ns-btn xs secondary" data-nudge="${NS.esc(r.name)}">${ic('bell')}Nudge</button>` : '') },
+    ] });
+    const nudge = (names) => { names.forEach((n) => { S.nudged[n] = '2026-09-24'; }); save(); log(`Nudged ${F.plural(names.length, 'manager')} about participation`); tbl.refresh(); };
+    el.addEventListener('click', (e) => { const b = e.target.closest('[data-nudge]'); if (!b) return; const t = teamByName[b.dataset.nudge]; nudge([t.name]); NS.toast(`Nudge sent to ${t.mgr.name}`, { desc: `${t.name}: ${liveResp(t.name)} of ${teamPeople(t.name).length} responded · the manager sees counts only`, type: 'ok' }); });
+    root.querySelector('#teamQ').oninput = U.debounce((e) => tbl.setSearch(e.target.value), 150);
+    root.querySelector('#nudgeAll').onclick = () => { const names = TEAMS.filter((t) => pct(liveResp(t.name), teamPeople(t.name).length) < 85 && !S.nudged[t.name]).map((t) => t.name); if (!names.length) { NS.toast('Every low-participation manager has been nudged', { type: 'info' }); return; } nudge(names); NS.toast(`${F.plural(names.length, 'manager')} nudged`, { desc: 'Each gets their own team’s count and a one-click reminder.', type: 'ok' }); NS.refresh(); };
+    root.querySelector('#partCsv').onclick = () => downloadCsv('pulse-participation-sep.csv', [['Team', 'Org', 'Manager', 'Responded', 'Team size', 'Rate %', 'Nudged'], ...rows.map((r) => [r.name, r.org, r.mgr.name, r.n, r.size, r.part, S.nudged[r.name] ? 'yes' : 'no'])]);
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* DRIVERS — deep-dive                                                 */
+  /* ------------------------------------------------------------------ */
+  const groupScores = (groups, keyFn, k) => groups.map((g) => { const ps = RS.filter((p) => keyFn(p) === g); return { label: g, n: ps.length, value: ps.length >= thr() ? dscore(ps, k) : null }; });
+  const driverKda = () => { const vis = visTeams(); return DRIVERS.map((d) => ({ d, r: pearson(vis.map((s) => ({ x: s.scores[d.id], y: s.enps }))) })).sort((a, b) => b.r.r - a.r.r); };
+  const rWord = (r) => (Math.abs(r) >= 0.7 ? 'strong' : Math.abs(r) >= 0.4 ? 'moderate' : Math.abs(r) >= 0.2 ? 'weak' : 'no meaningful');
+  const drivers = (c) => {
+    const k = DM[c.query.d] ? c.query.d : 'workload', d = DM[k], isMgr = c.persona.id === 'manager';
+    const score = dscore(RS, k), fv = fav(RS, k), kda = driverKda(), mine = kda.find((x) => x.d.id === k), rank = kda.indexOf(mine) + 1;
+    const qs = QUESTIONS.filter((q) => q.driver === k), tpls = TEMPLATES.filter((t) => t.driver === k);
+    const low = visTeams().filter((s) => s.scores[k] < 3.6).sort((a, b) => a.scores[k] - b.scores[k]).slice(0, 6);
+    const my = teamStats(MY_TEAM), orgPs = RS.filter((p) => p.org === MY_ORG);
+    return html`
+      ${NS.pageHead({ eyebrow: 'Driver deep-dive', title: `${ic(d.icon, { size: 22 })} ${d.name}`, sub: `${NS.esc(d.desc)} · ${qs.length} question${qs.length === 1 ? '' : 's'} in the bank`, actions: `<button class="ns-btn secondary" id="drvCsv">${ic('download')}Export</button>` })}
+      <div class="ns-chips mb-4">${DRIVERS.map((x) => `<a class="ns-chip" href="${NS.link('/drivers', { d: x.id })}" aria-pressed="${x.id === k}">${ic(x.icon)}${x.name}</a>`).join('')}</div>
+      <div class="ns-stats">
+        ${NS.stat({ label: 'Company score', value: f1(score), unit: '/5', delta: NS.delta(SCORE_DELTA[k], { d: 2, suf: '', fmt: (v) => v.toFixed(2) }), sub: 'Change vs August pulse' })}
+        ${NS.stat({ label: 'Favourable', value: fv, unit: '%', icon: 'thumbs-up', sub: `Agree or strongly agree · ${F.int(RS.length)} respondents` })}
+        ${NS.stat({ label: 'vs tech median', value: signed(score - d.bench, 1), icon: 'scale', sub: `Median ${d.bench.toFixed(1)} · ${score - d.bench >= 0.3 ? 'clearly ahead' : score >= d.bench ? 'slightly ahead' : 'behind'}` })}
+        ${NS.stat({ label: 'Impact on eNPS', value: 'r = ' + mine.r.r.toFixed(2), icon: 'zap', sub: `#${rank} of 7 drivers · ${rWord(mine.r.r)} link at team level` })}
+      </div>
+      ${isMgr ? `<div class="mt-4">${NS.card({ title: `${NS.esc(MY_TEAM)} on ${d.name.toLowerCase()}`, sub: my.visible ? `${my.n} responses` : 'Below threshold', body: my.visible ? `<div class="mini-stats"><div><span>Your team</span><b>${f1(my.scores[k])}</b><span>${my.fav[k]}% favourable</span></div><div><span>${NS.esc(MY_ORG)} org</span><b>${f1(dscore(orgPs, k))}</b><span>${fav(orgPs, k)}% favourable</span></div><div><span>Company</span><b>${f1(score)}</b><span>${fv}% favourable</span></div></div><div class="mt-3">${questionRows(qs, RS.filter((p) => p.team === MY_TEAM && p.id !== MGR))}</div>` : masked(my.n) })}</div>` : ''}
+      <div class="ns-grid c2 mt-4">
+        <div class="grid gap-4" style="align-content:start">${NS.card({ title: 'Score distribution', sub: 'Respondents by rounded driver score', body: '<div id="dDist"></div>' })}${NS.card({ title: 'Questions in this driver', sub: 'Company mean score (1–5)', body: questionRows(qs, RS) })}</div>
+        ${NS.card({ title: 'By organisation', sub: 'Engineering orgs and other departments', body: '<div id="dOrg"></div>' })}
+      </div>
+      <div class="ns-grid c2 mt-4">
+        <div class="grid gap-4" style="align-content:start">${NS.card({ title: 'By tenure', body: '<div id="dTen"></div>' })}${NS.card({ title: 'By level', body: '<div id="dLvl"></div>' })}</div>
+        ${NS.card({ title: 'By location', body: '<div id="dLoc"></div>' })}
+      </div>
+      <div class="ns-grid main-side mt-4">
+        ${NS.card({ title: `Driver impact on eNPS`, sub: `Each dot is a team at ${thr()}+ responses · ${d.name.toLowerCase()} score vs team eNPS`, body: `<div id="dScatter"></div><div class="ns-alert info mt-3">${ic('info')}<div><b>r = ${mine.r.r.toFixed(2)} · ${rWord(mine.r.r)} relationship</b><p>${Math.abs(mine.r.r) >= 0.2 ? `Teams scoring 0.5 higher on ${d.name.toLowerCase()} have eNPS about ${enpsFmt(mine.r.slope * 0.5)} points higher on average.` : `Team eNPS barely moves with ${d.name.toLowerCase()} — it is a hygiene factor here: fix it where it is low, but it will not lift advocacy on its own.`} Correlation, not causation — use it to prioritise, then test with a plan.</p></div></div>` })}
+        <div class="grid gap-4" style="align-content:start">${NS.card({ title: 'Key driver ranking', sub: 'Correlation of each driver with team eNPS · click to switch', body: '<div id="dKda"></div>' })}${NS.card({ title: 'Lowest teams', sub: `Below 3.6 on ${d.name.toLowerCase()} · teams at ${thr()}+ responses`, body: isMgr ? '<div class="sm muted">Other teams’ results are visible to HR and leadership only. Your own team is shown above.</div>' : low.length ? low.map((s) => { const pl = S.plans.find((p) => p.team === s.name && p.status !== 'done'); return `<div class="mover pointer" data-team="${NS.esc(s.name)}"><div class="min-w-0"><div class="t truncate">${NS.esc(s.name)}</div><div class="s">${NS.esc(s.team.org)} · ${pl ? `${NS.esc(pl.title)} (${DM[pl.driver].name.toLowerCase()})` : 'no active plan'}</div></div><b class="tnum">${f1(s.scores[k])}</b></div>`; }).join('') : NS.empty({ icon: 'check-circle', title: 'No team below 3.6', body: `Every reporting team scores 3.6 or more on ${d.name.toLowerCase()}.` }) })}</div>
+      </div>
+      <div class="ns-section-title"><div><h2>What works for ${d.name.toLowerCase()}</h2><p>Playbooks from earlier pulses, with the lift they produced</p></div></div>
+      <div class="ns-grid c3">${tpls.map((t) => `<div class="tpl"><b>${ic('wand', { size: 14 })} ${NS.esc(t.title)}</b><p>${NS.esc(t.body)}</p><ul>${t.steps.map((x) => `<li>${NS.esc(x)}</li>`).join('')}</ul><div class="xs brand-text semibold">${ic('trending-up', { size: 12 })} ${NS.esc(t.evidence)}</div>${c.persona.id !== 'cpo' ? `<button class="ns-btn xs secondary" data-usetpl="${t.id}">${ic('plus')}Use in a plan</button>` : ''}</div>`).join('')}</div>`;
+  };
+  const useTemplate = (tplId, persona) => { const t = TEMPLATES.find((x) => x.id === tplId); const isMgr = persona.id === 'manager'; planModal(null, { driver: t.driver, team: isMgr ? MY_TEAM : '', lockTeam: isMgr }); setTimeout(() => { const b = document.querySelector(`.ns-modal [data-tpl="${t.id}"]`); if (b) b.click(); }, 40); };
+  const mountDrivers = (c, root) => {
+    const k = DM[c.query.d] ? c.query.d : 'workload', d = DM[k], isMgr = c.persona.id === 'manager';
+    const dist = [1, 2, 3, 4, 5].map((v) => RS.filter((p) => Math.round(p.drivers[k]) === v).length);
+    NS.chart.bars(root.querySelector('#dDist'), { labels: ['1 · Strongly disagree', '2', '3 · Neutral', '4', '5 · Strongly agree'], series: [{ name: 'Respondents', values: dist }], colorByIndex: true, colors: ['var(--viz-critical)', 'var(--viz-serious)', 'var(--ink-4)', 'var(--viz-good)', 'var(--viz-good)'], height: 220, showValues: true, yFormat: (v) => F.int(v) });
+    NS.chart.hbars(root.querySelector('#dOrg'), { items: UNITS.map((u) => ({ label: u.label, value: dscore(u.people(), k), color: d.color, tip: `<div class="faint xs">${u.sub} · ${u.people().length} respondents</div>` })).sort((a, b) => b.value - a.value), min: 0, max: 5, format: (v) => s1(v), valueLabel: `${d.name} score`, gap: 6, thickness: 8 });
+    const hb = (el, items) => NS.chart.hbars(el, { items: items.map((x) => ({ label: x.label, value: x.value == null ? 0 : x.value, sub: x.value == null ? `n/a · fewer than ${thr()}` : `${F.int(x.n)} people`, color: d.color })), max: 5, format: (v) => (v ? s1(v) : 'n/a'), valueLabel: `${d.name} score`, thickness: 8, labelWidth: 'minmax(110px,46%)' });
+    hb(root.querySelector('#dTen'), groupScores(TENURE_BANDS, tenureBand, k));
+    hb(root.querySelector('#dLvl'), groupScores(LEVEL_BANDS, levelBand, k));
+    hb(root.querySelector('#dLoc'), groupScores(D.locations.map((l) => l.city), (p) => p.city, k).sort((a, b) => (b.value || 0) - (a.value || 0)));
+    const vis = visTeams();
+    NS.chart.scatter(root.querySelector('#dScatter'), { points: vis.map((s) => ({ x: s.scores[k], y: s.enps, label: isMgr && s.name !== MY_TEAM ? `A team in ${FAMILY(s.team.dept)}` : s.name, sub: isMgr && s.name !== MY_TEAM ? 'Team names are visible to HR only' : `${s.team.org} · ${s.n} responses`, group: FAMILY(s.team.dept), r: isMgr && s.name === MY_TEAM ? 8 : 5, team: s.name })), groups: FAMILIES, xLabel: `${d.name} score`, yLabel: 'Team eNPS', xFormat: (v) => Number(v).toFixed(1), yFormat: (v) => enpsFmt(v), yMin: -60, yMax: 100, height: 300, onPoint: isMgr ? null : (p) => openTeam(p.team, c.persona) });
+    NS.chart.hbars(root.querySelector('#dKda'), { items: driverKda().map((x) => ({ label: x.d.name, value: x.r.r, sub: Math.abs(x.r.r) >= 0.7 ? 'Strong' : Math.abs(x.r.r) >= 0.4 ? 'Moderate' : Math.abs(x.r.r) >= 0.2 ? 'Weak' : 'No clear link', color: x.d.id === k ? d.color : 'var(--ink-4)', id: x.d.id })), max: 1, format: (v) => v.toFixed(2), valueLabel: 'Correlation with eNPS', onItem: (it) => NS.go('/drivers', { d: it.id }) });
+    root.querySelectorAll('[data-team]').forEach((el) => el.onclick = () => openTeam(el.dataset.team, c.persona));
+    root.querySelectorAll('[data-usetpl]').forEach((b) => b.onclick = () => useTemplate(b.dataset.usetpl, c.persona));
+    root.querySelector('#drvCsv').onclick = () => downloadCsv(`pulse-driver-${k}-sep.csv`, [['Cut', 'Group', 'Respondents', `${d.name} score`], ...UNITS.map((u) => ['Organisation', u.label, u.people().length, dscore(u.people(), k)]), ...groupScores(TENURE_BANDS, tenureBand, k).map((x) => ['Tenure', x.label, x.n, x.value ?? 'n/a']), ...groupScores(LEVEL_BANDS, levelBand, k).map((x) => ['Level', x.label, x.n, x.value ?? 'n/a']), ...groupScores(D.locations.map((l) => l.city), (p) => p.city, k).map((x) => ['Location', x.label, x.n, x.value ?? 'n/a'])]);
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* TEAMS — explorer with anonymity masking                             */
+  /* ------------------------------------------------------------------ */
+  const teams = (c) => {
+    const u = UNITS.find((x) => x.id === c.query.u);
+    const inScope = u ? TEAMS.filter((t) => (u.org ? t.org === u.org : t.dept === u.dept)) : TEAMS;
+    const stats = inScope.map((t) => teamStats(t.name)), vis = stats.filter((s) => s.visible), hidden = stats.length - vis.length;
+    const withPlan = inScope.filter((t) => S.plans.some((p) => p.team === t.name && p.status !== 'done')).length;
+    const opt = (x) => `<option value="${NS.esc(x.id)}" ${u && u.id === x.id ? 'selected' : ''}>${NS.esc(x.label)}</option>`;
+    return html`
+      ${NS.pageHead({ eyebrow: 'Team explorer', title: u ? NS.esc(u.label) : 'All organisations', sub: u ? `${inScope.length} teams · ${u.sub} · teams under ${thr()} responses are masked` : `${UNITS.length} organisations and departments · pick one to see its teams`, actions: `<select class="ns-select" id="fUnit" style="width:auto;max-width:240px"><option value="">All organisations</option><optgroup label="Engineering orgs">${UNITS.filter((x) => x.org).map(opt).join('')}</optgroup><optgroup label="Departments">${UNITS.filter((x) => !x.org).map(opt).join('')}</optgroup></select>` })}
+      <div class="ns-stats">
+        ${NS.stat({ label: 'Teams reporting', value: vis.length, unit: `of ${stats.length}`, icon: 'users', sub: `${hidden} below the ${thr()}-response threshold` })}
+        ${NS.stat({ label: 'Median team eNPS', value: vis.length ? enpsFmt(U.median(vis.map((s) => s.enps))) : 'n/a', icon: 'heart', sub: `Company ${enpsFmt(COMPANY.enps)}` })}
+        ${NS.stat({ label: 'Median participation', value: stats.length ? Math.round(U.median(inScope.map((t) => pct(liveResp(t.name), teamPeople(t.name).length)))) : 0, unit: '%', icon: 'activity', sub: 'Counts are visible for every team' })}
+        ${NS.stat({ label: 'Active action plans', value: withPlan, unit: `of ${inScope.length}`, icon: 'clipboard-check', sub: 'Teams with a live or draft plan' })}
+      </div>
+      <div class="mt-4">${NS.card({ title: u ? 'Teams × drivers' : 'Organisations × drivers', sub: u ? `Mean score · masked cells are below ${thr()} responses · click a team` : 'Mean score · click a row to see its teams', actions: '<span class="heat-legend hide-sm">Lower<i></i>Higher</span>', body: '<div class="heat-scroll"><div id="teamHeat"></div></div>' })}</div>
+      <div class="mt-4">${NS.card({ title: 'Teams', sub: 'Click a team for its results, themes and plan', actions: `<div class="ns-input-wrap">${ic('search')}<input class="ns-input" id="tq" placeholder="Search teams or managers…"></div>`, bodyCls: 'flush', body: '<div id="teamTable"></div>' })}</div>`;
+  };
+  const mountTeams = (c, root) => {
+    const u = UNITS.find((x) => x.id === c.query.u);
+    const inScope = u ? TEAMS.filter((t) => (u.org ? t.org === u.org : t.dept === u.dept)) : TEAMS;
+    root.querySelector('#fUnit').onchange = (e) => NS.go('/teams', e.target.value ? { u: e.target.value } : {});
+    const heat = root.querySelector('#teamHeat');
+    if (u) NS.chart.heatmap(heat, { rows: inScope.map((t) => { const s = teamStats(t.name); return s.visible ? t.name : `${t.name} · hidden`; }), cols: HEAT_COLS, values: inScope.map((t) => { const s = teamStats(t.name); return DRIVERS.map((d) => (s.visible ? s.scores[d.id] : null)); }), format: (v) => (v == null ? 'n/a' : Number(v).toFixed(1)), valueLabel: 'Mean score', labelWidth: 'minmax(150px,auto)', colWidth: 44, onCell: (ri) => openTeam(inScope[ri].name, c.persona) });
+    else NS.chart.heatmap(heat, { rows: UNITS.map((x) => x.label), cols: HEAT_COLS, values: UNITS.map((x) => { const ps = x.people(); return DRIVERS.map((d) => dscore(ps, d.id)); }), format: (v) => (v == null ? 'n/a' : Number(v).toFixed(1)), valueLabel: 'Mean score', labelWidth: 'minmax(150px,auto)', colWidth: 44, onCell: (ri) => NS.go('/teams', { u: UNITS[ri].id }) });
+    const rows = inScope.map((t) => { const s = teamStats(t.name), size = teamPeople(t.name).length, n = liveResp(t.name), pl = planFor(t.name); return { name: t.name, org: t.org, mgr: t.mgr, s, n, size, part: pct(n, size), plan: pl }; });
+    const hiddenCell = (r) => `<span class="masked" data-tip="${r.s.n} of ${thr()} responses needed">${ic('lock')} n/a</span>`;
+    const tbl = NS.table(root.querySelector('#teamTable'), { rows, rowKey: 'name', pageSize: 12, sort: { key: 'enps', dir: 1 }, searchKeys: ['name', 'org', (r) => r.mgr.name], onRow: (r) => openTeam(r.name, c.persona), columns: [
+      { key: 'name', label: 'Team', render: (r) => `<b>${NS.esc(r.name)}</b><div class="xs muted">${NS.esc(r.org)}</div>` },
+      { key: 'mgr', label: 'Manager', sort: (r) => r.mgr.name, render: (r) => `<span class="flex items-center gap-2">${NS.avatar(r.mgr, { size: 'xs' })}<span class="truncate">${NS.esc(r.mgr.name)}</span></span>` },
+      { key: 'part', label: 'Responses', align: 'right', render: (r) => `${r.n}/${r.size} <span class="faint">· ${r.part}%</span>` },
+      { key: 'enps', label: 'eNPS', align: 'right', sort: (r) => (r.s.visible ? r.s.enps : null), render: (r) => (r.s.visible ? enpsBadge(r.s.enps) : hiddenCell(r)) },
+      { key: 'eng', label: 'Engagement', align: 'right', sort: (r) => (r.s.visible ? r.s.eng : null), render: (r) => (r.s.visible ? `<b class="tnum">${r.s.eng}</b>` : '<span class="faint">—</span>') },
+      { key: 'low', label: 'Lowest driver', sort: (r) => (r.s.visible ? r.s.scores[r.s.lowest] : null), render: (r) => (r.s.visible ? `<span class="flex items-center gap-2">${dchip(r.s.lowest)}<b class="tnum sm">${f1(r.s.scores[r.s.lowest])}</b></span>` : '<span class="faint">—</span>') },
+      { key: 'plan', label: 'Plan', sort: (r) => (r.plan ? planProgress(r.plan) : -1), render: (r) => (r.plan ? `<span class="flex items-center gap-2">${planBadge(r.plan.status)}<span class="xs muted tnum">${planProgress(r.plan)}%</span></span>` : '<span class="faint">—</span>') },
+    ] });
+    root.querySelector('#tq').oninput = U.debounce((e) => tbl.setSearch(e.target.value), 150);
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* COMMENTS — explorer (HR, CPO) · themes only (manager)               */
+  /* ------------------------------------------------------------------ */
+  const CF = { theme: '', sent: '', org: '', period: '', q: '', flagged: false, limit: 20 };
+  const ORGS = U.uniq(COMMENTS.map((x) => x.org)).sort();
+  const filterComments = (o = {}) => { const q = CF.q.trim().toLowerCase(); return COMMENTS.filter((x) => (o.ignoreTheme || !CF.theme || x.theme === CF.theme) && (!CF.sent || x.sent === CF.sent) && (!CF.org || x.org === CF.org) && (o.ignorePeriod || !CF.period || x.period === CF.period) && (!CF.flagged || S.flags[x.id]) && (!q || (x.text + ' ' + scopeOf(x) + ' ' + themeOf(x.theme).name).toLowerCase().includes(q))).sort((a, b) => (a.date < b.date ? 1 : a.date > b.date ? -1 : 0)); };
+  const cmtCard = (x) => `<div class="cmt"><p>“${NS.esc(x.text)}”</p><div class="meta">${sdot(x.sent)}${dchip(x.theme)}<span>${NS.esc(scopeOf(x))}</span><span class="faint">·</span><span>${F.date(x.date, 'short')}</span><span class="faint hide-sm">· ${periodLbl(x.period)}</span><button class="ns-icon-btn" data-flag="${x.id}" aria-pressed="${!!S.flags[x.id]}" aria-label="${S.flags[x.id] ? 'Remove follow-up flag' : 'Flag for follow-up'}" title="${S.flags[x.id] ? 'Flagged for follow-up' : 'Flag for follow-up'}">${ic('flag')}</button></div></div>`;
+  const comments = (c) => {
+    if (c.persona.id === 'manager') return commentsManager(c);
+    if (c.query.theme && THEMES.some((t) => t.id === c.query.theme)) CF.theme = c.query.theme;
+    const sel = (id, all, opts, cur) => `<select class="ns-select" id="${id}" style="width:auto">${[`<option value="">${all}</option>`, ...opts.map(([v, l]) => `<option value="${NS.esc(v)}" ${v === cur ? 'selected' : ''}>${NS.esc(l)}</option>`)].join('')}</select>`;
+    return html`
+      ${NS.pageHead({ eyebrow: 'Listen', title: 'Comment explorer', sub: `${COMMENTS.length} open comments across four surveys · attributed to teams, never people · teams under ${thr()} responses show their org only`, actions: `<button class="ns-btn secondary" id="cmtCsv">${ic('download')}Export view</button>` })}
+      <div class="ns-toolbar">
+        <div class="ns-input-wrap grow" style="max-width:320px">${ic('search')}<input class="ns-input" id="cq" placeholder="Search comments…" value="${NS.esc(CF.q)}"></div>
+        ${sel('cTheme', 'All themes', THEMES.map((t) => [t.id, t.name]), CF.theme)}
+        ${sel('cOrg', 'All orgs', ORGS.map((o) => [o, o]), CF.org)}
+        ${sel('cPeriod', 'All surveys', PERIODS.map((p) => [p.id, p.label]), CF.period)}
+        <div class="ns-seg" id="cSent">${[['', 'All'], ['pos', 'Positive'], ['neu', 'Neutral'], ['neg', 'Negative']].map(([v, l]) => `<button data-s="${v}" aria-pressed="${CF.sent === v}">${v ? sdot(v) : ''}${l}</button>`).join('')}</div>
+        <button class="ns-chip" id="cFlag" aria-pressed="${CF.flagged}">${ic('flag')}Flagged <span class="n">${Object.values(S.flags).filter(Boolean).length}</span></button>
+        <button class="ns-btn ghost sm" id="cClear">Clear</button>
+      </div>
+      <div class="ns-grid main-side">
+        <div><div class="flex justify-between items-center mb-3"><b class="sm" id="cCount"></b><span class="xs muted">Newest first</span></div><div class="cmt-list" id="cList"></div><div class="center mt-4" id="cMore"></div></div>
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Theme clusters', sub: 'Comments in this view · sentiment mix · click to filter', body: '<div id="cThemes"></div>' })}
+          <div id="cAiWrap"></div>
+          ${NS.card({ title: 'Sentiment by survey', sub: 'Current filters, all surveys', body: '<div id="cSentBars"></div>' })}
+        </div>
+      </div>`;
+  };
+  const mountComments = (c, root) => {
+    if (c.persona.id === 'manager') return mountCommentsManager(c, root);
+    let lastAiTheme = null;
+    const paint = () => {
+      const list = filterComments(), shown = list.slice(0, CF.limit);
+      root.querySelector('#cCount').textContent = `${F.plural(list.length, 'comment')}${CF.theme ? ' · ' + themeOf(CF.theme).name : ''}`;
+      root.querySelector('#cList').innerHTML = shown.length ? shown.map(cmtCard).join('') : NS.empty({ icon: 'search', title: 'No comments match', body: 'Try removing a filter or searching for a different word.' });
+      root.querySelector('#cMore').innerHTML = list.length > shown.length ? `<button class="ns-btn secondary" id="cMoreBtn">Show ${Math.min(20, list.length - shown.length)} more · ${list.length - shown.length} left</button>` : '';
+      const cl = clusters(filterComments({ ignoreTheme: true }));
+      root.querySelector('#cThemes').innerHTML = cl.length ? themeList(cl, { base: COMMENTS }) : '<div class="sm muted">No comments in this view.</div>';
+      root.querySelectorAll('#cThemes [data-theme]').forEach((el) => { if (el.dataset.theme === CF.theme) el.style.background = 'var(--brand-soft)'; el.onclick = () => { CF.theme = CF.theme === el.dataset.theme ? '' : el.dataset.theme; CF.limit = 20; root.querySelector('#cTheme').value = CF.theme; paint(); }; });
+      const focus = cl.find((x) => x.theme.id === CF.theme) || cl[0];
+      const wrap = root.querySelector('#cAiWrap');
+      if (focus) { const key = focus.theme.id + '|' + focus.n + '|' + CF.sent + CF.org + CF.period + CF.q; if (key !== lastAiTheme) { lastAiTheme = key; wrap.innerHTML = aiBox('cAi', 'AI summary', { badge: focus.theme.name, foot: 'Built from counts and representative quotes in the current view. Quotes are shown without names.' }); runAi(root, 'cAi', themeSummary(focus)); } } else wrap.innerHTML = '';
+      const per = PERIODS.slice().reverse(), base = filterComments({ ignorePeriod: true });
+      NS.chart.bars(root.querySelector('#cSentBars'), { labels: per.map((p) => p.short), series: [['pos', 'Positive', 'var(--viz-good)'], ['neu', 'Neutral', 'var(--ink-4)'], ['neg', 'Negative', 'var(--viz-serious)']].map(([s, n, col]) => ({ name: n, color: col, values: per.map((p) => base.filter((x) => x.period === p.id && x.sent === s).length) })), stacked: true, height: 200, showValues: true, yFormat: (v) => String(Math.round(v)) });
+      const mb = root.querySelector('#cMoreBtn'); if (mb) mb.onclick = () => { CF.limit += 20; paint(); };
+    };
+    const reset = () => { CF.limit = 20; paint(); };
+    root.querySelector('#cq').oninput = U.debounce((e) => { CF.q = e.target.value; reset(); }, 160);
+    root.querySelector('#cTheme').onchange = (e) => { CF.theme = e.target.value; reset(); };
+    root.querySelector('#cOrg').onchange = (e) => { CF.org = e.target.value; reset(); };
+    root.querySelector('#cPeriod').onchange = (e) => { CF.period = e.target.value; reset(); };
+    root.querySelectorAll('#cSent [data-s]').forEach((b) => b.onclick = () => { CF.sent = b.dataset.s; root.querySelectorAll('#cSent [data-s]').forEach((x) => x.setAttribute('aria-pressed', x === b)); reset(); });
+    const fl = root.querySelector('#cFlag'); fl.onclick = () => { CF.flagged = !CF.flagged; fl.setAttribute('aria-pressed', CF.flagged); reset(); };
+    root.querySelector('#cClear').onclick = () => { Object.assign(CF, { theme: '', sent: '', org: '', period: '', q: '', flagged: false, limit: 20 }); if (NS.route.query.theme) NS.go('/comments'); else NS.refresh(); };
+    root.querySelector('#cList').addEventListener('click', (e) => { const b = e.target.closest('[data-flag]'); if (!b) return; const id = b.dataset.flag; S.flags[id] = !S.flags[id]; if (!S.flags[id]) delete S.flags[id]; save(); b.setAttribute('aria-pressed', !!S.flags[id]); fl.querySelector('.n').textContent = Object.keys(S.flags).length; NS.toast(S.flags[id] ? 'Flagged for follow-up' : 'Flag removed', { desc: S.flags[id] ? 'Find it again with the Flagged filter.' : '' }); if (CF.flagged) paint(); });
+    root.querySelector('#cmtCsv').onclick = () => { const list = filterComments(); downloadCsv('pulse-comments.csv', [['Date', 'Survey', 'Theme', 'Sentiment', 'Team / org', 'Comment'], ...list.map((x) => [x.date, periodLbl(x.period), themeOf(x.theme).name, { pos: 'Positive', neu: 'Neutral', neg: 'Negative' }[x.sent], scopeOf(x), x.text])]); };
+    paint();
+  };
+  const commentsManager = (c) => {
+    const st = teamStats(MY_TEAM), mine = COMMENTS.filter((x) => x.team === MY_TEAM), cl = clusters(mine);
+    return html`
+      ${NS.pageHead({ eyebrow: 'Listen', title: 'Team comment themes', sub: `${NS.esc(MY_TEAM)} · ${F.plural(mine.length, 'comment')} across the last four surveys · themes and counts only` })}
+      <div class="ns-alert info mb-4">${ic('shield-check')}<div><b>Why you see themes, not words</b><p>People are most identifiable by how they write. Managers see which themes their team raised and the sentiment mix; HR sees verbatims attributed to the team. Neither ever sees a name.</p></div></div>
+      ${st.visible ? html`<div class="ns-grid main-side">
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Themes in your team', sub: 'Count and sentiment mix per theme', body: cl.length ? themeList(cl, { trend: false }) : NS.empty({ icon: 'message-square', title: 'No comments yet' }) })}
+          ${NS.card({ title: 'Company themes · September', sub: 'For context: what everyone is talking about this month', body: '<div id="coThemes"></div>' })}
+        </div>
+        <div class="grid gap-4">
+          ${aiBox('mgrThemeAi', 'Theme summary', { badge: 'Themes only', foot: 'Summaries for managers never include quotes.' })}
+          ${NS.card({ title: 'Turn a theme into action', body: `<p class="sm ink2">Pick one theme, agree one or two actions with the team, and post the plan — people are three times more likely to answer the next pulse when they see a response.</p><a class="ns-btn primary sm mt-3" href="${NS.link('/actions')}">${ic('clipboard-check')}Open team action plan</a>` })}
+        </div>
+      </div>` : NS.card({ body: NS.empty({ icon: 'lock', title: 'Themes are hidden', body: `${masked(st.n)} — themes appear once your team reaches the anonymity threshold.` }) })}`;
+  };
+  const mountCommentsManager = (c, root) => {
+    const st = teamStats(MY_TEAM); if (!st.visible) return;
+    const mine = COMMENTS.filter((x) => x.team === MY_TEAM), cl = clusters(mine);
+    const co = clusters(sepC());
+    NS.chart.hbars(root.querySelector('#coThemes'), { items: co.map((x) => ({ label: x.theme.name, value: x.n, sub: `${x.pos} positive · ${x.neg} negative`, color: x.theme.color })), format: (v) => F.int(v), valueLabel: 'Comments' });
+    const neg = cl.filter((x) => x.neg), pos = cl.filter((x) => x.pos && !x.neg);
+    runAi(root, 'mgrThemeAi', `${MY_TEAM} left ${mine.length} comments across ${cl.length} themes. ${pos.length ? `The tone is positive on ${pos.map((x) => x.theme.name.toLowerCase()).join(', ')}.` : ''} ${neg.length ? `The critical theme is ${neg.map((x) => `${x.theme.name.toLowerCase()} (${x.neg} negative)`).join(' and ')} — consistent with ${neg[0].theme.id in st.scores ? `${neg[0].theme.name.toLowerCase()} scoring ${f1(st.scores[neg[0].theme.id])}, ${st.lowest === neg[0].theme.id ? 'your lowest driver' : 'one of your lower drivers'}` : 'what the scores show'}. Across the company, ${co[0].theme.name.toLowerCase()} is the most discussed theme this month.` : 'No critical themes this period.'} A good next step is to name the theme in your next team meeting and ask what one change would help — without asking who wrote what.`);
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* ACTIONS — team plans, company initiatives, what-works library       */
+  /* ------------------------------------------------------------------ */
+  const planButtons = (p) => `<button class="ns-btn xs secondary" data-edit="${p.id}">${ic('pencil')}Edit</button><button class="ns-btn xs ghost" data-upd="${p.id}">${ic('message-square')}Post update</button>${p.status === 'draft' ? `<button class="ns-btn xs primary" data-activate="${p.id}">${ic('play')}Activate</button>` : ''}`;
+  const postUpdate = (p) => NS.modal({ title: 'Post a plan update', sub: `${NS.esc(p.team)} · ${NS.esc(p.title)} — the team sees updates on their home page`, body: `<label class="ns-field"><span class="ns-label">Update</span><textarea class="ns-textarea" id="updTxt" style="min-height:110px" placeholder="What changed, and what happens next?"></textarea></label>`, mounted: (b) => { const t = b.querySelector('#updTxt'); if (t) t.focus(); }, actions: [{ label: 'Cancel' }, { label: 'Post update', cls: 'primary', onClick: (m) => { const v = m.el.querySelector('#updTxt').value.trim(); if (!v) { NS.toast('Write a short update first', { type: 'warn' }); return false; } p.updates.unshift({ date: '2026-09-24', text: v }); save(); log(`Update posted on ${p.team}: ${p.title}`); NS.toast('Update posted', { desc: `${p.team} will see it on their Pulse home`, type: 'ok' }); NS.refresh(); } }] });
+  const bindPlans = (root, o = {}) => {
+    if (!o.readOnly) root.querySelectorAll('.plan [data-act]').forEach((el) => el.onclick = () => { advanceAction(el.dataset.act); NS.refresh(); });
+    root.querySelectorAll('[data-edit]').forEach((b) => b.onclick = () => planModal(S.plans.find((p) => p.id === b.dataset.edit)));
+    root.querySelectorAll('[data-upd]').forEach((b) => b.onclick = () => postUpdate(S.plans.find((p) => p.id === b.dataset.upd)));
+    root.querySelectorAll('[data-activate]').forEach((b) => b.onclick = () => { const p = S.plans.find((x) => x.id === b.dataset.activate); p.status = 'active'; save(); log(`Activated plan: ${p.team} · ${p.title}`); NS.toast('Plan is live', { desc: `${p.team} can now see “${p.title}”`, type: 'ok' }); NS.refresh(); });
+    root.querySelectorAll('[data-usetpl]').forEach((b) => b.onclick = () => useTemplate(b.dataset.usetpl, o.persona));
+    root.querySelectorAll('[data-newplan]').forEach((b) => b.onclick = () => planModal(null, { team: b.dataset.newplan, driver: b.dataset.driver, lockTeam: true }));
+  };
+  const initiativesCard = (o = {}) => NS.card({ title: o.title || 'Company-wide initiatives', sub: o.sub || 'Owned by the People team and sponsors', body: `<div class="grid gap-4">${INITIATIVES.map((x) => `<div class="grid gap-2"><div class="flex justify-between gap-3"><div class="min-w-0"><b class="sm">${NS.esc(x.title)}</b><div class="xs muted mt-1 flex items-center gap-2 wrap">${dchip(x.driver)}<span>${NS.esc(x.sponsor)}</span><span class="nowrap">· due ${F.date(x.due, 'short')}</span></div></div><b class="tnum sm">${x.progress}%</b></div>${NS.progress(x.progress, { color: themeOf(x.driver).color })}<div class="xs ink2">${NS.esc(x.body)}</div></div>`).join('')}</div>` });
+  const tplGrid = (list, persona) => `<div class="ns-grid c3">${list.map((t) => `<div class="tpl">${dchip(t.driver)}<b>${NS.esc(t.title)}</b><p>${NS.esc(t.body)}</p><ul>${t.steps.map((x) => `<li>${NS.esc(x)}</li>`).join('')}</ul><div class="xs brand-text semibold">${ic('trending-up', { size: 12 })} ${NS.esc(t.evidence)}</div>${persona.id !== 'employee' && persona.id !== 'cpo' ? `<button class="ns-btn xs secondary" data-usetpl="${t.id}">${ic('plus')}Use template</button>` : ''}</div>`).join('')}</div>`;
+  const needPlan = () => visTeams().filter((s) => !S.plans.some((p) => p.team === s.name && p.status !== 'done')).map((s) => { const drop = DRIVERS.map((d) => ({ d: d.id, ch: favChange(s.name, d.id) })).sort((a, b) => a.ch - b.ch)[0]; return { s, score: s.scores[s.lowest], drop }; }).filter((x) => x.score < 3.4 || x.drop.ch <= -5).sort((a, b) => a.score - b.score).slice(0, 6);
+
+  const actions = (c) => {
+    const per = c.persona;
+    if (per.id === 'employee') return actionsEmployee(c);
+    if (per.id === 'manager') return actionsManager(c);
+    const stF = ['active', 'draft', 'done'].includes(c.query.st) ? c.query.st : 'all';
+    const list = S.plans.filter((p) => stF === 'all' || p.status === stF);
+    const acts = S.plans.flatMap((p) => p.actions), done = acts.filter((a) => a.status === 'done').length, overdue = acts.filter((a) => a.status !== 'done' && new Date(a.due) < TODAY).length;
+    const need = needPlan(), admin = canAdmin(per);
+    const cnt = (s) => S.plans.filter((p) => s === 'all' || p.status === s).length;
+    return html`
+      ${NS.pageHead({ eyebrow: 'Act', title: 'Action plans', sub: 'One team, one driver, three to five actions — visible to the team the moment a plan goes live.', actions: `<button class="ns-btn secondary" id="planCsv">${ic('download')}Export</button>${admin ? `<button class="ns-btn primary" id="newPlan">${ic('plus')}New plan</button>` : ''}` })}
+      <div class="ns-stats">
+        ${NS.stat({ label: 'Plans live', value: cnt('active'), unit: `of ${S.plans.length}`, icon: 'clipboard-check', sub: `${cnt('draft')} draft · ${cnt('done')} completed` })}
+        ${NS.stat({ label: 'Actions done', value: pct(done, acts.length), unit: '%', icon: 'list-checks', sub: `${done} of ${acts.length} actions` })}
+        ${NS.stat({ label: 'Overdue actions', value: overdue, icon: 'alert-triangle', sub: overdue ? 'Past their due date and not done' : 'Everything on schedule' })}
+        ${NS.stat({ label: 'Teams needing a plan', value: need.length, icon: 'flag', sub: 'Low driver or a 5+ point drop, no plan' })}
+      </div>
+      <div class="ns-chips mt-4 mb-4">${[['all', 'All'], ['active', 'Active'], ['draft', 'Draft'], ['done', 'Completed']].map(([id, l]) => `<a class="ns-chip" href="${NS.link('/actions', id === 'all' ? {} : { st: id })}" aria-pressed="${stF === id}">${l}<span class="n">${cnt(id)}</span></a>`).join('')}</div>
+      <div class="ns-grid main-side">
+        <div class="grid gap-4">${list.length ? list.map((p) => planCard(p, { readOnly: !admin, actions: admin ? planButtons(p) : '' })).join('') : NS.card({ body: NS.empty({ icon: 'clipboard-list', title: 'No plans in this view', body: 'Switch the filter or create a plan from a template.' }) })}</div>
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Teams that need a plan', sub: 'Lowest driver below 3.4 or a drop of 5+ points', body: need.length ? need.map((x) => `<div class="mover"><div class="min-w-0"><div class="t truncate pointer" data-team="${NS.esc(x.s.name)}">${NS.esc(x.s.name)}</div><div class="s">${DM[x.s.lowest].name} ${f1(x.score)}${x.drop.ch <= -5 ? ` · ${DM[x.drop.d].name.toLowerCase()} ${signed(x.drop.ch)} pts` : ''}</div></div>${admin ? `<button class="ns-btn xs soft" data-newplan="${NS.esc(x.s.name)}" data-driver="${x.drop.ch <= -5 ? x.drop.d : x.s.lowest}">${ic('plus')}Plan</button>` : NS.badge('No plan', 'warn')}</div>`).join('') : '<div class="sm muted">Every team below the bar has a plan.</div>' })}
+          ${initiativesCard()}
+        </div>
+      </div>
+      <div class="ns-section-title"><div><h2>What works — template library</h2><p>Playbooks with evidence from earlier Northstar pulses</p></div></div>
+      ${tplGrid(TEMPLATES, per)}`;
+  };
+  const actionsManager = (c) => {
+    const st = teamStats(MY_TEAM), plans = S.plans.filter((p) => p.team === MY_TEAM), low = st.visible ? st.lowest : 'pay';
+    const recs = TEMPLATES.filter((t) => t.driver === low).concat(TEMPLATES.filter((t) => t.driver !== low && st.visible && st.scores[t.driver] < 4)).slice(0, 3);
+    return html`
+      ${NS.pageHead({ eyebrow: 'Act', title: 'Team action plan', sub: `${NS.esc(MY_TEAM)} · plans are visible to your team as soon as they are active`, actions: `<button class="ns-btn primary" id="newPlan">${ic('plus')}New plan</button>` })}
+      <div class="ns-grid main-side">
+        <div class="grid gap-4" style="align-content:start">${plans.length ? plans.map((p) => planCard(p, { actions: planButtons(p) })).join('') : NS.card({ body: NS.empty({ icon: 'clipboard-list', title: 'No plan yet', body: 'Start from a template below — it takes two minutes.' }) })}${plans.length && st.visible ? NS.card({ title: 'Is it working?', sub: `${DM[plans[0].driver].name} score for ${NS.esc(MY_TEAM)} across the last four surveys`, body: '<div id="planImpact"></div>' }) : ''}</div>
+        <div class="grid gap-4">
+          ${NS.card({ title: 'Where to focus', sub: st.visible ? `From your September results (${st.n} responses)` : 'Results below threshold', body: st.visible ? DRIVERS.slice().sort((a, b) => st.scores[a.id] - st.scores[b.id]).slice(0, 3).map((d) => `<div class="kv"><span class="flex items-center gap-2">${dchip(d.id)}</span><b>${f1(st.scores[d.id])} · ${st.fav[d.id]}%</b></div>`).join('') : masked(st.n) })}
+          ${initiativesCard({ sub: 'What the company is doing alongside your plan' })}
+        </div>
+      </div>
+      <div class="ns-section-title"><div><h2>Recommended for ${NS.esc(MY_TEAM)}</h2><p>Matched to your lowest drivers</p></div></div>
+      ${tplGrid(recs, c.persona)}`;
+  };
+  const actionsEmployee = (c) => {
+    const me = meFor(c.persona), plan = planFor(me.team);
+    return html`
+      ${NS.pageHead({ eyebrow: 'Act', title: 'Your team’s action plan', sub: `${NS.esc(me.team)} · built from your team’s pulse results · read-only` })}
+      <div class="ns-grid main-side">
+        <div class="grid gap-4">
+          ${plan ? planCard(plan, { readOnly: true }) : NS.card({ body: NS.empty({ icon: 'clipboard-list', title: 'No plan yet', body: 'Your manager will share a plan after the pulse closes.' }) })}
+          ${plan ? NS.card({ title: 'Add a comment', sub: 'Posted as “Team member” — your name is never shown', body: `<textarea class="ns-textarea" id="pcTxt" style="min-height:90px" maxlength="600" placeholder="What is working? What would you change or add?"></textarea><div class="flex justify-between items-center gap-3 mt-3 wrap"><span class="xs muted flex items-center gap-1">${ic('shield-check', { size: 13 })}Visible to your team and manager, anonymously.</span><button class="ns-btn primary" id="pcPost">${ic('send')}Post anonymously</button></div>` }) : ''}
+        </div>
+        <div class="grid gap-4">
+          ${initiativesCard({ title: 'You said, we did', sub: 'Company initiatives that came from pulse feedback' })}
+        </div>
+      </div>`;
+  };
+  const mountActions = (c, root) => {
+    const per = c.persona, admin = canAdmin(per);
+    if (per.id === 'employee') { const me = meFor(per), plan = planFor(me.team), b = root.querySelector('#pcPost'); if (b) b.onclick = () => { const t = root.querySelector('#pcTxt'), v = t.value.trim(); if (v.length < 4) { NS.toast('Write a little more first', { type: 'warn' }); return; } plan.comments.push({ t: new Date().toISOString(), text: v }); save(); log(`Anonymous comment on ${plan.team} plan`); NS.toast('Comment posted anonymously', { desc: 'Shown as “Team member” to your team and manager.', type: 'ok' }); NS.refresh(); }; return; }
+    bindPlans(root, { readOnly: per.id === 'cpo', persona: per });
+    const pi = root.querySelector('#planImpact');
+    if (pi) { const p = S.plans.find((x) => x.team === MY_TEAM), st = teamStats(MY_TEAM), cur = st.scores[p.driver], co = dscore(RS, p.driver); NS.chart.line(pi, { labels: ['H1 ’26', 'Jul ’26', 'Aug ’26', 'Sep ’26'], series: [{ name: MY_TEAM, values: [U.round(cur - p.lift * 0.9, 2), U.round(cur - p.lift * 0.6, 2), U.round(cur - p.lift * 0.25, 2), cur] }, { name: 'Company', values: [U.round(co - 0.1, 2), U.round(co - 0.06, 2), U.round(co - 0.03, 2), co], dashed: true, color: 'var(--ink-4)' }], threshold: { value: Math.min(5, U.round(cur + p.lift, 1)), label: 'Target' }, yMin: 3, yMax: 5, height: 210, endLabels: true, yFormat: (v) => Number(v).toFixed(1) }); }
+    root.querySelectorAll('[data-team]').forEach((el) => el.onclick = () => openTeam(el.dataset.team, per));
+    const np = root.querySelector('#newPlan'); if (np) np.onclick = () => (per.id === 'manager' ? planModal(null, { team: MY_TEAM, driver: teamStats(MY_TEAM).lowest || 'pay', lockTeam: true }) : planModal(null));
+    const csv = root.querySelector('#planCsv'); if (csv) csv.onclick = () => downloadCsv('pulse-action-plans.csv', [['Team', 'Org', 'Owner', 'Driver', 'Plan', 'Status', 'Progress %', 'Action', 'Action status', 'Due'], ...S.plans.flatMap((p) => p.actions.map((a) => [p.team, p.org, D.byId(p.ownerId).name, DM[p.driver].name, p.title, p.status, planProgress(p), a.t, a.status, a.due]))]);
+    void admin;
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* LIFECYCLE — onboarding (30/90-day) and exit pulses                  */
+  /* ------------------------------------------------------------------ */
+  const OB_Q = D.series.quarters.slice(-6), OB30 = [3.86, 3.92, 4.01, 4.05, 4.14, 4.22], OB90 = [3.58, 3.66, 3.71, 3.83, 3.9, 4.02];
+  const OB_TASKS = [['ob1', 'Pre-provision laptop, accounts and access 5 working days before start', 'IT & Workplace'], ['ob2', 'Written 30-60-90 goals agreed in week one', 'Hiring managers'], ['ob3', 'Buddy assigned at offer acceptance, not on day one', 'People Partners'], ['ob4', 'Swap six intro meetings for two pairing sessions', 'Engineering managers'], ['ob5', 'Freshness review of the onboarding docs path', 'Developer Experience']];
+  const EXIT_DRIVER = { Compensation: 'pay', Growth: 'growth', Manager: 'manager', Burnout: 'workload' };
+  const lifecycle = (c) => {
+    const tab = c.query.tab === 'exit' ? 'exit' : 'onboarding';
+    const nh = P.filter((p) => p.tenure < 1), nhR = nh.filter((p) => resp[p.id]);
+    const exits12 = U.sum(D.series.exits), exitSurveys = Math.round(exits12 * 0.84);
+    const tabs = NS.tabs([{ id: 'onboarding', label: 'Onboarding pulse', icon: 'sunrise' }, { id: 'exit', label: 'Exit survey', icon: 'user-minus' }], tab, { key: 'tab' });
+    if (tab === 'onboarding') {
+      const byDept = D.departments.map((d) => { const ps = nh.filter((p) => p.dept === d.name); return { d: d.name, n: ps.length, eng: ps.length >= thr() ? engOf(ps) : null, clar: ps.length >= thr() ? dscore(ps, 'clarity') : null }; }).filter((x) => x.n);
+      const doneT = OB_TASKS.filter(([id]) => S.checklist[id]).length;
+      return html`
+        ${NS.pageHead({ eyebrow: 'Lifecycle listening', title: 'Onboarding & exit', sub: 'Automatic pulses at 30 and 90 days, and a short exit survey — all feeding the same drivers as the monthly pulse.', actions: `<a class="ns-btn secondary" href="../retention-radar/index.html" target="_blank" rel="noopener">${ic('external-link')}Retention Radar</a>` })}
+        ${tabs}
+        <div class="ns-stats mt-4">
+          ${NS.stat({ label: '30-day score', value: OB30[5].toFixed(2), unit: '/5', delta: NS.delta(OB30[5] - OB30[4], { d: 2, suf: '', fmt: (v) => v.toFixed(2) }), sub: `${OB_Q[5]} cohort · vs previous quarter`, spark: OB30 })}
+          ${NS.stat({ label: '90-day score', value: OB90[5].toFixed(2), unit: '/5', delta: NS.delta(OB90[5] - OB90[4], { d: 2, suf: '', fmt: (v) => v.toFixed(2) }), sub: 'The dip after the honeymoon is closing', spark: OB90 })}
+          ${NS.stat({ label: 'New hires, last 12 months', value: nh.length, icon: 'user-plus', sub: `${pct(nhR.length, nh.length)}% answered the September pulse` })}
+          ${NS.stat({ label: 'New-hire engagement', value: engOf(nhR), unit: '/100', icon: 'heart-pulse', sub: `Company ${COMPANY.eng} · first-year employees` })}
+        </div>
+        <div class="ns-grid c2 mt-4">
+          ${NS.card({ title: 'Onboarding score trend', sub: 'Mean of the onboarding questions (1–5) by start quarter', body: '<div id="obTrend"></div>' })}
+          ${NS.card({ title: 'Top onboarding friction', sub: 'Share of 30-day comments mentioning each theme', body: `<div id="obFriction"></div><div class="grid gap-3 mt-4">${[['My laptop arrived on day three, and I spent the first week requesting access one tool at a time.', 'Engineering · 30-day pulse'], ['My buddy was brilliant — once I was assigned one in week two.', 'Customer Success · 30-day pulse']].map(([q, w]) => `<div class="ns-quote" style="font-size:13px">“${q}”<div class="xs faint mt-1" style="font-style:normal">${w}</div></div>`).join('')}</div>` })}
+        </div>
+        <div class="ns-grid main-side mt-4">
+          ${NS.card({ title: 'First-year employees by department', sub: `Groups under ${thr()} people are hidden`, bodyCls: 'flush', body: `<table class="ns-table"><thead><tr><th>Department</th><th class="num">New hires</th><th class="num">Engagement</th><th class="num">Clarity</th></tr></thead><tbody>${byDept.map((x) => `<tr><td><b>${NS.esc(x.d)}</b></td><td class="num">${x.n}</td><td class="num">${x.eng == null ? '<span class="faint">n/a</span>' : x.eng}</td><td class="num">${x.clar == null ? '<span class="faint">n/a</span>' : f1(x.clar)}</td></tr>`).join('')}</tbody></table>` })}
+          ${NS.card({ title: 'Follow-ups from onboarding feedback', sub: `${doneT} of ${OB_TASKS.length} done · saved automatically`, body: `<div class="checklist">${OB_TASKS.map(([id, t, own]) => `<label class="${S.checklist[id] ? 'done' : ''}"><span class="ns-check"><input type="checkbox" data-check="${id}" ${S.checklist[id] ? 'checked' : ''}><span><div class="t">${NS.esc(t)}</div><div class="s">${NS.esc(own)}</div></span></span></label>`).join('')}</div>` })}
+        </div>`;
+    }
+    const topEx = EXIT_REASONS[0];
+    return html`
+      ${NS.pageHead({ eyebrow: 'Lifecycle listening', title: 'Onboarding & exit', sub: 'Automatic pulses at 30 and 90 days, and a short exit survey — all feeding the same drivers as the monthly pulse.', actions: `<a class="ns-btn secondary" href="../retention-radar/index.html" target="_blank" rel="noopener">${ic('external-link')}Retention Radar</a>` })}
+      ${tabs}
+      <div class="ns-stats mt-4">
+        ${NS.stat({ label: 'Exits, last 12 months', value: exits12, icon: 'user-minus', sub: `${D.series.exits[11]} in ${D.series.last12[11]}`, spark: D.series.exits })}
+        ${NS.stat({ label: 'Exit surveys completed', value: exitSurveys, unit: `· ${pct(exitSurveys, exits12)}%`, icon: 'clipboard-check', sub: 'Sent on the last working day' })}
+        ${NS.stat({ label: 'Would return', value: 61, unit: '%', icon: 'undo', sub: '“I would consider coming back”' })}
+        ${NS.stat({ label: 'Top reason', value: topEx[0], icon: 'banknote', sub: `${topEx[1]}% of leavers · pay scores ${f1(dscore(RS, 'pay'))}` })}
+      </div>
+      <div class="ns-grid c2 mt-4">
+        ${NS.card({ title: 'Why people leave', sub: 'Primary exit reason · last 12 months · same mix as Retention Radar', body: '<div id="exDonut"></div>' })}
+        ${NS.card({ title: 'Exits and surveys by month', sub: 'Voluntary and involuntary exits', body: '<div id="exBars"></div>' })}
+      </div>
+      <div class="mt-4">${NS.card({ title: 'Exit reasons vs current pulse drivers', sub: 'Where leavers’ reasons meet what stayers tell us today', bodyCls: 'flush', body: `<table class="ns-table"><thead><tr><th>Exit reason</th><th class="num">Share of exits</th><th>Pulse driver</th><th class="num">Score</th><th class="num">Favourable</th><th>vs median</th></tr></thead><tbody>${EXIT_REASONS.map(([r, v]) => { const k = EXIT_DRIVER[r]; return `<tr><td><b>${r}</b></td><td class="num">${v}%</td><td>${k ? dchip(k) : '<span class="faint">—</span>'}</td><td class="num">${k ? f1(dscore(RS, k)) : '—'}</td><td class="num">${k ? fav(RS, k) + '%' : '—'}</td><td>${k ? benchBadge(dscore(RS, k), DM[k].bench) : ''}</td></tr>`; }).join('')}</tbody></table>` })}</div>`;
+  };
+  const mountLifecycle = (c, root) => {
+    if (c.query.tab === 'exit') {
+      NS.chart.donut(root.querySelector('#exDonut'), { items: EXIT_REASONS.map(([l, v]) => ({ label: l, value: v })), size: 180, thickness: 24, center: { value: U.sum(D.series.exits), label: 'exits' }, format: (v) => v + '%' });
+      NS.chart.bars(root.querySelector('#exBars'), { labels: D.series.last12, series: [{ name: 'Exits', values: D.series.exits }, { name: 'Exit surveys', values: D.series.exits.map((v) => Math.round(v * 0.84)), color: 'var(--ink-4)' }], height: 230, yFormat: (v) => String(Math.round(v)) });
+      return;
+    }
+    NS.chart.line(root.querySelector('#obTrend'), { labels: OB_Q, series: [{ name: '30-day pulse', values: OB30 }, { name: '90-day pulse', values: OB90 }], yMin: 3, yMax: 5, height: 230, endLabels: true, yFormat: (v) => Number(v).toFixed(1) });
+    NS.chart.hbars(root.querySelector('#obFriction'), { items: ONBOARD_THEMES.map(([l, v]) => ({ label: l, value: v, color: 'var(--viz-3)' })), max: 40, format: (v) => v + '%', valueLabel: 'Share of comments', labelWidth: 'minmax(140px,56%)' });
+    root.querySelectorAll('[data-check]').forEach((cb) => cb.onchange = () => { S.checklist[cb.dataset.check] = cb.checked; save(); cb.closest('label').classList.toggle('done', cb.checked); log(`${cb.checked ? 'Completed' : 'Reopened'} onboarding follow-up`); NS.toast(cb.checked ? 'Follow-up marked done' : 'Follow-up reopened', { desc: OB_TASKS.find((x) => x[0] === cb.dataset.check)[1] }); });
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* SETTINGS (HR)                                                       */
+  /* ------------------------------------------------------------------ */
+  const hiddenAt = (v) => ({ teams: TEAMS.filter((t) => teamR(t.name).length < v).length, comments: COMMENTS.filter((x) => teamR(x.team).length < v).length });
+  const settings = (c) => {
+    const st = S.settings, h = hiddenAt(st.threshold), on = QUESTIONS.filter((q) => st.questions[q.id] !== false).length;
+    return html`
+      ${NS.pageHead({ eyebrow: 'Administration', title: 'Pulse settings', sub: 'Cadence, anonymity and the question bank. Changes apply to the next pulse and to every view immediately.', actions: `<button class="ns-btn secondary" id="setReset">${ic('undo')}Restore defaults</button><button class="ns-btn primary" id="setSave">${ic('save')}Save changes</button>` })}
+      <div class="ns-grid c2">
+        ${NS.card({ title: 'Cadence', sub: 'When pulses open and close', body: `<div class="grid gap-3"><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Pulse cadence</span><select class="ns-select" id="sCad">${[['monthly', 'Monthly'], ['biweekly', 'Every two weeks'], ['quarterly', 'Quarterly']].map(([v, l]) => `<option value="${v}" ${st.cadence === v ? 'selected' : ''}>${l}</option>`).join('')}</select></label><label class="ns-field"><span class="ns-label">Opens on day</span><input class="ns-input" type="number" min="1" max="28" id="sOpen" value="${st.openDay}"></label></div><div class="ns-form-grid"><label class="ns-field"><span class="ns-label">Response window (days)</span><input class="ns-input" type="number" min="5" max="28" id="sWin" value="${st.windowDays}"></label><label class="ns-field"><span class="ns-label">September pulse closes</span><input class="ns-input" type="date" id="sClose" value="${st.closeDate}"></label></div><div class="ns-alert info">${ic('calendar')}<div><b>Semi-annual engagement survey</b><p>Runs in April and October in place of that month’s pulse, with the full 40-question bank.</p></div></div></div>` })}
+        ${NS.card({ title: 'Anonymity threshold', sub: 'Minimum responses before any group’s results or comment attribution appear', body: `<label class="ns-field"><span class="ns-label">Threshold <b id="thrV">${st.threshold}</b> responses</span><input type="range" class="ns-range" min="3" max="10" step="1" id="sThr" value="${st.threshold}" style="--p:${((st.threshold - 3) / 7) * 100}%"></label><div class="ns-alert ${st.threshold < 5 ? 'warn' : 'info'} mt-3" id="thrNote">${ic(st.threshold < 5 ? 'alert-triangle' : 'shield-check')}<div><b id="thrHead">${st.threshold < 5 ? 'Below the recommended minimum' : 'Recommended: 5 or more'}</b><p id="thrTxt">At ${st.threshold}, ${h.teams} of ${TEAMS.length} teams are hidden and ${h.comments} comments show their org instead of their team.</p></div></div><div class="mt-4"><div class="xs muted semibold mb-1">Teams hidden at each threshold</div><div id="thrBars"></div></div>` })}
+        <div class="span-2">${NS.card({ title: 'Question bank', sub: `<span id="qCount">${on} of ${QUESTIONS.length}</span> driver questions active · eNPS and the open comment are always asked`, body: `<div class="ns-grid c2">${DRIVERS.map((d) => `<div><div class="flex items-center gap-2 mb-1">${dchip(d.id)}<span class="xs muted">${NS.esc(d.desc)}</span></div>${QUESTIONS.filter((q) => q.driver === d.id).map((q) => `<div class="q-toggle"><span class="sm">${NS.esc(q.text)}</span><label class="ns-switch"><input type="checkbox" data-q="${q.id}" ${st.questions[q.id] !== false ? 'checked' : ''} aria-label="Ask: ${NS.esc(q.text)}"><i></i></label></div>`).join('')}</div>`).join('')}<div><div class="flex items-center gap-2 mb-1">${NS.badge('Always on', 'brand')}</div><div class="q-toggle"><span class="sm">${NS.esc(Q_ENPS.text)}</span>${ic('lock', { size: 14 })}</div><div class="q-toggle"><span class="sm">${NS.esc(Q_OPEN.text)}</span>${ic('lock', { size: 14 })}</div></div></div>` })}</div>
+        ${NS.card({ title: 'Reminder rules', sub: 'Automatic nudges go to everyone who hasn’t responded — names are never shown', body: `<div class="grid gap-3">${[['d3', 'Nudge 3 days before close', 'One email and chat message'], ['d1', 'Final nudge on the last day', 'Morning of the closing day'], ['digest', 'Weekly manager digest', 'Participation counts for their team only']].map(([k, t, s]) => `<label class="ns-switch"><input type="checkbox" data-rem="${k}" ${st.reminders[k] ? 'checked' : ''}><i></i><span><b class="sm">${t}</b><div class="xs muted">${s}</div></span></label>`).join('')}<label class="ns-field"><span class="ns-label">Channel</span><select class="ns-select" id="sChan">${['Email + chat', 'Email only', 'Chat only'].map((v) => `<option ${st.reminders.channel === v ? 'selected' : ''}>${v}</option>`).join('')}</select></label></div>` })}
+        ${NS.card({ title: 'Activity log', sub: 'Recent actions in this prototype', body: S.activity.length ? `<div class="grid gap-2">${S.activity.slice(0, 10).map((a) => `<div class="flex justify-between gap-3 sm"><span class="ink2">${NS.esc(a.msg)}</span><span class="xs faint nowrap">${F.rel(a.t)}</span></div>`).join('')}</div>` : '<div class="sm muted">No activity yet — submit the pulse as Priya, nudge a manager or edit a plan and it shows up here.</div>' })}
+      </div>`;
+  };
+  const mountSettings = (c, root) => {
+    const sl = root.querySelector('#sThr');
+    const thrChart = (v) => NS.chart.bars(root.querySelector('#thrBars'), { labels: U.range(8).map((i) => String(i + 3)), series: [{ name: 'Teams hidden', values: U.range(8).map((i) => hiddenAt(i + 3).teams) }], colorByIndex: true, colors: U.range(8).map((i) => (i + 3 === v ? 'var(--viz-1)' : 'var(--ink-4)')), height: 150, showValues: true, table: false, legend: false, yFormat: (x) => String(Math.round(x)) });
+    thrChart(+sl.value);
+    sl.oninput = () => { const v = +sl.value, h = hiddenAt(v); root.querySelector('#thrV').textContent = v; sl.style.setProperty('--p', ((v - 3) / 7) * 100 + '%'); root.querySelector('#thrTxt').textContent = `At ${v}, ${h.teams} of ${TEAMS.length} teams are hidden and ${h.comments} comments show their org instead of their team.`; root.querySelector('#thrHead').textContent = v < 5 ? 'Below the recommended minimum' : 'Recommended: 5 or more'; const n = root.querySelector('#thrNote'); n.classList.toggle('warn', v < 5); n.classList.toggle('info', v >= 5); thrChart(v); };
+    root.querySelectorAll('[data-q]').forEach((cb) => cb.onchange = () => { const q = QUESTIONS.find((x) => x.id === cb.dataset.q); const others = QUESTIONS.filter((x) => x.driver === q.driver && x.id !== q.id && root.querySelector(`[data-q="${x.id}"]`).checked); if (!cb.checked && !others.length) { cb.checked = true; NS.toast(`${DM[q.driver].name} needs at least one question`, { desc: 'Every driver is measured every pulse so trends stay comparable.', type: 'warn' }); return; } root.querySelector('#qCount').textContent = `${root.querySelectorAll('[data-q]:checked').length} of ${QUESTIONS.length}`; });
+    root.querySelector('#setSave').onclick = () => {
+      const st = S.settings, before = st.threshold;
+      st.cadence = root.querySelector('#sCad').value; st.openDay = U.clamp(+root.querySelector('#sOpen').value || 1, 1, 28); st.windowDays = U.clamp(+root.querySelector('#sWin').value || 14, 5, 28); st.closeDate = root.querySelector('#sClose').value || st.closeDate; st.threshold = +sl.value;
+      root.querySelectorAll('[data-q]').forEach((cb) => { st.questions[cb.dataset.q] = cb.checked; });
+      root.querySelectorAll('[data-rem]').forEach((cb) => { st.reminders[cb.dataset.rem] = cb.checked; }); st.reminders.channel = root.querySelector('#sChan').value;
+      S.survey.step = Math.min(S.survey.step || 0, activeQuestions().length + 1);
+      C.clearCache(); save(); log(`Saved settings · threshold ${st.threshold} · ${activeQuestions().length} questions`);
+      NS.toast('Settings saved', { desc: before !== st.threshold ? `Anonymity threshold ${before} → ${st.threshold}; every view now uses it.` : `${activeQuestions().length} driver questions · ${st.cadence} cadence`, type: 'ok' }); NS.refresh();
+    };
+    root.querySelector('#setReset').onclick = async () => { if (!(await NS.confirm({ title: 'Restore default settings?', body: 'Cadence, threshold (5), reminders and the full question bank go back to their defaults.', confirmLabel: 'Restore' }))) return; S.settings = defaultSettings(); C.clearCache(); save(); log('Restored default settings'); NS.toast('Defaults restored', { type: 'info' }); NS.refresh(); };
+  };
+
+  /* ------------------------------------------------------------------ */
+  /* ROUTES & BOOT                                                       */
+  /* ------------------------------------------------------------------ */
+  const ANALYSTS = ['hrbp', 'cpo'];
+  const R = {
+    '/home': { title: 'Home', render: (c) => (c.persona.id === 'employee' ? homeEmployee(c) : c.persona.id === 'manager' ? homeManager(c) : homeCompany(c)), mounted: (c, root) => (c.persona.id === 'employee' ? mountEmployee(c, root) : c.persona.id === 'manager' ? mountManager(c, root) : mountCompany(c, root)) },
+    '/survey': { title: (c) => (c.persona.id === 'employee' ? 'September pulse' : 'Participation'), personas: ['hrbp', 'manager', 'employee'], render: (c) => (c.persona.id === 'employee' ? surveyEmployee(c) : c.persona.id === 'manager' ? surveyManager(c) : surveyHr(c)), mounted: (c, root) => (c.persona.id === 'employee' ? mountSurveyEmployee(c, root) : c.persona.id === 'manager' ? mountSurveyManager(c, root) : mountSurveyHr(c, root)) },
+    '/drivers': { title: 'Drivers', personas: ['hrbp', 'manager', 'cpo'], render: drivers, mounted: mountDrivers },
+    '/teams': { title: 'Teams', personas: ANALYSTS, render: teams, mounted: mountTeams },
+    '/comments': { title: (c) => (c.persona.id === 'manager' ? 'Team themes' : 'Comments'), personas: ['hrbp', 'manager', 'cpo'], render: comments, mounted: mountComments },
+    '/actions': { title: 'Action plans', render: actions, mounted: mountActions },
+    '/lifecycle': { title: 'Lifecycle', personas: ANALYSTS, render: lifecycle, mounted: mountLifecycle },
+    '/settings': { title: 'Settings', personas: ['hrbp'], render: settings, mounted: mountSettings },
+  };
+  const personas = [
+    { ...D.personas.hrbp, note: 'All analytics, comments, plans & settings' },
+    { ...D.personas.manager, note: 'Team results, participation & plan' },
+    { ...D.personas.employee, note: 'Takes the September pulse' },
+    { ...D.personas.cpo, note: 'Company view & board framing' },
+  ];
+  const overdueN = () => S.plans.flatMap((p) => p.actions).filter((a) => a.status !== 'done' && new Date(a.due) < TODAY).length;
+  const navFor = (persona) => persona.id === 'employee'
+      ? [{ group: 'My pulse', items: [{ id: 'home', label: 'Home', icon: 'home' }, { id: 'survey', label: 'My pulse', icon: 'heart-pulse', badge: S.survey.submitted ? '' : 'Open' }, { id: 'actions', label: 'Team action plan', icon: 'clipboard-check' }] }]
+      : persona.id === 'manager'
+        ? [{ group: 'My team', items: [{ id: 'home', label: 'Team results', icon: 'home' }, { id: 'survey', label: 'Participation', icon: 'activity', badge: `${liveResp(MY_TEAM)}/${teamPeople(MY_TEAM).length}` }, { id: 'comments', label: 'Team themes', icon: 'message-square' }, { id: 'actions', label: 'Action plan', icon: 'clipboard-check' }] }, { group: 'Explore', items: [{ id: 'drivers', label: 'Drivers', icon: 'radar' }] }]
+        : [{ group: 'Listen', items: [{ id: 'home', label: 'Overview', icon: 'home' }, { id: 'survey', label: 'Participation', icon: 'activity', personas: ['hrbp'] }, { id: 'comments', label: 'Comments', icon: 'message-square', badge: sepC().length }] }, { group: 'Understand', items: [{ id: 'drivers', label: 'Drivers', icon: 'radar' }, { id: 'teams', label: 'Teams', icon: 'grid' }, { id: 'lifecycle', label: 'Lifecycle', icon: 'route' }] }, { group: 'Act', items: [{ id: 'actions', label: 'Action plans', icon: 'clipboard-check', badge: overdueN() || '' }] }, { group: 'Administration', items: [{ id: 'settings', label: 'Settings', icon: 'settings', personas: ['hrbp'] }] }];
+  const promoFor = (persona) => persona.id === 'employee'
+      ? (S.survey.submitted ? { title: 'Pulse submitted', body: 'Thank you. Next pulse opens Oct 1.', cta: { label: 'See how you compare', route: '/survey' } } : { title: 'September pulse is open', body: `${activeQuestions().length + 2} questions · about 3 minutes · closes ${closeLbl()}`, progress: Math.round((answeredCount() / (activeQuestions().length + 2)) * 100), cta: { label: answeredCount() ? 'Continue' : 'Start now', route: '/survey' } })
+      : persona.id === 'manager'
+        ? { title: `${MY_TEAM} · ${liveResp(MY_TEAM)} of ${teamPeople(MY_TEAM).length}`, body: `Team participation ${pct(liveResp(MY_TEAM), teamPeople(MY_TEAM).length)}% · closes ${closeLbl()}`, progress: pct(liveResp(MY_TEAM), teamPeople(MY_TEAM).length), cta: { label: 'Participation', route: '/survey' } }
+        : { title: `September pulse · ${COMPANY.part}% participation`, body: `${F.int(COMPANY.n)} responses · closes ${closeLbl()}`, progress: COMPANY.part, cta: persona.id === 'hrbp' ? { label: 'Track participation', route: '/survey' } : { label: 'Overview', route: '/home' } };
+  const refreshChrome = (persona) => {
+    try {
+      navFor(persona).forEach((g) => g.items.forEach((it) => { const a = document.querySelector(`.ns-nav-item[data-nav="${it.id}"]`); if (!a) return; let b = a.querySelector('.ns-nav-badge'); const v = it.badge != null && it.badge !== '' ? String(it.badge) : ''; if (!v && b) b.remove(); else if (v) { if (!b) { b = document.createElement('span'); b.className = 'ns-nav-badge'; a.appendChild(b); } if (b.textContent !== v) b.textContent = v; } }));
+      const pr = document.querySelector('.ns-sidebar-promo'), pm = promoFor(persona);
+      if (pr && pm) { const next = `<b>${NS.esc(pm.title)}</b><p>${NS.esc(pm.body || '')}</p>${pm.progress != null ? NS.progress(pm.progress) : ''}${pm.cta ? `<a class="ns-btn sm" href="${NS.link(pm.cta.route)}">${NS.esc(pm.cta.label)} →</a>` : ''}`; if (pr.dataset.sig !== next) { pr.innerHTML = next; pr.dataset.sig = next; } }
+    } catch (e) { /* sidebar refresh is cosmetic */ }
+  };
+  NS.app({
+    id: 'pulse', name: 'Pulse', sub: 'Northstar Labs', brand: 'pink', version: '2.0',
+    mark: ic('heart-pulse', { size: 20 }),
+    about: { tagline: 'Listen continuously. Act visibly.', description: 'Pulse is an always-on listening platform: a three-minute monthly pulse and a semi-annual engagement survey, seven engagement drivers benchmarked against the tech industry, anonymised comment themes, and team action plans that close the loop. Over three years it took Northstar’s eNPS from +31 to +67 by making every result somebody’s next action.', highlights: [{ icon: 'heart-pulse', title: 'Three-minute monthly pulse', body: 'Twelve driver questions, eNPS and one open comment — card by card, autosaved.' }, { icon: 'shield-check', title: 'Anonymity by design', body: 'Results only at 5+ responses; comments attributed to teams, never people.' }, { icon: 'radar', title: 'Driver analytics', body: 'Benchmarks, heatmaps and each driver’s measured impact on eNPS.' }, { icon: 'list-checks', title: 'Action plans that stick', body: 'Team plans, company initiatives and a what-works library with evidence.' }] },
+    personas, defaultPersona: 'hrbp',
+    nav: navFor,
+    promo: promoFor,
+    onRoute: (c) => refreshChrome(c.persona),
+    notifications: [
+      { icon: 'clock', title: 'September pulse closes in 3 days', body: `${COMPANY.part}% participation so far · automatic nudges go out tomorrow.`, time: 'Today', route: '/survey' },
+      { icon: 'trending-down', title: 'Billing Platform dropped 9 pts on workload', body: 'Two departures, no backfill yet. An on-call rebalance plan is open.', time: 'Yesterday', route: '/actions' },
+      { icon: 'clipboard-check', title: 'New action plan: Search team', body: 'Interrupt triage rota · 3 actions · target +0.4 on workload.', time: '3 days ago', route: '/actions' },
+      { icon: 'award', title: 'Security Operations +8 on manager', body: 'Six months after the 1:1 reset — the biggest gain this pulse.', time: '4 days ago', route: '/home' },
+    ],
+    routes: R, default: '/home',
+    commands: (persona) => persona.id === 'employee'
+      ? [{ label: S.survey.submitted ? 'See how you compare' : 'Take the September pulse', icon: 'heart-pulse', group: 'Actions', run: () => NS.go('/survey') }, { label: 'Comment on the team action plan', icon: 'message-square', group: 'Actions', run: () => NS.go('/actions') }]
+      : persona.id === 'manager'
+        ? [{ label: 'Remind my team to respond', icon: 'megaphone', group: 'Actions', run: () => remindTeam(persona) }, { label: 'New action plan for my team', icon: 'plus', group: 'Actions', run: () => planModal(null, { team: MY_TEAM, driver: teamStats(MY_TEAM).lowest || 'pay', lockTeam: true }) }, { label: 'Team comment themes', icon: 'message-square', group: 'Go to', run: () => NS.go('/comments') }]
+        : [...(persona.id === 'hrbp' ? [{ label: 'New action plan', icon: 'plus', group: 'Actions', run: () => planModal(null) }, { label: 'Nudge low-participation managers', icon: 'megaphone', group: 'Actions', run: () => NS.go('/survey') }, { label: 'Change the anonymity threshold', icon: 'shield-check', group: 'Actions', run: () => NS.go('/settings') }] : [{ label: 'Copy board summary', icon: 'copy', group: 'Actions', run: () => copyText(boardText(), 'Board summary') }]), { label: 'Export September comments (CSV)', icon: 'download', group: 'Actions', run: () => downloadCsv('pulse-comments-sep.csv', [['Date', 'Theme', 'Sentiment', 'Team / org', 'Comment'], ...sepC().map((x) => [x.date, themeOf(x.theme).name, x.sent, scopeOf(x), x.text])]) }, { label: 'Negative workload comments', icon: 'filter', group: 'Go to', run: () => { Object.assign(CF, { theme: 'workload', sent: 'neg', org: '', period: '', q: '', flagged: false, limit: 20 }); NS.go('/comments'); } }],
+    search: (q) => {
+      if (q.length < 2) return [];
+      const ql = q.toLowerCase(), per = NS.persona || personas[0], out = [];
+      if (per.id !== 'employee') DRIVERS.filter((d) => d.name.toLowerCase().includes(ql) || d.desc.toLowerCase().includes(ql)).forEach((d) => out.push({ group: 'Drivers', label: d.name, hint: d.desc, run: () => NS.go('/drivers', { d: d.id }) }));
+      if (ANALYSTS.includes(per.id)) {
+        TEAMS.filter((t) => t.name.toLowerCase().includes(ql) || t.mgr.name.toLowerCase().includes(ql)).slice(0, 6).forEach((t) => out.push({ group: 'Teams', label: t.name, hint: `${t.org} · ${t.mgr.name}`, avatar: NS.avatar(t.mgr, { size: 'xs' }), run: () => openTeam(t.name, per) }));
+        const cm = COMMENTS.filter((x) => x.text.toLowerCase().includes(ql)).length;
+        if (cm) out.push({ group: 'Comments', label: `Search comments for “${q}”`, hint: F.plural(cm, 'match', 'matches'), run: () => { Object.assign(CF, { q, theme: '', sent: '', org: '', period: '', flagged: false, limit: 20 }); if (NS.route && NS.route.path === '/comments') NS.refresh(); else NS.go('/comments'); } });
+      }
+      QUESTIONS.filter((x) => x.text.toLowerCase().includes(ql)).slice(0, 3).forEach((x) => out.push({ group: 'Questions', label: x.text, hint: DM[x.driver].name, run: () => NS.go(per.id === 'employee' ? '/survey' : '/drivers', per.id === 'employee' ? {} : { d: x.driver }) }));
+      return out;
+    },
+    onReset: () => { try { C.store.del('state'); } catch (e) { /* ignore */ } },
+  });
+})();
+</script>
+</body>
+</html>
