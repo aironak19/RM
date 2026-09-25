@@ -1,0 +1,145 @@
+<!doctype html>
+<html lang="en" data-brand="indigo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Northstar People Suite · Ronak Mehta</title>
+<meta name="description" content="Nine working people-tech products — performance, compensation, retention, engagement, HR operations, workforce planning and hiring — built on one design system by Ronak Mehta.">
+<meta name="theme-color" content="#4F46E5">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%234F46E5'/%3E%3Cpath d='M24 9l3.2 11 10.8 3.2-10.8 3.2L24 37.4l-3.2-11L10 23.2l10.8-3.2z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shared/ns.css">
+<script src="shared/ns.js"></script>
+<style>
+  body{background:var(--bg)}
+  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,4vw,48px);background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
+  .top .ns-brand{border:0;padding:0;min-height:0}
+  .top .grow{flex:1}
+  .suite-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
+  .hero{padding:clamp(40px,7vw,88px) 0 clamp(28px,4vw,48px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:end}
+  .hero h1{font-size:clamp(34px,5vw,58px);line-height:1.05;letter-spacing:-.03em;margin-top:14px}
+  .hero h1 span{background:linear-gradient(90deg,var(--brand-600),#C026D3 55%,#EA580C);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero p.lead{font-size:clamp(16px,1.5vw,18px);color:var(--ink-2);max-width:60ch;margin-top:16px}
+  .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+  .fact{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
+  .fact b{display:block;font-family:var(--font-display);font-size:30px;letter-spacing:-.02em;line-height:1.1}
+  .fact span{font-size:12.5px;color:var(--ink-3)}
+  @media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
+  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
+  .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
+  @media (max-width:1100px){.apps{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:680px){.apps{grid-template-columns:minmax(0,1fr)}}
+  .app{display:grid;grid-template-rows:auto 1fr;overflow:hidden;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-xs);transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .2s;color:inherit;text-decoration:none!important}
+  .app:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--line-strong)}
+  .app[hidden]{display:none}
+  .app .img{position:relative;aspect-ratio:16/10;background:var(--surface-3);overflow:hidden;border-bottom:1px solid var(--line)}
+  .app .img img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:transform 1s var(--ease)}
+  .app:hover .img img{transform:scale(1.03)}
+  .app .img .ns-badge{position:absolute;top:12px;right:12px;box-shadow:var(--shadow-sm)}
+  .app .bd{padding:18px 20px 20px;display:grid;gap:10px;align-content:start}
+  .app .hd{display:flex;align-items:center;gap:12px}
+  .app .mk{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .app .mk svg{width:19px;height:19px}
+  .app .nm{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.01em;line-height:1.2;color:var(--ink)}
+  .app .ct{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .app p{font-size:13.5px;color:var(--ink-2);line-height:1.55}
+  .app ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
+  .app li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;font-size:12.5px;color:var(--ink-2)}
+  .app li svg{width:14px;height:14px;color:var(--ok);margin-top:2px}
+  .app .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;padding-top:12px;border-top:1px solid var(--line-2)}
+  .app .ft .per{font-size:12px;color:var(--ink-3)}
+  .app .ft .go{font-size:13px;font-weight:600;color:var(--brand-text);display:inline-flex;align-items:center;gap:6px}
+  .app .ft .go svg{width:14px;height:14px;transition:transform .2s}
+  .app:hover .ft .go svg{transform:translate(2px,-2px)}
+  .under{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+  @media (max-width:1000px){.under{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:560px){.under{grid-template-columns:minmax(0,1fr)}}
+  .under .ns-card-body{display:grid;gap:8px}
+  .under b{font-size:14.5px}
+  .under p{font-size:13px;color:var(--ink-3)}
+  footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
+</style>
+</head>
+<body>
+<header class="top">
+  <a class="ns-brand" href="#"><span class="ns-brand-mark" id="suiteMark"></span><span><div class="ns-brand-name">Northstar People Suite</div><div class="ns-brand-sub">by Ronak Mehta</div></span></a>
+  <div class="grow"></div>
+  <a class="ns-btn ghost sm hide-sm" href="../#work" id="backLink"></a>
+  <button class="ns-icon-btn" id="themeBtn" aria-label="Toggle theme"></button>
+</header>
+
+<main class="suite-wrap">
+  <section class="hero">
+    <div>
+      <span class="ns-badge brand lg" id="heroBadge"></span>
+      <h1>Nine people tools, <span>one operating system.</span></h1>
+      <p class="lead">Each product solves a real organisational problem I have worked on, from review cycles and pay equity to flight risk, listening, service desks, planning and hiring. They share one design system, one charting layer and one fictional 1,051-person company, so the same people, teams and numbers show up across every tool.</p>
+      <div class="flex gap-2 wrap mt-6"><a class="ns-btn primary lg" href="performance-nexus/index.html">Start with Performance Nexus</a><a class="ns-btn secondary lg" href="../#work">Back to portfolio</a></div>
+    </div>
+    <div class="facts">
+      <div class="fact"><b>9</b><span>working products</span></div>
+      <div class="fact"><b>80</b><span>screens · routes</span></div>
+      <div class="fact"><b>33</b><span>persona views to switch between</span></div>
+      <div class="fact"><b>0</b><span>frameworks, backends or trackers</span></div>
+    </div>
+  </section>
+
+  <div class="filters" id="filters" role="group" aria-label="Filter by area"></div>
+  <section class="apps" id="apps" aria-label="Products"></section>
+
+  <div class="ns-section-title" style="margin-top:56px"><div><h2>Under the hood</h2><p>What makes nine separate products feel like one suite</p></div></div>
+  <section class="under" id="under"></section>
+
+  <div class="ns-alert info mt-6"><span id="infoIc"></span><div><b>Concept prototypes with illustrative data</b><p>Northstar Labs is a fictional company. Every person, number and event is generated deterministically for demonstration. Nothing here describes a real organisation or individual. Changes you make are saved only in your own browser, and "Reset demo data" in any app's avatar menu restores it.</p></div></div>
+
+  <footer><span>Designed &amp; built by <b class="ink">Ronak Mehta</b> · Senior HR Business Partner · Mumbai</span><span><a href="../#contact">Get in touch</a> · <a href="https://linkedin.com/in/ronakmehta1910" target="_blank" rel="noopener">LinkedIn ↗</a></span></footer>
+</main>
+
+<script>
+(function () {
+  'use strict';
+  const ic = (n, o) => NS.icon(n, o), esc = NS.esc;
+  const APPS = [
+    { slug: 'performance-nexus', name: 'Performance Nexus', cat: 'Performance management', group: 'growth', icon: 'target', grad: ['#6366F1', '#4338CA'], badge: 'Flagship', desc: 'Goals with weighted key results, a self review that drafts from your own evidence, a manager review with a live scorecard and a language check, calibration and a cycle console.', tries: ['As Employee: rate a goal, then press "AI draft from my check-ins"', 'As Manager: review Kavya, then drag people in the 9-box', 'As HRBP: filter the console and bulk-nudge'], personas: 'Employee · Manager · HRBP' },
+    { slug: 'compintel-pro', name: 'CompIntel Pro', cat: 'Compensation analytics', group: 'insight', icon: 'banknote', grad: ['#10B981', '#047857'], badge: 'Rebuilt', desc: 'Band structure, compa-ratios, market benchmarks, a merit-cycle planner and a pay-equity view that explains the unadjusted and adjusted gaps.', tries: ['Model an adjustment from any person\'s comp drawer', 'Edit the merit matrix and watch the budget recompute', 'Ask CompGPT who is underpaid in an org'], personas: 'Total Rewards · HRBP · VP · Manager' },
+    { slug: 'retention-radar', name: 'Retention Radar', cat: 'People analytics', group: 'insight', icon: 'radar', grad: ['#06B6D4', '#0E7490'], badge: 'New', desc: 'Explainable flight-risk scoring with drivers, an action queue, attrition cohorts and a transparent model with backtest and a what-if simulator.', tries: ['Click a red dot on the radar to open a risk profile', 'Log a stay interview and drag it to Done', 'Move the sliders in the what-if simulator'], personas: 'HRBP · Manager · VP · CPO' },
+    { slug: 'pulse', name: 'Pulse', cat: 'Employee listening', group: 'insight', icon: 'heart-pulse', grad: ['#EC4899', '#BE185D'], badge: 'New', desc: 'Continuous engagement and eNPS: driver analysis, team heatmaps with anonymity thresholds, comment themes and action plans.', tries: ['As Employee: take the September pulse', 'Filter comments by theme and sentiment', 'Open a team in the heatmap and review its plan'], personas: 'HRBP · Manager · Employee · CPO' },
+    { slug: 'leaders-field-guide', name: "The Leader's Field Guide", cat: 'L&D / Enablement', group: 'growth', icon: 'compass', grad: ['#F59E0B', '#B45309'], badge: 'Rebuilt', desc: 'A manager playbook with a quarterly cadence, a live 1:1 runner, conversation scripts, copy-paste emails, culture KPIs and a leadership test.', tries: ['Run a timed 1:1 with a report', 'Copy a "Real Talk" script', 'Take The Crucible and see your archetype'], personas: 'Manager · HRBP · VP' },
+    { slug: 'competency-portal', name: 'Competency Portal', cat: 'Org design', group: 'growth', icon: 'layers', grad: ['#8B5CF6', '#6D28D9'], badge: 'Rebuilt', desc: 'An engineering career framework covering 16 levels from P0 to P6 and M1 to M6, with level compare, a competency matrix, self-assessment and promotion readiness.', tries: ['Compare P3 with P4 and see what changes', 'Self-assess, then generate a development plan', 'As Manager: nominate a ready report'], personas: 'Employee · Manager · HRBP' },
+    { slug: 'people-ops-desk', name: 'People Ops Desk', cat: 'HR operations', group: 'ops', icon: 'life-buoy', grad: ['#3B82F6', '#1D4ED8'], badge: 'New', desc: 'An HR service desk where automations and a knowledge base answer most questions, with tickets, SLAs, approvals and CSAT for the rest.', tries: ['As Employee: start typing a request and watch deflection', 'Reply to a ticket with a macro and resolve it', 'Toggle an automation and see coverage change'], personas: 'People Ops · Employee · Manager · HRBP' },
+    { slug: 'workforce-planner', name: 'Workforce Planner', cat: 'Workforce planning', group: 'ops', icon: 'calculator', grad: ['#84CC16', '#4D7C0F'], badge: 'New', desc: 'Headcount and budget planning with an editable quarterly grid, side-by-side scenarios, an org-design analyzer and headcount requests.', tries: ['Edit a Q4 cell in the planning grid', 'Compare the hiring-freeze scenario with base', 'Approve a headcount request as the VP'], personas: 'HRBP · VP · CPO · Finance' },
+    { slug: 'pipeline-ats', name: 'Pipeline', cat: 'Talent acquisition', group: 'ops', icon: 'git-branch', grad: ['#F97316', '#C2410C'], badge: 'New', desc: 'Structured hiring from requisition to offer, with kanban pipelines, interview scorecards, band-checked offers and funnel analytics.', tries: ['Drag a candidate to the next stage', 'Fill a scorecard as the hiring manager', 'Approve an offer against the pay band'], personas: 'Recruiter · Hiring manager · HRBP · VP' },
+  ];
+  const GROUPS = [['all', 'All products'], ['growth', 'Performance & growth'], ['insight', 'Rewards & analytics'], ['ops', 'Operations & hiring']];
+  const UNDER = [
+    ['layers', 'One design system', 'Shared tokens, a validated colour-blind-safe chart palette, light and dark themes, and components from tables to 9-boxes.'],
+    ['database', 'One coherent company', '1,051 people across 77 teams and 12 cities, with pay bands, ratings, engagement and risk that agree across every tool.'],
+    ['sparkles', 'Explainable "AI"', 'Drafts, insights and scores are rule-based and show their working. Nothing is a black box, and nothing leaves the browser.'],
+    ['zap', 'Built to be fast', 'Plain HTML, CSS and JavaScript, with no frameworks, trackers or backend. State persists locally, and ⌘K works everywhere.'],
+  ];
+
+  document.getElementById('suiteMark').innerHTML = ic('northstar');
+  document.getElementById('backLink').innerHTML = ic('arrow-left') + 'Portfolio';
+  document.getElementById('heroBadge').innerHTML = ic('sparkles', { size: 13 }) + 'Northstar Labs · concept suite';
+  document.getElementById('infoIc').innerHTML = ic('info');
+  const tb = document.getElementById('themeBtn');
+  const paintTheme = () => { tb.innerHTML = ic(NS.theme.get() === 'dark' ? 'sun' : 'moon'); };
+  NS._onTheme = paintTheme; paintTheme(); tb.onclick = (e) => NS.theme.toggle(e);
+
+  document.getElementById('apps').innerHTML = APPS.map((a) => `<a class="app" data-group="${a.group}" href="${a.slug}/index.html">
+      <div class="img"><img src="shots/${a.slug}-800.webp" srcset="shots/${a.slug}-800.webp 800w, shots/${a.slug}-1600.webp 1600w" sizes="(min-width:1100px) 400px, (min-width:680px) 47vw, 100vw" alt="${esc(a.name)} screenshot" loading="lazy" decoding="async" width="1600" height="1000"><span class="ns-badge ${a.badge === 'New' ? 'ok' : a.badge === 'Flagship' ? 'brand' : 'outline'}" style="${a.badge === 'Rebuilt' ? 'background:var(--surface)' : ''}">${esc(a.badge)}</span></div>
+      <div class="bd">
+        <div class="hd"><span class="mk" style="background:linear-gradient(135deg,${a.grad[0]},${a.grad[1]})">${ic(a.icon)}</span><div><div class="ct">${esc(a.cat)}</div><div class="nm">${esc(a.name)}</div></div></div>
+        <p>${esc(a.desc)}</p>
+        <ul>${a.tries.map((t) => `<li>${ic('check')}<span>${esc(t)}</span></li>`).join('')}</ul>
+        <div class="ft"><span class="per">${esc(a.personas)}</span><span class="go">Open ${ic('arrow-up-right')}</span></div>
+      </div></a>`).join('');
+  const f = document.getElementById('filters');
+  f.innerHTML = GROUPS.map(([id, l]) => `<button class="ns-chip" data-f="${id}" aria-pressed="${id === 'all'}">${esc(l)} <span class="n">${id === 'all' ? APPS.length : APPS.filter((a) => a.group === id).length}</span></button>`).join('');
+  f.addEventListener('click', (e) => { const b = e.target.closest('[data-f]'); if (!b) return; f.querySelectorAll('[data-f]').forEach((x) => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.app').forEach((c) => { c.hidden = !(b.dataset.f === 'all' || c.dataset.group === b.dataset.f); }); });
+  document.getElementById('under').innerHTML = UNDER.map(([i, t, d]) => `<div class="ns-card"><div class="ns-card-body"><span class="ns-icon-box">${ic(i)}</span><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('');
+})();
+</script>
+</body>
+</html>
