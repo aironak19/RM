@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0891B2">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%230891B2'/%3E%3Ccircle cx='24' cy='24' r='14' fill='none' stroke='%23fff' stroke-width='2.6' opacity='.55'/%3E%3Ccircle cx='24' cy='24' r='8' fill='none' stroke='%23fff' stroke-width='2.6' opacity='.8'/%3E%3Cpath d='M24 24 L35 13' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3Ccircle cx='24' cy='24' r='2.4' fill='%23fff'/%3E%3Ccircle cx='31' cy='30' r='2.6' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../shared/ns.css">
 <script src="../shared/ns.js"></script>
 <script src="../shared/ns-data.js"></script>
@@ -473,7 +473,7 @@
     const sorted = team.slice().sort((a, b) => riskOf(b) - riskOf(a));
     return html`
       <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('users', { size: 12 })} ${NS.esc(me.team)} · ${team.length} reports</span></div>
-        <h1>${NS.greeting()}, ${me.first} 👋</h1>
+        <h1>${NS.greeting()}, ${me.first}</h1>
         <p>${hero ? `<b>${NS.esc(hero.name)}</b> moved to High risk (${riskOf(hero)}) this month — the strongest driver is <b>${NS.esc(hero.riskDrivers[0].label.toLowerCase())}</b>. ` : 'Nobody on your team is High risk right now. '}The rest of the team sits ${m.c.Medium ? `${m.c.Medium} Medium and ` : ''}${m.c.Low} Low, and team pulse is <b>${tp[5]}</b> against a company average of ${cp[5]}. ${openActs.length ? `${openActs.length} action${openActs.length === 1 ? ' is' : 's are'} open for your team.` : 'No retention actions are open for your team.'}</p>
         <div class="flex gap-2 wrap mt-4">${hero ? `<button class="ns-btn primary" data-log="${hero.id}">Log an action for ${NS.esc(hero.first)} ${ic('arrow-right')}</button>` : ''}<a class="ns-btn ghost" href="${NS.link('/radar')}">Team radar</a></div>
       </div>
