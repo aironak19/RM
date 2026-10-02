@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#DB2777">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%23DB2777'/%3E%3Cpath d='M9 25h7l3-8 5 15 4-11 3 4h8' fill='none' stroke='%23fff' stroke-width='3.2' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../shared/ns.css">
 <script src="../shared/ns.js"></script>
 <script src="../shared/ns-data.js"></script>
@@ -692,7 +692,7 @@ o|-|Technical Support|Internal tooling for support has not been updated since I 
     return html`
       <div class="ns-hero"><div class="hero-emp"><div>
         <div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic('users', { size: 12 })} ${NS.esc(me.team)}</span></div>
-        <h1>${NS.greeting()}, ${NS.esc(me.first)} 👋</h1>
+        <h1>${NS.greeting()}, ${NS.esc(me.first)}</h1>
         <p>${sub ? `Thanks — your September pulse is in. <b>Submitted · next pulse opens Oct 1.</b> Your team’s shared action plan is ${plan ? planProgress(plan) + '% done' : 'being drafted'}.` : `Your September pulse is open: ${stepsN} quick questions, about three minutes. It closes on ${closeLbl()} — ${matesDone} of your ${mates.length} teammates have already answered.`}</p>
         <div class="flex gap-2 wrap mt-4">${sub ? `<a class="ns-btn primary" href="${NS.link('/survey')}">See how you compare ${ic('arrow-right')}</a>` : `<a class="ns-btn primary" href="${NS.link('/survey')}">${answered ? `Continue pulse · ${answered} of ${stepsN}` : 'Take the September pulse'} ${ic('arrow-right')}</a>`}<a class="ns-btn ghost" href="${NS.link('/actions')}">${ic('clipboard-check')}Team action plan</a></div>
       </div>${NS.ring({ value: sub ? 1 : answered / stepsN, size: 116, thickness: 10, label: sub ? '✓' : `${Math.round((answered / stepsN) * 100)}%`, sub: sub ? 'submitted' : 'complete', color: '#fff' })}</div></div>
