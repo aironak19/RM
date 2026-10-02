@@ -5,10 +5,10 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Northstar People Suite · Ronak Mehta</title>
 <meta name="description" content="Nine working people-tech products — performance, compensation, retention, engagement, HR operations, workforce planning and hiring — built on one design system by Ronak Mehta.">
-<meta name="theme-color" content="#4F46E5">
+<meta name="theme-color" content="#F6F6F7">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%234F46E5'/%3E%3Cpath d='M24 9l3.2 11 10.8 3.2-10.8 3.2L24 37.4l-3.2-11L10 23.2l10.8-3.2z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/ns.css">
 <script src="shared/ns.js"></script>
 <style>
@@ -18,12 +18,12 @@
   .top .grow{flex:1}
   .suite-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
   .hero{padding:clamp(40px,7vw,88px) 0 clamp(28px,4vw,48px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:end}
-  .hero h1{font-size:clamp(34px,5vw,58px);line-height:1.05;letter-spacing:-.03em;margin-top:14px}
-  .hero h1 span{background:linear-gradient(90deg,var(--brand-600),#C026D3 55%,#EA580C);-webkit-background-clip:text;background-clip:text;color:transparent}
+  .hero h1{font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-.05em;font-weight:600;margin-top:18px}
+  .hero h1 span{color:var(--ink-4)}
   .hero p.lead{font-size:clamp(16px,1.5vw,18px);color:var(--ink-2);max-width:60ch;margin-top:16px}
   .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
   .fact{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
-  .fact b{display:block;font-family:var(--font-display);font-size:30px;letter-spacing:-.02em;line-height:1.1}
+  .fact b{display:block;font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.045em;line-height:1.1;font-feature-settings:"tnum" 1}
   .fact span{font-size:12.5px;color:var(--ink-3)}
   @media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
   .filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
@@ -39,17 +39,17 @@
   .app .img .ns-badge{position:absolute;top:12px;right:12px;box-shadow:var(--shadow-sm)}
   .app .bd{padding:18px 20px 20px;display:grid;gap:10px;align-content:start}
   .app .hd{display:flex;align-items:center;gap:12px}
-  .app .mk{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.25)}
+  .app .mk{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(0,0,0,.18),0 4px 12px -6px rgba(0,0,0,.4)}
   .app .mk svg{width:19px;height:19px}
-  .app .nm{font-family:var(--font-display);font-weight:700;font-size:17px;letter-spacing:-.01em;line-height:1.2;color:var(--ink)}
-  .app .ct{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--ink-3)}
+  .app .nm{font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.025em;line-height:1.2;color:var(--ink)}
+  .app .ct{font-size:12px;font-weight:500;color:var(--ink-3)}
   .app p{font-size:13.5px;color:var(--ink-2);line-height:1.55}
   .app ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
   .app li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;font-size:12.5px;color:var(--ink-2)}
-  .app li svg{width:14px;height:14px;color:var(--ok);margin-top:2px}
+  .app li svg{width:14px;height:14px;color:var(--ink-4);margin-top:2px}
   .app .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;padding-top:12px;border-top:1px solid var(--line-2)}
   .app .ft .per{font-size:12px;color:var(--ink-3)}
-  .app .ft .go{font-size:13px;font-weight:600;color:var(--brand-text);display:inline-flex;align-items:center;gap:6px}
+  .app .ft .go{font-size:13px;font-weight:550;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
   .app .ft .go svg{width:14px;height:14px;transition:transform .2s}
   .app:hover .ft .go svg{transform:translate(2px,-2px)}
   .under{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
@@ -58,6 +58,19 @@
   .under .ns-card-body{display:grid;gap:8px}
   .under b{font-size:14.5px}
   .under p{font-size:13px;color:var(--ink-3)}
+  .elev{position:relative;isolation:isolate;overflow:hidden;margin-top:56px;border-radius:28px;background:#0B0B0F;border:1px solid rgba(255,255,255,.06);color:#fff;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:32px;align-items:center;padding:clamp(24px,4vw,48px);text-decoration:none!important;box-shadow:0 40px 80px -40px rgba(47,111,189,.55)}
+  .elev::before{content:"";position:absolute;inset:-20%;z-index:-1;background:radial-gradient(34% 44% at 78% 30%,#2F6FBD,transparent 72%),radial-gradient(24% 30% at 20% 90%,rgba(205,75,13,.45),transparent 72%);filter:blur(40px);opacity:.75}
+  .elev h2{font-size:clamp(30px,3.6vw,48px);line-height:1.02;letter-spacing:-.045em;font-weight:600;color:#fff;margin:14px 0 12px}
+  .elev h2 span{color:rgba(255,255,255,.45)}
+  .elev p{color:rgba(255,255,255,.66);font-size:15px;line-height:1.55;max-width:52ch}
+  .elev .ns-badge{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.1);box-shadow:none}
+  .elev .mods{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 22px}
+  .elev .mods span{font-size:12px;padding:5px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75)}
+  .elev .ns-btn.primary{background:#fff;color:#0A0A0C}
+  .elev .pic{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 60px -20px rgba(0,0,0,.7);transform:perspective(1400px) rotateY(-6deg) rotateX(3deg);transition:transform .9s var(--ease-out)}
+  .elev:hover .pic{transform:none}
+  .elev .pic img{width:100%;height:auto;display:block}
+  @media (max-width:900px){.elev{grid-template-columns:minmax(0,1fr)}.elev .pic{transform:none}}
   footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
 </style>
 </head>
@@ -87,6 +100,17 @@
 
   <div class="filters" id="filters" role="group" aria-label="Filter by area"></div>
   <section class="apps" id="apps" aria-label="Products"></section>
+
+  <a class="elev" href="elevate/index.html" aria-label="Open Elevate, the integrated talent suite">
+    <div>
+      <span class="ns-badge lg">Flagship · integrated suite</span>
+      <h2>Elevate. <span>The whole talent cycle in one product.</span></h2>
+      <p>Built for a fictional sales-led company, Brightkey Homes (about 800 people across 14 offices). A persona-aware home ties performance, competencies, development and careers together, so every screen knows what you should do next.</p>
+      <div class="mods"><span>Performance &amp; 9-box</span><span>Competencies</span><span>Development plan</span><span>Career graph</span><span>People insights</span><span>Recognition</span></div>
+      <span class="ns-btn primary lg">Open Elevate</span>
+    </div>
+    <div class="pic"><img src="shots/elevate-1600.webp" srcset="shots/elevate-800.webp 800w, shots/elevate-1600.webp 1600w" sizes="(min-width:900px) 55vw, 100vw" alt="Elevate employee home" loading="lazy" decoding="async" width="1600" height="1000"></div>
+  </a>
 
   <div class="ns-section-title" style="margin-top:56px"><div><h2>Under the hood</h2><p>What makes nine separate products feel like one suite</p></div></div>
   <section class="under" id="under"></section>
