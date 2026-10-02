@@ -3,7 +3,7 @@
 Static site, no build step. GitHub Pages serves the repo root.
 
 ```
-index.html                    Portfolio: WebGL "org" of 1,051 particles, scroll-driven story
+index.html                    Portfolio: interactive globe, unit chart, floating product cards
 assets/ronak.jpg              Portrait
 assets/og.jpg                 Social preview image (1200×630)
 artifacts/index.html          Northstar People Suite — launcher for every tool
