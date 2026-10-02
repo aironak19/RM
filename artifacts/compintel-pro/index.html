@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#059669">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%23059669'/%3E%3Crect x='10' y='15' width='28' height='18' rx='4' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Ccircle cx='24' cy='24' r='4.5' fill='none' stroke='%23fff' stroke-width='3'/%3E%3Cpath d='M15 20v8M33 20v8' stroke='%23fff' stroke-width='3' stroke-linecap='round'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../shared/ns.css">
 <script src="../shared/ns.js"></script>
 <script src="../shared/ns-data.js"></script>
@@ -421,7 +421,7 @@
       const cells = marketCells(pool).filter((x) => x.n >= 3); const hot = FAMILIES.filter((f) => MOVEMENT[f] >= 6).map((f) => { const fc = cells.filter((x) => x.fam === f); const worst = fc.slice().sort((a, b) => a.gap - b.gap)[0]; return { f, move: MOVEMENT[f], worst, n: U.sum(fc, 'n') }; }).filter((h) => h.n);
       return html`
         <div class="ns-hero"><div class="flex gap-2 wrap"><span class="ns-badge">${ic('calendar', { size: 12 })} ${F.date(TODAY, 'long')}</span><span class="ns-badge">${ic(isExec ? 'building' : 'globe', { size: 12 })} ${scopeLabel(c.persona)} · ${F.int(pool.length)} people</span><span class="ns-badge">${ic('banknote', { size: 12 })} ${CUR[s.currency].label}</span></div>
-          <h1>${NS.greeting()}, ${me.first} 👋</h1>
+          <h1>${NS.greeting()}, ${me.first}</h1>
           <p>${isExec ? 'Engineering' : 'Company'} payroll is <b>${mk(payroll)}</b> with a median compa-ratio of <b>${cr(medCompa)}</b>. <b>${crit.length}</b> people meet the critical rule and <b>${counts.under || 0}</b> sit under ${s.under} — the merit pool is <b>${F.pct(al.used * 100, 0)}</b> allocated before proposals lock.</p>
           <div class="ns-eyebrow" style="color:rgba(255,255,255,.75);margin-top:18px">FY26 merit proposals lock in</div>
           ${countdown(s.lockDate + 'T18:00:00')}
