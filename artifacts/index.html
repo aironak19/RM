@@ -3,166 +3,221 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Northstar People Suite · Ronak Mehta</title>
-<meta name="description" content="Nine working people-tech products — performance, compensation, retention, engagement, HR operations, workforce planning and hiring — built on one design system by Ronak Mehta.">
-<meta name="theme-color" content="#F6F6F7">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='13' fill='%234F46E5'/%3E%3Cpath d='M24 9l3.2 11 10.8 3.2-10.8 3.2L24 37.4l-3.2-11L10 23.2l10.8-3.2z' fill='%23fff'/%3E%3C/svg%3E">
+<title>Northstar People Cloud · Ronak Mehta</title>
+<meta name="description" content="Northstar People Cloud: ten working people products across the employee lifecycle (hiring, planning, growth, performance, rewards, listening, retention and HR operations), built on one design system by Ronak Mehta.">
+<meta name="theme-color" content="#F6F7F9">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 48 48'%3E%3Crect width='48' height='48' rx='12' fill='%23101828'/%3E%3Cpath d='M24 9l3.2 11 10.8 3.2-10.8 3.2L24 37.4l-3.2-11L10 23.2l10.8-3.2z' fill='%23fff'/%3E%3C/svg%3E">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400..700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="shared/ns.css">
 <script src="shared/ns.js"></script>
 <style>
   body{background:var(--bg)}
-  .top{position:sticky;top:0;z-index:20;display:flex;align-items:center;gap:14px;padding:12px clamp(16px,4vw,48px);background:var(--glass);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);border-bottom:1px solid var(--line)}
-  .top .ns-brand{border:0;padding:0;min-height:0}
-  .top .grow{flex:1}
-  .suite-wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,4vw,48px)}
-  .hero{padding:clamp(40px,7vw,88px) 0 clamp(28px,4vw,48px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:40px;align-items:end}
-  .hero h1{font-size:clamp(40px,6vw,80px);line-height:1;letter-spacing:-.05em;font-weight:600;margin-top:18px}
-  .hero h1 span{color:var(--ink-4)}
-  .hero p.lead{font-size:clamp(16px,1.5vw,18px);color:var(--ink-2);max-width:60ch;margin-top:16px}
-  .facts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
-  .fact{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:16px 18px}
-  .fact b{display:block;font-family:var(--font-display);font-size:34px;font-weight:600;letter-spacing:-.045em;line-height:1.1;font-feature-settings:"tnum" 1}
-  .fact span{font-size:12.5px;color:var(--ink-3)}
-  @media (max-width:900px){.hero{grid-template-columns:minmax(0,1fr)}}
-  .filters{display:flex;gap:8px;flex-wrap:wrap;margin:8px 0 22px}
-  .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px}
-  @media (max-width:1100px){.apps{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (max-width:680px){.apps{grid-template-columns:minmax(0,1fr)}}
-  .app{display:grid;grid-template-rows:auto 1fr;overflow:hidden;border-radius:18px;background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-xs);transition:transform .35s var(--ease),box-shadow .35s var(--ease),border-color .2s;color:inherit;text-decoration:none!important}
-  .app:hover{transform:translateY(-4px);box-shadow:var(--shadow-lg);border-color:var(--line-strong)}
+  .hub-gh{position:sticky;top:0;z-index:50;height:var(--header-h);display:flex;align-items:center;gap:8px;padding:0 clamp(12px,3vw,32px);background:var(--surface);border-bottom:1px solid var(--line)}
+  .hub-gh nav{display:flex;gap:2px;margin-left:12px}
+  .hub-gh nav a{padding:7px 10px;border-radius:var(--r-sm);font-size:13.5px;font-weight:550;color:var(--ink-2)}
+  .hub-gh nav a:hover{background:var(--surface-3);color:var(--ink);text-decoration:none}
+  .hub-gh .right{margin-left:auto;display:flex;align-items:center;gap:6px}
+  .wrap{max-width:1280px;margin:0 auto;padding:0 clamp(16px,3vw,32px)}
+  .intro{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,1fr);gap:32px;align-items:center;padding:clamp(36px,6vw,72px) 0 clamp(28px,4vw,44px)}
+  .intro h1{font-size:clamp(32px,4vw,48px);line-height:1.08;letter-spacing:-.035em;font-weight:650;margin:14px 0 14px;max-width:18ch}
+  .intro h1 span{color:var(--ink-4)}
+  .intro p.lead{font-size:16px;line-height:1.6;color:var(--ink-2);max-width:62ch}
+  .glance{background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);box-shadow:var(--shadow-sm);overflow:hidden}
+  .glance-head{display:flex;justify-content:space-between;align-items:center;padding:14px 18px;border-bottom:1px solid var(--line);font-size:13px;font-weight:600}
+  .glance-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr))}
+  .glance-grid div{padding:16px 18px;border-bottom:1px solid var(--line-2)}
+  .glance-grid div:nth-child(odd){border-right:1px solid var(--line-2)}
+  .glance-grid b{display:block;font-size:26px;font-weight:650;letter-spacing:-.03em;font-variant-numeric:tabular-nums;line-height:1.1}
+  .glance-grid span{font-size:12.5px;color:var(--ink-3)}
+  .glance-foot{display:flex;align-items:center;gap:8px;padding:12px 18px;font-size:12.5px;color:var(--ink-3);background:var(--surface-2)}
+  .glance-foot i{width:8px;height:8px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px var(--ok-bg)}
+  .sec{margin-top:clamp(40px,6vw,64px)}
+  .sec-head{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-bottom:16px}
+  .sec-head h2{font-size:20px;letter-spacing:-.02em}
+  .sec-head p{color:var(--ink-3);font-size:14px;margin-top:4px;max-width:70ch}
+  /* lifecycle solution map */
+  .map{display:grid;grid-template-columns:repeat(8,minmax(0,1fr));background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);overflow:hidden;box-shadow:var(--shadow-xs)}
+  .stage{border-right:1px solid var(--line-2);display:grid;grid-template-rows:auto 1fr;min-width:0}
+  .stage:last-child{border-right:0}
+  .stage-h{padding:12px 12px 10px;border-bottom:1px solid var(--line-2);background:var(--surface-2)}
+  .stage-h small{display:block;font-size:11px;font-weight:600;color:var(--ink-4);font-variant-numeric:tabular-nums}
+  .stage-h b{font-size:13px}
+  .stage-b{padding:10px;display:grid;gap:6px;align-content:start}
+  .mini{display:flex;align-items:center;gap:8px;padding:8px;border-radius:var(--r);border:1px solid var(--line);background:var(--surface);color:var(--ink)!important;text-decoration:none!important;font-size:12.5px;font-weight:600;line-height:1.25;transition:border-color var(--dur),box-shadow var(--dur)}
+  .mini:hover{border-color:var(--line-strong);box-shadow:var(--shadow)}
+  .tile{width:28px;height:28px;border-radius:7px;display:grid;place-items:center;color:#fff;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.25),inset 0 -1px 0 rgba(0,0,0,.12)}
+  .tile svg{width:15px;height:15px}
+  .tile.lg{width:40px;height:40px;border-radius:10px}.tile.lg svg{width:20px;height:20px}
+  .map-foot{grid-column:1/-1;display:flex;gap:16px;flex-wrap:wrap;justify-content:space-between;padding:10px 14px;border-top:1px solid var(--line);font-size:12.5px;color:var(--ink-3);background:var(--surface-2)}
+  /* catalogue */
+  .apps{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+  .app{display:grid;grid-template-rows:auto 1fr;overflow:hidden;border-radius:var(--r-xl);background:var(--surface);border:1px solid var(--line);box-shadow:var(--shadow-xs);color:inherit;text-decoration:none!important;transition:box-shadow var(--dur-slow) var(--ease),border-color var(--dur)}
+  .app:hover{box-shadow:var(--shadow-lg);border-color:var(--line-strong)}
   .app[hidden]{display:none}
-  .app .img{position:relative;aspect-ratio:16/10;background:var(--surface-3);overflow:hidden;border-bottom:1px solid var(--line)}
-  .app .img img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:transform 1s var(--ease)}
-  .app:hover .img img{transform:scale(1.03)}
-  .app .img .ns-badge{position:absolute;top:12px;right:12px;box-shadow:var(--shadow-sm)}
-  .app .bd{padding:18px 20px 20px;display:grid;gap:10px;align-content:start}
+  .app .img{position:relative;aspect-ratio:16/9.4;background:var(--surface-3);overflow:hidden;border-bottom:1px solid var(--line)}
+  .app .img img{width:100%;height:100%;object-fit:cover;object-position:top left;transition:transform .8s var(--ease)}
+  .app:hover .img img{transform:scale(1.02)}
+  .app .bd{padding:16px 18px 18px;display:grid;gap:12px;align-content:start}
   .app .hd{display:flex;align-items:center;gap:12px}
-  .app .mk{width:38px;height:38px;border-radius:11px;display:grid;place-items:center;color:#fff;flex:none;box-shadow:inset 0 1px 0 rgba(255,255,255,.35),inset 0 -1px 0 rgba(0,0,0,.18),0 4px 12px -6px rgba(0,0,0,.4)}
-  .app .mk svg{width:19px;height:19px}
-  .app .nm{font-family:var(--font-display);font-weight:600;font-size:17px;letter-spacing:-.025em;line-height:1.2;color:var(--ink)}
-  .app .ct{font-size:12px;font-weight:500;color:var(--ink-3)}
+  .app .nm{font-weight:650;font-size:16px;letter-spacing:-.02em;line-height:1.2;color:var(--ink)}
+  .app .ct{font-size:12.5px;color:var(--ink-3)}
+  .app .hd .ns-badge{margin-left:auto}
   .app p{font-size:13.5px;color:var(--ink-2);line-height:1.55}
-  .app ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
-  .app li{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;font-size:12.5px;color:var(--ink-2)}
-  .app li svg{width:14px;height:14px;color:var(--ink-4);margin-top:2px}
-  .app .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:6px;padding-top:12px;border-top:1px solid var(--line-2)}
-  .app .ft .per{font-size:12px;color:var(--ink-3)}
-  .app .ft .go{font-size:13px;font-weight:550;color:var(--ink);display:inline-flex;align-items:center;gap:6px}
-  .app .ft .go svg{width:14px;height:14px;transition:transform .2s}
-  .app:hover .ft .go svg{transform:translate(2px,-2px)}
-  .under{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
-  @media (max-width:1000px){.under{grid-template-columns:repeat(2,minmax(0,1fr))}}
-  @media (max-width:560px){.under{grid-template-columns:minmax(0,1fr)}}
-  .under .ns-card-body{display:grid;gap:8px}
-  .under b{font-size:14.5px}
-  .under p{font-size:13px;color:var(--ink-3)}
-  .elev{position:relative;isolation:isolate;overflow:hidden;margin-top:56px;border-radius:28px;background:#0B0B0F;border:1px solid rgba(255,255,255,.06);color:#fff;display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.25fr);gap:32px;align-items:center;padding:clamp(24px,4vw,48px);text-decoration:none!important;box-shadow:0 40px 80px -40px rgba(47,111,189,.55)}
-  .elev::before{content:"";position:absolute;inset:-20%;z-index:-1;background:radial-gradient(34% 44% at 78% 30%,#2F6FBD,transparent 72%),radial-gradient(24% 30% at 20% 90%,rgba(205,75,13,.45),transparent 72%);filter:blur(40px);opacity:.75}
-  .elev h2{font-size:clamp(30px,3.6vw,48px);line-height:1.02;letter-spacing:-.045em;font-weight:600;color:#fff;margin:14px 0 12px}
-  .elev h2 span{color:rgba(255,255,255,.45)}
-  .elev p{color:rgba(255,255,255,.66);font-size:15px;line-height:1.55;max-width:52ch}
-  .elev .ns-badge{background:rgba(255,255,255,.06);color:rgba(255,255,255,.85);border:1px solid rgba(255,255,255,.1);box-shadow:none}
-  .elev .mods{display:flex;flex-wrap:wrap;gap:6px;margin:18px 0 22px}
-  .elev .mods span{font-size:12px;padding:5px 10px;border-radius:99px;border:1px solid rgba(255,255,255,.12);color:rgba(255,255,255,.75)}
-  .elev .ns-btn.primary{background:#fff;color:#0A0A0C}
-  .elev .pic{border-radius:16px;overflow:hidden;border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 60px -20px rgba(0,0,0,.7);transform:perspective(1400px) rotateY(-6deg) rotateX(3deg);transition:transform .9s var(--ease-out)}
-  .elev:hover .pic{transform:none}
-  .elev .pic img{width:100%;height:auto;display:block}
-  @media (max-width:900px){.elev{grid-template-columns:minmax(0,1fr)}.elev .pic{transform:none}}
-  footer{border-top:1px solid var(--line);margin-top:56px;padding:24px 0 40px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
+  .app .try{border-top:1px solid var(--line-2);padding-top:12px;display:grid;gap:6px}
+  .app .try small{font-size:11px;font-weight:650;letter-spacing:.06em;text-transform:uppercase;color:var(--ink-4)}
+  .app .try div{display:grid;grid-template-columns:16px minmax(0,1fr);gap:8px;font-size:12.5px;color:var(--ink-2)}
+  .app .try svg{width:14px;height:14px;color:var(--np);margin-top:2px}
+  .app .ft{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-top:2px}
+  .app .ft .per{display:flex;gap:4px;flex-wrap:wrap}
+  .app .go{font-size:13px;font-weight:600;color:var(--np-text);display:inline-flex;align-items:center;gap:6px}
+  .app .go svg{width:14px;height:14px;transition:transform .2s}
+  .app:hover .go svg{transform:translate(2px,-2px)}
+  /* workspace band */
+  .ws{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.2fr);gap:28px;align-items:center;background:var(--surface);border:1px solid var(--line);border-radius:var(--r-xl);padding:clamp(20px,3vw,32px);box-shadow:var(--shadow-xs);color:inherit;text-decoration:none!important;transition:box-shadow var(--dur-slow)}
+  .ws:hover{box-shadow:var(--shadow-lg)}
+  .ws h3{font-size:24px;letter-spacing:-.025em;margin:12px 0 8px}
+  .ws p{color:var(--ink-2);font-size:14px;line-height:1.6}
+  .ws .mods{display:flex;flex-wrap:wrap;gap:6px;margin:16px 0 20px}
+  .ws .pic{border-radius:var(--r-lg);overflow:hidden;border:1px solid var(--line);box-shadow:var(--shadow)}
+  .ws .pic img{width:100%;height:auto;display:block}
+  /* platform */
+  .plat{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+  .plat .ns-card-body{display:grid;gap:8px}
+  .plat b{font-size:14.5px}
+  .plat p{font-size:13px;color:var(--ink-3);line-height:1.55}
+  footer{border-top:1px solid var(--line);margin-top:64px;padding:22px 0 36px;display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-size:13px;color:var(--ink-3)}
+  @media (max-width:1100px){.map{grid-template-columns:repeat(4,minmax(0,1fr))}.stage:nth-child(4){border-right:0}.stage:nth-child(-n+4){border-bottom:1px solid var(--line-2)}.apps{grid-template-columns:repeat(2,minmax(0,1fr))}.plat{grid-template-columns:repeat(2,minmax(0,1fr))}}
+  @media (max-width:860px){.intro,.ws{grid-template-columns:minmax(0,1fr)}.hub-gh nav{display:none}}
+  @media (max-width:640px){.map{grid-template-columns:repeat(2,minmax(0,1fr))}.stage:nth-child(2n){border-right:0}.stage{border-bottom:1px solid var(--line-2)}.apps,.plat{grid-template-columns:minmax(0,1fr)}.hub-gh .hide-sm{display:none}}
 </style>
 </head>
 <body>
-<header class="top">
-  <a class="ns-brand" href="#"><span class="ns-brand-mark" id="suiteMark"></span><span><div class="ns-brand-name">Northstar People Suite</div><div class="ns-brand-sub">by Ronak Mehta</div></span></a>
-  <div class="grow"></div>
-  <a class="ns-btn ghost sm hide-sm" href="../#work" id="backLink"></a>
-  <button class="ns-icon-btn" id="themeBtn" aria-label="Toggle theme"></button>
+<header class="hub-gh">
+  <a class="ns-gh-logo" href="#top"><span class="ns-np-mark" id="npMark"></span><b>Northstar</b></a>
+  <span class="ns-gh-sep"></span>
+  <span style="font-size:14px;font-weight:550;color:var(--ink-2);white-space:nowrap" class="hide-sm">People Cloud</span>
+  <nav aria-label="Sections"><a href="#map">Solutions</a><a href="#products">Products</a><a href="#workspaces">Workspaces</a><a href="#platform">Platform</a></nav>
+  <div class="right">
+    <button class="ns-icon-btn" id="themeBtn" aria-label="Toggle theme"></button>
+    <a class="ns-btn ghost sm hide-sm" href="../index.html#work" id="backLink"></a>
+    <a class="ns-btn primary sm" href="performance-nexus/index.html">Open a product</a>
+  </div>
 </header>
 
-<main class="suite-wrap">
-  <section class="hero">
+<main class="wrap" id="top">
+  <section class="intro">
     <div>
-      <span class="ns-badge brand lg" id="heroBadge"></span>
-      <h1>Nine people tools, <span>one operating system.</span></h1>
-      <p class="lead">Each product solves a real organisational problem I have worked on, from review cycles and pay equity to flight risk, listening, service desks, planning and hiring. They share one design system, one charting layer and one fictional 1,051-person company, so the same people, teams and numbers show up across every tool.</p>
-      <div class="flex gap-2 wrap mt-6"><a class="ns-btn primary lg" href="performance-nexus/index.html">Start with Performance Nexus</a><a class="ns-btn secondary lg" href="../#work">Back to portfolio</a></div>
+      <span class="ns-badge outline lg" id="tenantBadge"></span>
+      <h1>The people platform for the whole employee lifecycle. <span>Ten products, one system.</span></h1>
+      <p class="lead">Hiring, planning, growth, performance, rewards, listening, retention and HR operations, each a working product. They share one design system, one charting layer and one fictional 1,051-person company, so the same people, teams and numbers show up everywhere. Every product has personas you can switch between.</p>
+      <div class="flex gap-2 wrap mt-6"><a class="ns-btn primary lg" href="#products">Browse products</a><a class="ns-btn secondary lg" href="../index.html#work">Back to portfolio</a></div>
     </div>
-    <div class="facts">
-      <div class="fact"><b>9</b><span>working products</span></div>
-      <div class="fact"><b>80</b><span>screens · routes</span></div>
-      <div class="fact"><b>33</b><span>persona views to switch between</span></div>
-      <div class="fact"><b>0</b><span>frameworks, backends or trackers</span></div>
+    <div class="glance">
+      <div class="glance-head"><span>Platform at a glance</span><span class="ns-badge ok"><i class="dot"></i>All systems normal</span></div>
+      <div class="glance-grid">
+        <div><b>10</b><span>Working products</span></div>
+        <div><b>80+</b><span>Screens and routes</span></div>
+        <div><b>36+</b><span>Persona views</span></div>
+        <div><b>1,051</b><span>People in the demo tenant</span></div>
+      </div>
+      <div class="glance-foot"><i></i>No backend, frameworks or trackers. Your changes stay in this browser.</div>
     </div>
   </section>
 
-  <div class="filters" id="filters" role="group" aria-label="Filter by area"></div>
-  <section class="apps" id="apps" aria-label="Products"></section>
+  <section class="sec" id="map">
+    <div class="sec-head"><div><h2>Solution map</h2><p>Where each product sits in the employee lifecycle, from the first requisition to the last ticket.</p></div></div>
+    <div class="map" id="lifecycle"></div>
+  </section>
 
-  <a class="elev" href="elevate/index.html" aria-label="Open Elevate, the integrated talent suite">
-    <div>
-      <span class="ns-badge lg">Flagship · integrated suite</span>
-      <h2>Elevate. <span>The whole talent cycle in one product.</span></h2>
-      <p>Built for a fictional sales-led company, Brightkey Homes (about 800 people across 14 offices). A persona-aware home ties performance, competencies, development and careers together, so every screen knows what you should do next.</p>
-      <div class="mods"><span>Performance &amp; 9-box</span><span>Competencies</span><span>Development plan</span><span>Career graph</span><span>People insights</span><span>Recognition</span></div>
-      <span class="ns-btn primary lg">Open Elevate</span>
-    </div>
-    <div class="pic"><img src="shots/elevate-1600.webp" srcset="shots/elevate-800.webp 800w, shots/elevate-1600.webp 1600w" sizes="(min-width:900px) 55vw, 100vw" alt="Elevate employee home" loading="lazy" decoding="async" width="1600" height="1000"></div>
-  </a>
+  <section class="sec" id="products">
+    <div class="sec-head"><div><h2>Products</h2><p>Open any product in a new tab. Each card lists three things worth trying first.</p></div><div class="ns-seg" id="filters" role="group" aria-label="Filter by area"></div></div>
+    <div class="apps" id="apps"></div>
+  </section>
 
-  <div class="ns-section-title" style="margin-top:56px"><div><h2>Under the hood</h2><p>What makes nine separate products feel like one suite</p></div></div>
-  <section class="under" id="under"></section>
+  <section class="sec" id="workspaces">
+    <div class="sec-head"><div><h2>Other workspaces</h2><p>The same platform configured for a different kind of organisation.</p></div></div>
+    <a class="ws" href="elevate/index.html" aria-label="Open Elevate in the Brightkey Homes workspace">
+      <div>
+        <span class="ns-badge brand lg">Brightkey Homes · demo tenant</span>
+        <h3>Elevate, an integrated talent suite for a sales-led org</h3>
+        <p>About 800 people across 14 offices. A persona-aware home ties performance, competencies, development and careers together, so every screen knows what you should do next.</p>
+        <div class="mods ns-chips"><span class="ns-tag">Performance &amp; 9-box</span><span class="ns-tag">Competencies</span><span class="ns-tag">Development plan</span><span class="ns-tag">Career graph</span><span class="ns-tag">People insights</span><span class="ns-tag">Recognition</span></div>
+        <span class="ns-btn primary">Open Elevate</span>
+      </div>
+      <div class="pic"><img src="shots/elevate-1600.webp" srcset="shots/elevate-800.webp 800w, shots/elevate-1600.webp 1600w" sizes="(min-width:860px) 55vw, 100vw" alt="Elevate home in the Brightkey Homes workspace" loading="lazy" decoding="async" width="1600" height="1000"></div>
+    </a>
+  </section>
 
-  <div class="ns-alert info mt-6"><span id="infoIc"></span><div><b>Concept prototypes with illustrative data</b><p>Northstar Labs is a fictional company. Every person, number and event is generated deterministically for demonstration. Nothing here describes a real organisation or individual. Changes you make are saved only in your own browser, and "Reset demo data" in any app's avatar menu restores it.</p></div></div>
+  <section class="sec" id="platform">
+    <div class="sec-head"><div><h2>Platform</h2><p>What makes ten separate products behave like one suite.</p></div></div>
+    <div class="plat" id="plat"></div>
+    <div class="ns-alert info mt-6"><span id="infoIc"></span><div><b>Demo tenant with illustrative data</b><p>Northstar Labs and Brightkey Homes are fictional. Every person, number and event is generated deterministically for demonstration and describes no real organisation or individual. Changes you make are saved only in your browser and can be reset from each product's Help menu.</p></div></div>
+  </section>
 
-  <footer><span>Designed &amp; built by <b class="ink">Ronak Mehta</b> · Senior HR Business Partner · Mumbai</span><span><a href="../#contact">Get in touch</a> · <a href="https://linkedin.com/in/ronakmehta1910" target="_blank" rel="noopener">LinkedIn ↗</a></span></footer>
+  <footer><span>Designed and built by <b class="ink">Ronak Mehta</b>, Senior HR Business Partner, Mumbai</span><span><a href="../index.html#contact">Get in touch</a> · <a href="https://linkedin.com/in/ronakmehta1910" target="_blank" rel="noopener">LinkedIn ↗</a></span></footer>
 </main>
 
 <script>
 (function () {
   'use strict';
   const ic = (n, o) => NS.icon(n, o), esc = NS.esc;
+  const S = Object.fromEntries(NS.suite.map((a) => [a.id, a]));
   const APPS = [
-    { slug: 'performance-nexus', name: 'Performance Nexus', cat: 'Performance management', group: 'growth', icon: 'target', grad: ['#6366F1', '#4338CA'], badge: 'Flagship', desc: 'Goals with weighted key results, a self review that drafts from your own evidence, a manager review with a live scorecard and a language check, calibration and a cycle console.', tries: ['As Employee: rate a goal, then press "AI draft from my check-ins"', 'As Manager: review Kavya, then drag people in the 9-box', 'As HRBP: filter the console and bulk-nudge'], personas: 'Employee · Manager · HRBP' },
-    { slug: 'compintel-pro', name: 'CompIntel Pro', cat: 'Compensation analytics', group: 'insight', icon: 'banknote', grad: ['#10B981', '#047857'], badge: 'Rebuilt', desc: 'Band structure, compa-ratios, market benchmarks, a merit-cycle planner and a pay-equity view that explains the unadjusted and adjusted gaps.', tries: ['Model an adjustment from any person\'s comp drawer', 'Edit the merit matrix and watch the budget recompute', 'Ask CompGPT who is underpaid in an org'], personas: 'Total Rewards · HRBP · VP · Manager' },
-    { slug: 'retention-radar', name: 'Retention Radar', cat: 'People analytics', group: 'insight', icon: 'radar', grad: ['#06B6D4', '#0E7490'], badge: 'New', desc: 'Explainable flight-risk scoring with drivers, an action queue, attrition cohorts and a transparent model with backtest and a what-if simulator.', tries: ['Click a red dot on the radar to open a risk profile', 'Log a stay interview and drag it to Done', 'Move the sliders in the what-if simulator'], personas: 'HRBP · Manager · VP · CPO' },
-    { slug: 'pulse', name: 'Pulse', cat: 'Employee listening', group: 'insight', icon: 'heart-pulse', grad: ['#EC4899', '#BE185D'], badge: 'New', desc: 'Continuous engagement and eNPS: driver analysis, team heatmaps with anonymity thresholds, comment themes and action plans.', tries: ['As Employee: take the September pulse', 'Filter comments by theme and sentiment', 'Open a team in the heatmap and review its plan'], personas: 'HRBP · Manager · Employee · CPO' },
-    { slug: 'leaders-field-guide', name: "The Leader's Field Guide", cat: 'L&D / Enablement', group: 'growth', icon: 'compass', grad: ['#F59E0B', '#B45309'], badge: 'Rebuilt', desc: 'A manager playbook with a quarterly cadence, a live 1:1 runner, conversation scripts, copy-paste emails, culture KPIs and a leadership test.', tries: ['Run a timed 1:1 with a report', 'Copy a "Real Talk" script', 'Take The Crucible and see your archetype'], personas: 'Manager · HRBP · VP' },
-    { slug: 'competency-portal', name: 'Competency Portal', cat: 'Org design', group: 'growth', icon: 'layers', grad: ['#8B5CF6', '#6D28D9'], badge: 'Rebuilt', desc: 'An engineering career framework covering 16 levels from P0 to P6 and M1 to M6, with level compare, a competency matrix, self-assessment and promotion readiness.', tries: ['Compare P3 with P4 and see what changes', 'Self-assess, then generate a development plan', 'As Manager: nominate a ready report'], personas: 'Employee · Manager · HRBP' },
-    { slug: 'people-ops-desk', name: 'People Ops Desk', cat: 'HR operations', group: 'ops', icon: 'life-buoy', grad: ['#3B82F6', '#1D4ED8'], badge: 'New', desc: 'An HR service desk where automations and a knowledge base answer most questions, with tickets, SLAs, approvals and CSAT for the rest.', tries: ['As Employee: start typing a request and watch deflection', 'Reply to a ticket with a macro and resolve it', 'Toggle an automation and see coverage change'], personas: 'People Ops · Employee · Manager · HRBP' },
-    { slug: 'workforce-planner', name: 'Workforce Planner', cat: 'Workforce planning', group: 'ops', icon: 'calculator', grad: ['#84CC16', '#4D7C0F'], badge: 'New', desc: 'Headcount and budget planning with an editable quarterly grid, side-by-side scenarios, an org-design analyzer and headcount requests.', tries: ['Edit a Q4 cell in the planning grid', 'Compare the hiring-freeze scenario with base', 'Approve a headcount request as the VP'], personas: 'HRBP · VP · CPO · Finance' },
-    { slug: 'pipeline-ats', name: 'Pipeline', cat: 'Talent acquisition', group: 'ops', icon: 'git-branch', grad: ['#F97316', '#C2410C'], badge: 'New', desc: 'Structured hiring from requisition to offer, with kanban pipelines, interview scorecards, band-checked offers and funnel analytics.', tries: ['Drag a candidate to the next stage', 'Fill a scorecard as the hiring manager', 'Approve an offer against the pay band'], personas: 'Recruiter · Hiring manager · HRBP · VP' },
+    { slug: 'pipeline-ats', stage: 'attract', badge: 'New', desc: 'Structured hiring from requisition to offer, with kanban pipelines, interview scorecards, band-checked offers and funnel analytics.', tries: ['Drag a candidate to the next stage', 'Fill a scorecard as the hiring manager', 'Approve an offer against the pay band'], personas: ['Recruiter', 'Hiring manager', 'HRBP', 'VP'] },
+    { slug: 'workforce-planner', stage: 'attract', badge: 'New', desc: 'Headcount and budget planning with an editable quarterly grid, side-by-side scenarios, an org-design analyzer and headcount requests.', tries: ['Edit a Q4 cell in the planning grid', 'Compare the hiring-freeze scenario with base', 'Approve a headcount request as the VP'], personas: ['HRBP', 'VP', 'CPO', 'Finance'] },
+    { slug: 'competency-portal', stage: 'grow', badge: 'v5', desc: 'An engineering career framework covering 16 levels from P0 to P6 and M1 to M6, with level compare, a competency matrix, self-assessment and promotion readiness.', tries: ['Compare P3 with P4 and see what changes', 'Self-assess, then generate a development plan', 'As Manager, nominate a ready report'], personas: ['Employee', 'Manager', 'HRBP'] },
+    { slug: 'leaders-field-guide', stage: 'grow', badge: 'v5', desc: 'A manager playbook with a quarterly cadence, a live 1:1 runner, conversation scripts, copy-paste emails, culture KPIs and a leadership test.', tries: ['Run a timed 1:1 with a report', 'Copy a "Real Talk" script', 'Take The Crucible and see your archetype'], personas: ['Manager', 'HRBP', 'VP'] },
+    { slug: 'performance-nexus', stage: 'grow', badge: 'Flagship', desc: 'Goals with weighted key results, a self review that drafts from your own evidence, a manager scorecard with a language check, and 9-box calibration.', tries: ['As Employee, rate a goal and draft from your check-ins', 'As Manager, review Kavya, then drag people in the 9-box', 'As HRBP, filter the cycle console and bulk-nudge'], personas: ['Employee', 'Manager', 'HRBP'] },
+    { slug: 'compintel-pro', stage: 'reward', badge: 'v5', desc: 'Band structure, compa-ratios, market benchmarks, a merit-cycle planner and a pay-equity view that explains the unadjusted and adjusted gaps.', tries: ['Model an adjustment from any person’s comp drawer', 'Edit the merit matrix and watch the budget recompute', 'Ask CompGPT who is underpaid in an org'], personas: ['Total Rewards', 'HRBP', 'VP', 'Manager'] },
+    { slug: 'pulse', stage: 'reward', badge: 'New', desc: 'Continuous engagement and eNPS: driver analysis, team heatmaps with anonymity thresholds, comment themes and action plans.', tries: ['As Employee, take the September pulse', 'Filter comments by theme and sentiment', 'Open a team in the heatmap and review its plan'], personas: ['HRBP', 'Manager', 'Employee', 'CPO'] },
+    { slug: 'retention-radar', stage: 'reward', badge: 'New', desc: 'Explainable flight-risk scoring with drivers, an action queue, attrition cohorts and a transparent model with backtest and a what-if simulator.', tries: ['Open a risk profile from the radar', 'Log a stay interview and move it to Done', 'Move the sliders in the what-if simulator'], personas: ['HRBP', 'Manager', 'VP', 'CPO'] },
+    { slug: 'people-ops-desk', stage: 'operate', badge: 'New', desc: 'An HR service desk where automations and a knowledge base answer most questions, with tickets, SLAs, approvals and CSAT for the rest.', tries: ['As Employee, type a request and watch deflection', 'Reply to a ticket with a macro and resolve it', 'Toggle an automation and see coverage change'], personas: ['People Ops', 'Employee', 'Manager', 'HRBP'] },
+  ].map((a) => ({ ...a, ...S[a.slug] }));
+  // lifecycle stages, in the order an employee meets them
+  const STAGES = [
+    { id: 'hire', name: 'Hire', apps: ['pipeline-ats'] },
+    { id: 'plan', name: 'Plan', apps: ['workforce-planner'] },
+    { id: 'grow', name: 'Grow', apps: ['competency-portal'] },
+    { id: 'lead', name: 'Lead', apps: ['leaders-field-guide'] },
+    { id: 'perform', name: 'Perform', apps: ['performance-nexus'] },
+    { id: 'reward', name: 'Reward', apps: ['compintel-pro'] },
+    { id: 'listen', name: 'Listen & retain', apps: ['pulse', 'retention-radar'] },
+    { id: 'operate', name: 'Operate', apps: ['people-ops-desk'] },
   ];
-  const GROUPS = [['all', 'All products'], ['growth', 'Performance & growth'], ['insight', 'Rewards & analytics'], ['ops', 'Operations & hiring']];
-  const UNDER = [
-    ['layers', 'One design system', 'Shared tokens, a validated colour-blind-safe chart palette, light and dark themes, and components from tables to 9-boxes.'],
-    ['database', 'One coherent company', '1,051 people across 77 teams and 12 cities, with pay bands, ratings, engagement and risk that agree across every tool.'],
-    ['sparkles', 'Explainable "AI"', 'Drafts, insights and scores are rule-based and show their working. Nothing is a black box, and nothing leaves the browser.'],
-    ['zap', 'Built to be fast', 'Plain HTML, CSS and JavaScript, with no frameworks, trackers or backend. State persists locally, and ⌘K works everywhere.'],
+  const GROUPS = [['all', 'All'], ['attract', 'Hire & plan'], ['grow', 'Grow & perform'], ['reward', 'Reward & retain'], ['operate', 'Operate']];
+  const PLAT = [
+    ['layers', 'One design system', 'Northstar v5: shared tokens, a colour-blind-safe chart palette, light and dark themes, and enterprise components from tables to 9-boxes.'],
+    ['database', 'One coherent company', '1,051 people across 77 teams and 12 cities, with pay bands, ratings, engagement and risk that agree across every product.'],
+    ['sparkles', 'Explainable assist', 'Drafts, insights and scores are rule-based and show their working. Nothing is a black box, and nothing leaves the browser.'],
+    ['zap', 'Built to be fast', 'Plain HTML, CSS and JavaScript with no frameworks, trackers or backend. One shell, one search (⌘K) and one product switcher everywhere.'],
   ];
+  const tile = (a, lg) => `<span class="tile ${lg ? 'lg' : ''}" style="background:linear-gradient(160deg,${a.c[0]},${a.c[1]})">${ic(a.icon)}</span>`;
+  const href = (a) => `${a.id}/index.html`;
 
-  document.getElementById('suiteMark').innerHTML = ic('northstar');
+  document.getElementById('npMark').innerHTML = ic('northstar');
   document.getElementById('backLink').innerHTML = ic('arrow-left') + 'Portfolio';
-  document.getElementById('heroBadge').innerHTML = ic('sparkles', { size: 13 }) + 'Northstar Labs · concept suite';
+  document.getElementById('tenantBadge').innerHTML = ic('building', { size: 13 }) + 'Demo tenant · Northstar Labs';
   document.getElementById('infoIc').innerHTML = ic('info');
   const tb = document.getElementById('themeBtn');
   const paintTheme = () => { tb.innerHTML = ic(NS.theme.get() === 'dark' ? 'sun' : 'moon'); };
   NS._onTheme = paintTheme; paintTheme(); tb.onclick = (e) => NS.theme.toggle(e);
 
-  document.getElementById('apps').innerHTML = APPS.map((a) => `<a class="app" data-group="${a.group}" href="${a.slug}/index.html">
-      <div class="img"><img src="shots/${a.slug}-800.webp" srcset="shots/${a.slug}-800.webp 800w, shots/${a.slug}-1600.webp 1600w" sizes="(min-width:1100px) 400px, (min-width:680px) 47vw, 100vw" alt="${esc(a.name)} screenshot" loading="lazy" decoding="async" width="1600" height="1000"><span class="ns-badge ${a.badge === 'New' ? 'ok' : a.badge === 'Flagship' ? 'brand' : 'outline'}" style="${a.badge === 'Rebuilt' ? 'background:var(--surface)' : ''}">${esc(a.badge)}</span></div>
+  document.getElementById('lifecycle').innerHTML = STAGES.map((s, i) => `<div class="stage"><div class="stage-h"><small>${String(i + 1).padStart(2, '0')}</small><b>${esc(s.name)}</b></div><div class="stage-b">${s.apps.map((id) => { const a = S[id]; return `<a class="mini" href="${href(a)}" target="_blank" rel="noopener">${tile(a)}<span class="min-w-0">${esc(a.name)}</span></a>`; }).join('')}</div></div>`).join('') + `<div class="map-foot"><span>Every product shares the same people, teams and numbers.</span><span>Integrated alternative: <a href="elevate/index.html">Elevate</a> covers performance to careers in one product.</span></div>`;
+
+  document.getElementById('apps').innerHTML = APPS.map((a) => `<a class="app" data-group="${a.stage}" href="${href(a)}" target="_blank" rel="noopener" aria-label="Open ${esc(a.name)} in a new tab">
+      <div class="img"><img src="shots/${a.id}-800.webp" srcset="shots/${a.id}-800.webp 800w, shots/${a.id}-1600.webp 1600w" sizes="(min-width:1100px) 400px, (min-width:680px) 47vw, 100vw" alt="${esc(a.name)} screenshot" loading="lazy" decoding="async" width="1600" height="1000"></div>
       <div class="bd">
-        <div class="hd"><span class="mk" style="background:linear-gradient(135deg,${a.grad[0]},${a.grad[1]})">${ic(a.icon)}</span><div><div class="ct">${esc(a.cat)}</div><div class="nm">${esc(a.name)}</div></div></div>
+        <div class="hd">${tile(a, true)}<div class="min-w-0"><div class="nm">${esc(a.name)}</div><div class="ct">${esc(a.cat)}</div></div><span class="ns-badge ${a.badge === 'New' ? 'ok' : a.badge === 'Flagship' ? 'info' : 'outline'}">${esc(a.badge)}</span></div>
         <p>${esc(a.desc)}</p>
-        <ul>${a.tries.map((t) => `<li>${ic('check')}<span>${esc(t)}</span></li>`).join('')}</ul>
-        <div class="ft"><span class="per">${esc(a.personas)}</span><span class="go">Open ${ic('arrow-up-right')}</span></div>
+        <div class="try"><small>Try first</small>${a.tries.map((t) => `<div>${ic('arrow-right')}<span>${esc(t)}</span></div>`).join('')}</div>
+        <div class="ft"><span class="per">${a.personas.map((p) => `<span class="ns-tag">${esc(p)}</span>`).join('')}</span><span class="go">Open ${ic('arrow-up-right')}</span></div>
       </div></a>`).join('');
   const f = document.getElementById('filters');
-  f.innerHTML = GROUPS.map(([id, l]) => `<button class="ns-chip" data-f="${id}" aria-pressed="${id === 'all'}">${esc(l)} <span class="n">${id === 'all' ? APPS.length : APPS.filter((a) => a.group === id).length}</span></button>`).join('');
+  f.innerHTML = GROUPS.map(([id, l]) => `<button type="button" data-f="${id}" aria-pressed="${id === 'all'}">${esc(l)}</button>`).join('');
   f.addEventListener('click', (e) => { const b = e.target.closest('[data-f]'); if (!b) return; f.querySelectorAll('[data-f]').forEach((x) => x.setAttribute('aria-pressed', x === b)); document.querySelectorAll('.app').forEach((c) => { c.hidden = !(b.dataset.f === 'all' || c.dataset.group === b.dataset.f); }); });
-  document.getElementById('under').innerHTML = UNDER.map(([i, t, d]) => `<div class="ns-card"><div class="ns-card-body"><span class="ns-icon-box">${ic(i)}</span><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('');
+
+  document.getElementById('plat').innerHTML = PLAT.map(([i, t, d]) => `<div class="ns-card"><div class="ns-card-body"><span class="ns-icon-box neutral">${ic(i)}</span><b>${esc(t)}</b><p>${esc(d)}</p></div></div>`).join('');
 })();
 </script>
 </body>
