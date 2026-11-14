@@ -1,5 +1,5 @@
 /* ==========================================================================
-   Northstar Design System · ns.js  (runtime)
+   Northstar People Cloud · ns.js v5 (runtime)
    Shared shell + router + components + charts for the Northstar Labs family.
    Zero dependencies. Designed & built by Ronak Mehta.
    --------------------------------------------------------------------------
@@ -19,7 +19,7 @@
      NS.spark(values,{height,color,area,min,max,dot})
      NS.chart.{line,bars,hbars,donut,radar,heatmap,scatter,funnel}(el,opts)
      NS.table(el,opts) → api · NS.dnd(container,opts)
-     NS.app(config) → boots shell+router · NS.go(path,query) · NS.link(path,query) · NS.refresh() · NS.route · NS.persona
+     NS.app(config) → boots shell+router · config.shortcuts=[{label,keys:[…]}] adds product keys to the ? sheet · NS.go(path,query) · NS.link(path,query) · NS.refresh() · NS.route · NS.persona
    ========================================================================== */
 (function () {
   'use strict';
@@ -213,6 +213,7 @@
     puzzle: '<path d="M19.439 7.85c-.049.322.059.648.289.878l1.568 1.568c.47.47.706 1.087.706 1.704s-.235 1.233-.706 1.704l-1.611 1.611a.98.98 0 0 1-.837.276c-.47-.07-.802-.48-.968-.925a2.501 2.501 0 1 0-3.214 3.214c.446.166.855.497.925.968a.979.979 0 0 1-.276.837l-1.61 1.61a2.404 2.404 0 0 1-1.705.707 2.402 2.402 0 0 1-1.704-.706l-1.568-1.568a1.026 1.026 0 0 0-.877-.29c-.493.074-.84.504-1.02.968a2.5 2.5 0 1 1-3.237-3.237c.464-.18.894-.527.967-1.02a1.026 1.026 0 0 0-.289-.877l-1.568-1.568A2.402 2.402 0 0 1 1.998 12c0-.617.236-1.234.706-1.704L4.23 8.77c.24-.24.581-.353.917-.303.515.077.877.528 1.073 1.01a2.5 2.5 0 1 0 3.259-3.259c-.482-.196-.933-.558-1.01-1.073-.05-.336.062-.676.303-.917l1.525-1.525A2.402 2.402 0 0 1 12 1.998c.617 0 1.234.236 1.704.706l1.568 1.568c.23.23.556.338.877.29.493-.074.84-.504 1.02-.968a2.5 2.5 0 1 1 3.237 3.237c-.464.18-.894.527-.967 1.02Z"/>',
     ellipsis: '<circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/><circle cx="5" cy="12" r="1"/>',
     dot: '<circle cx="12.1" cy="12.1" r="1"/>',
+    command: '<path d="M15 6v12a3 3 0 1 0 3-3H6a3 3 0 1 0 3 3V6a3 3 0 1 0-3 3h12a3 3 0 1 0-3-3"/>',
     northstar: '<path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8L12 2z"/><path d="M19 16l.7 2.3L22 19l-2.3.7L19 22l-.7-2.3L16 19l2.3-.7L19 16z"/>',
   };
   NS.icons = I;
@@ -231,8 +232,9 @@
     compact: (n, d = 1) => {
       if (n == null || isNaN(n)) return '—';
       const a = Math.abs(n);
-      if (a >= 1e9) return (n / 1e9).toFixed(d).replace(/\.0$/, '') + 'B';
-      if (a >= 1e6) return (n / 1e6).toFixed(d).replace(/\.0$/, '') + 'M';
+      // millions and billions keep their decimal so columns of money line up ($5.0M beside $53.4M)
+      if (a >= 1e9) return (n / 1e9).toFixed(d) + 'B';
+      if (a >= 1e6) return (n / 1e6).toFixed(d) + 'M';
       if (a >= 1e3) return (n / 1e3).toFixed(a >= 1e5 ? 0 : d).replace(/\.0$/, '') + 'K';
       return String(Math.round(n));
     },
@@ -350,7 +352,15 @@
 
   /* ---------- overlays: modal / confirm / drawer / dropdown ---------- */
   const overlays = [];
-  const trapFocus = (el) => { const f = el.querySelector('input,button,textarea,select,[tabindex]:not([tabindex="-1"])'); if (f) setTimeout(() => f.focus({ preventScroll: true }), 30); };
+  // initial focus: first form field, else first real action, else the dialog itself — never the close button
+  const trapFocus = (el) => {
+    const vis = (n) => n && !n.disabled && n.offsetParent !== null && n.type !== 'hidden';
+    const field = [...el.querySelectorAll('input,textarea,select')].find(vis);
+    const action = [...el.querySelectorAll('button:not([data-close]),a[href],[tabindex]:not([tabindex="-1"])')].find(vis);
+    const box = el.querySelector('.ns-modal,.ns-drawer') || el;
+    const f = field || action || (box.setAttribute('tabindex', '-1'), box);
+    setTimeout(() => f.focus({ preventScroll: true }), 30);
+  };
   NS.modal = (o = {}) => {
     const wrap = NS.el(`<div class="ns-overlay ns-center" role="dialog" aria-modal="true"><div class="ns-modal ${o.size || ''}"><div class="ns-modal-head"><div><h2>${str(o.title)}</h2>${o.sub ? `<p>${str(o.sub)}</p>` : ''}</div><button class="ns-icon-btn" data-close aria-label="Close">${NS.icon('x')}</button></div><div class="ns-modal-body">${str(o.body)}</div>${o.foot || (o.actions && o.actions.length) ? `<div class="ns-modal-foot">${str(o.foot)}</div>` : ''}</div></div>`);
     const close = () => { if (!wrap.isConnected) return; wrap.remove(); overlays.splice(overlays.indexOf(api), 1); o.onClose && o.onClose(); };
@@ -501,7 +511,7 @@
     svg += `<g class="grid">${ticks.map((t) => `<line x1="${mL}" x2="${W - mR}" y1="${y(t).toFixed(1)}" y2="${y(t).toFixed(1)}"/>`).join('')}</g>`;
     svg += `<g class="axis"><line x1="${mL}" x2="${W - mR}" y1="${(mT + ph).toFixed(1)}" y2="${(mT + ph).toFixed(1)}"/></g>`;
     svg += ticks.map((t) => `<text x="${mL - 8}" y="${(y(t) + 4).toFixed(1)}" text-anchor="end">${fmt(t)}</text>`).join('');
-    const stepPx = n > 1 ? pw / (n - 1) : pw; const showX = (i) => i === n - 1 || (i % every === 0 && (n - 1 - i) * stepPx >= 60);
+    const stepPx = n > 1 ? pw / (n - 1) : pw; const showX = (i) => i === n - 1 || (i % every === 0 && ((n - 1 - i) >= every || (n - 1 - i) * stepPx >= 60));
     svg += o.labels.map((l, i) => showX(i) ? `<text x="${x(i).toFixed(1)}" y="${H - 6}" text-anchor="${i === 0 ? 'start' : i === n - 1 ? 'end' : 'middle'}">${NS.esc(l)}</text>` : '').join('');
     if (o.threshold) svg += `<line x1="${mL}" x2="${W - mR}" y1="${y(o.threshold.value).toFixed(1)}" y2="${y(o.threshold.value).toFixed(1)}" stroke="var(--ink-4)" stroke-width="1.5" stroke-dasharray="5 5"/><text x="${W - mR}" y="${(y(o.threshold.value) - 6).toFixed(1)}" text-anchor="end" class="lbl">${NS.esc(o.threshold.label || '')}</text>`;
     series.forEach((s, si) => {
@@ -561,7 +571,7 @@
       }
       g += `<rect class="hit" x="${(mL + i * band).toFixed(1)}" y="${mT}" width="${band.toFixed(1)}" height="${ph}"/></g>`;
       svg += g;
-      if (i === n - 1 || (i % every === 0 && (n - 1 - i) * band >= 60)) svg += `<text x="${(mL + i * band + band / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle">${NS.esc(l)}</text>`;
+      if (i === n - 1 || (i % every === 0 && ((n - 1 - i) >= every || (n - 1 - i) * band >= 60))) svg += `<text x="${(mL + i * band + band / 2).toFixed(1)}" y="${H - 6}" text-anchor="middle">${NS.esc(l)}</text>`;
     });
     svg += `<g class="axis"><line x1="${mL}" x2="${W - mR}" y1="${y0.toFixed(1)}" y2="${y0.toFixed(1)}"/></g></svg>`;
     el.innerHTML = (o.legend === 'top' ? legendHtml(series, series.map((s) => s.color), { pos: 'top' }) : '') + svg + (o.legend !== 'top' && o.legend !== false ? legendHtml(series, series.map((s) => s.color)) : '') + (o.table !== false ? tableHtml(o.labels, series, fmt) + toggleHtml() : '');
@@ -741,6 +751,20 @@
     return null;
   };
 
+  /* ---------- the Northstar People Cloud product catalogue (product switcher) ---------- */
+  NS.suite = [
+    { id: 'performance-nexus', name: 'Performance Nexus', cat: 'Performance', icon: 'target', c: ['#6366F1', '#4338CA'] },
+    { id: 'compintel-pro', name: 'CompIntel Pro', cat: 'Compensation', icon: 'banknote', c: ['#10B981', '#047857'] },
+    { id: 'retention-radar', name: 'Retention Radar', cat: 'Retention analytics', icon: 'radar', c: ['#06B6D4', '#0E7490'] },
+    { id: 'pulse', name: 'Pulse', cat: 'Employee listening', icon: 'heart-pulse', c: ['#EC4899', '#BE185D'] },
+    { id: 'leaders-field-guide', name: "Leader's Field Guide", cat: 'Manager enablement', icon: 'compass', c: ['#F59E0B', '#B45309'] },
+    { id: 'competency-portal', name: 'Competency Portal', cat: 'Career frameworks', icon: 'layers', c: ['#8B5CF6', '#6D28D9'] },
+    { id: 'people-ops-desk', name: 'People Ops Desk', cat: 'HR service desk', icon: 'life-buoy', c: ['#3B82F6', '#1D4ED8'] },
+    { id: 'workforce-planner', name: 'Workforce Planner', cat: 'Workforce planning', icon: 'calculator', c: ['#84CC16', '#4D7C0F'] },
+    { id: 'pipeline-ats', name: 'Pipeline', cat: 'Recruiting', icon: 'git-branch', c: ['#F97316', '#C2410C'] },
+    { id: 'elevate', name: 'Elevate', cat: 'Talent suite', icon: 'trending-up', c: ['#4A8BE0', '#173A6B'], tenant: 'Brightkey Homes' },
+  ].map((a) => ({ ...a, href: '../' + a.id + '/index.html' }));
+
   /* ---------- app shell ---------- */
   let APP = null;
   NS.app = (cfg) => {
@@ -764,47 +788,84 @@
       setTimeout(() => { sp.style.opacity = 0; setTimeout(() => sp.remove(), 480); }, 950);
     }
 
-    /* build shell DOM */
+    /* build shell DOM — v5 enterprise shell: global header, product switcher, product sidebar */
+    const SUITE = NS.suite;
     const navItems = () => (typeof cfg.nav === 'function' ? cfg.nav(persona) : cfg.nav || []).map((g) => ({ ...g, items: g.items.filter((it) => !it.personas || it.personas.includes(persona.id)) })).filter((g) => g.items.length);
-    const navHtml = () => navItems().map((g) => `${g.group ? `<div class="ns-nav-group">${NS.esc(g.group)}</div>` : ''}${g.items.map((it) => `<a class="ns-nav-item" href="${NS.link(it.route || '/' + it.id)}" data-nav="${it.id}" data-tip-pos="right"><span style="display:contents">${NS.icon(it.icon || 'circle-dot')}</span><span class="ns-nav-label">${NS.esc(it.label)}</span>${it.badge != null && it.badge !== '' ? `<span class="ns-nav-badge ${it.badgeCls || ''}">${NS.esc(it.badge)}</span>` : ''}</a>`).join('')}`).join('');
-    const promoHtml = () => { const p = typeof cfg.promo === 'function' ? cfg.promo(persona) : cfg.promo; if (!p) return ''; return `<div class="ns-sidebar-promo"><b>${NS.esc(p.title)}</b><p>${NS.esc(p.body || '')}</p>${p.progress != null ? NS.progress(p.progress) : ''}${p.cta ? `<a class="ns-btn sm" href="${NS.link(p.cta.route)}">${NS.esc(p.cta.label)} →</a>` : ''}</div>`; };
+    const navHtml = () => navItems().map((g) => `${g.group ? `<div class="ns-nav-group">${NS.esc(g.group)}</div>` : ''}${g.items.map((it) => `<a class="ns-nav-item" href="${NS.link(it.route || '/' + it.id)}" data-nav="${it.id}" data-tip-pos="right"><span style="display:contents">${NS.icon(it.icon || 'dot')}</span><span class="ns-nav-label">${NS.esc(it.label)}</span>${it.badge != null && it.badge !== '' && it.badge !== 0 ? `<span class="ns-nav-badge ${it.badgeCls || ''}">${NS.esc(typeof it.badge === 'function' ? it.badge(persona) : it.badge)}</span>` : ''}</a>`).join('')}`).join('');
+    const promoHtml = () => { const p = typeof cfg.promo === 'function' ? cfg.promo(persona) : cfg.promo; if (!p) return ''; return `<div class="ns-sidebar-promo"><b>${NS.esc(p.title)}</b><p>${NS.esc(p.body || '')}</p>${p.progress != null ? NS.progress(p.progress, { cls: 'xs' }) : ''}${p.action ? `<a class="ns-btn secondary xs" href="${NS.link(p.action.route)}">${NS.esc(p.action.label)}</a>` : ''}</div>`; };
+    const footHtml = () => `${promoHtml()}<button class="ns-side-link" id="nsAboutLink">${NS.icon('info')}<span>About ${NS.esc(cfg.name)}</span></button><button class="ns-collapse-btn" id="nsCollapse">${NS.icon('chevrons-left')}<span>Collapse</span></button>`;
+    const createCmd = () => cfg.create || (typeof cfg.commands === 'function' ? cfg.commands(persona) : cfg.commands || []).find((c) => (c.group || 'Actions') === 'Actions' && /^(new|log|add|create|start|open a|raise|request|give|post|draft)/i.test(c.label));
     const root = NS.el(`<div class="ns-app" id="nsApp" data-collapsed="${collapsed ? 1 : 0}">
-      <aside class="ns-sidebar" aria-label="Primary">
-        <a class="ns-brand" href="${NS.link(cfg.default || '/')}"><span class="ns-brand-mark">${cfg.mark || NS.icon('northstar')}</span><span><div class="ns-brand-name">${NS.esc(cfg.name)}</div><div class="ns-brand-sub">${NS.esc(cfg.sub || 'Northstar Labs')}</div></span></a>
+      <header class="ns-gh" aria-label="Northstar">
+        <button class="ns-gh-btn ns-menu-btn" id="nsMenu" aria-label="Open navigation">${NS.icon('menu')}</button>
+        <button class="ns-gh-btn" id="nsWaffle" aria-label="Switch product" aria-haspopup="menu" data-tip="Products">${NS.icon('grid')}</button>
+        <a class="ns-gh-logo" href="${cfg.suiteUrl || '../index.html'}" aria-label="Northstar People Cloud home"><span class="ns-np-mark">${NS.icon('northstar')}</span><b>Northstar</b></a>
+        <span class="ns-gh-sep"></span>
+        <a class="ns-gh-product" href="${NS.link(cfg.default || '/')}"><span class="ns-brand-mark">${cfg.mark || NS.icon('northstar')}</span><span class="ns-brand-name">${NS.esc(cfg.name)}</span></a>
+        <button class="ns-search-btn" id="nsSearch" aria-label="Search">${NS.icon('search')}<span>Search ${NS.esc(cfg.searchHint || 'pages, people and actions')}</span><kbd>⌘K</kbd></button>
+        <div class="ns-gh-actions">
+          <button class="ns-btn primary sm ns-create" id="nsCreate" hidden>${NS.icon('plus')}<span>Create</span></button>
+          <button class="ns-icon-btn" id="nsHelp" aria-label="Help" aria-haspopup="menu" data-tip="Help">${NS.icon('help-circle')}</button>
+          <button class="ns-icon-btn" id="nsBell" aria-label="Notifications" data-tip="Notifications">${NS.icon('bell')}${notifs.length ? '<i class="dot"></i>' : ''}</button>
+          <button class="ns-icon-btn" id="nsTheme" aria-label="Toggle theme" data-tip="Appearance">${NS.icon(NS.theme.get() === 'dark' ? 'sun' : 'moon')}</button>
+          <button class="ns-tenant" id="nsTenant" aria-haspopup="menu"><i></i>${NS.esc(cfg.tenant || 'Northstar Labs')}<small>Demo</small></button>
+          <button class="ns-user-btn" id="nsUser" aria-haspopup="menu" aria-label="Account"></button>
+        </div>
+      </header>
+      <aside class="ns-sidebar" aria-label="${NS.esc(cfg.name)} navigation">
+        <a class="ns-brand" href="${NS.link(cfg.default || '/')}"><span class="ns-brand-mark">${cfg.mark || NS.icon('northstar')}</span><span class="min-w-0"><div class="ns-brand-name">${NS.esc(cfg.name)}</div><div class="ns-brand-sub">${NS.esc(cfg.category || (SUITE.find((x) => x.id === cfg.id) || {}).cat || cfg.sub || 'Northstar Labs')}</div></span></a>
+        <button class="ns-persona-chip" id="nsPersona" aria-haspopup="menu"></button>
         <nav class="ns-nav" id="nsNav">${navHtml()}</nav>
-        <div class="ns-sidebar-foot" id="nsFoot">${promoHtml()}<button class="ns-collapse-btn" id="nsCollapse">${NS.icon('chevrons-left')}<span>Collapse</span></button></div>
+        <div class="ns-sidebar-foot" id="nsFoot">${footHtml()}</div>
       </aside>
       <div class="ns-backdrop" id="nsBackdrop"></div>
       <div class="ns-main">
-        <header class="ns-topbar">
-          <button class="ns-icon-btn ns-menu-btn" id="nsMenu" aria-label="Open navigation">${NS.icon('menu')}</button>
-          <div class="ns-crumbs" id="nsCrumbs"></div>
-          <button class="ns-search-btn" id="nsSearch" aria-label="Search">${NS.icon('search')}<span>Search ${NS.esc(cfg.searchHint || 'pages, people, actions')}…</span><kbd>⌘K</kbd></button>
-          <div class="ns-topbar-actions">
-            <span class="ns-demo-badge" data-tip="Illustrative data · fictional tenant" id="nsDemo">DEMO</span>
-            <button class="ns-icon-btn" id="nsTheme" aria-label="Toggle theme" data-tip="Toggle theme">${NS.icon(NS.theme.get() === 'dark' ? 'sun' : 'moon')}</button>
-            <button class="ns-icon-btn" id="nsBell" aria-label="Notifications" data-tip="Notifications">${NS.icon('bell')}${notifs.length ? '<i class="dot"></i>' : ''}</button>
-            <button class="ns-user-btn" id="nsUser" aria-haspopup="menu"></button>
-          </div>
-        </header>
+        <div class="ns-topbar"><div class="ns-crumbs" id="nsCrumbs"></div><div class="ns-topbar-meta hide-sm"><i></i>Synced ${NS.esc(cfg.syncedLabel || 'today, 06:00')}</div></div>
         <main class="ns-content ${cfg.wide ? 'wide' : ''}" id="nsContent"></main>
       </div></div>`);
     doc.body.appendChild(root);
     const content = root.querySelector('#nsContent'), crumbs = root.querySelector('#nsCrumbs');
-    const userBtn = root.querySelector('#nsUser');
-    const renderUser = () => { userBtn.innerHTML = `${NS.avatar(persona, { size: 'sm' })}<span class="who"><b>${NS.esc(persona.name)}</b><span>${NS.esc(persona.label)}</span></span>${NS.icon('chevron-down')}`; };
+    const userBtn = root.querySelector('#nsUser'), personaChip = root.querySelector('#nsPersona'), createBtn = root.querySelector('#nsCreate');
+    const renderUser = () => {
+      userBtn.innerHTML = `${NS.avatar(persona, { size: 'sm' })}`;
+      personaChip.innerHTML = `<span class="lbl">Viewing as</span><b>${NS.esc(persona.label)}</b>${NS.icon('chevron-down')}`;
+      const c = createCmd();
+      createBtn.hidden = !c;
+      if (c) { createBtn.querySelector('span').textContent = c.createLabel || 'Create'; createBtn.setAttribute('data-tip', c.label); createBtn.onclick = () => c.run && c.run(); }
+    };
     renderUser();
 
     /* collapse / mobile nav */
-    root.querySelector('#nsCollapse').onclick = () => { collapsed = !collapsed; root.dataset.collapsed = collapsed ? 1 : 0; store.set('collapsed', collapsed); setTimeout(() => doc.querySelectorAll('.ns-viz').forEach((el) => el.__nsRender && el.__nsRender()), 340); };
+    const bindFoot = () => {
+      root.querySelector('#nsCollapse').onclick = () => { collapsed = !collapsed; root.dataset.collapsed = collapsed ? 1 : 0; store.set('collapsed', collapsed); applyNavTips(); setTimeout(() => doc.querySelectorAll('.ns-viz').forEach((el) => el.__nsRender && el.__nsRender()), 320); };
+      root.querySelector('#nsAboutLink').onclick = () => NS.about();
+    };
     root.querySelector('#nsMenu').onclick = () => { root.dataset.navOpen = '1'; };
     root.querySelector('#nsBackdrop').onclick = () => { delete root.dataset.navOpen; };
     root.querySelector('#nsNav').addEventListener('click', () => { delete root.dataset.navOpen; });
     const applyNavTips = () => root.querySelectorAll('.ns-nav-item').forEach((a) => { if (collapsed && innerWidth > 960) a.setAttribute('data-tip', a.querySelector('.ns-nav-label').textContent); else a.removeAttribute('data-tip'); });
+    bindFoot();
+
+    /* product switcher */
+    root.querySelector('#nsWaffle').onclick = (e) => {
+      const btn = e.currentTarget;
+      const tile = (a) => `<a class="ns-switch-app" href="${a.href}" ${a.id === cfg.id ? 'aria-current="true"' : ''}><span class="tile" style="background:linear-gradient(160deg,${a.c[0]},${a.c[1]})">${NS.icon(a.icon)}</span><span class="min-w-0"><b>${NS.esc(a.name)}</b><span>${NS.esc(a.cat)}</span></span></a>`;
+      const own = SUITE.filter((a) => !a.tenant), other = SUITE.filter((a) => a.tenant);
+      const d = NS.dropdown(btn, { align: 'left', cls: 'ns-switcher', html: `<div class="ns-switcher-head"><span>Northstar People Cloud · ${NS.esc(cfg.tenant || 'Northstar Labs')}</span><a href="${cfg.suiteUrl || '../index.html'}">All products ${NS.icon('arrow-up-right', { size: 13 })}</a></div><div class="ns-switcher-grid">${own.map(tile).join('')}</div>${other.length ? `<div class="ns-switcher-foot"><span class="ws">Other workspaces ${other.map((a) => `<a href="${a.href}">${NS.esc(a.tenant)} · ${NS.esc(a.name)}</a>`).join('')}</span><a href="${cfg.portfolioUrl || '../../#work'}">Back to portfolio</a></div>` : ''}`, onClose: () => btn.setAttribute('aria-expanded', 'false') });
+      if (d) btn.setAttribute('aria-expanded', 'true');
+    };
 
     /* theme */
     root.querySelector('#nsTheme').onclick = (e) => NS.theme.toggle(e);
     NS._onTheme = (t) => { root.querySelector('#nsTheme').innerHTML = NS.icon(t === 'dark' ? 'sun' : 'moon'); setTimeout(() => NS.refresh(), 60); };
+
+    /* help */
+    const shortcuts = () => NS.modal({ title: 'Keyboard shortcuts', sub: 'Work faster across every Northstar product', body: `<div class="ns-keys"><div>Search and commands<span><kbd>⌘</kbd><kbd>K</kbd></span></div><div>Quick search<span><kbd>/</kbd></span></div><div>Keyboard shortcuts<span><kbd>?</kbd></span></div><div>Close dialog or menu<span><kbd>Esc</kbd></span></div><div>Move in lists<span><kbd>↑</kbd><kbd>↓</kbd></span></div><div>Open selection<span><kbd>↵</kbd></span></div></div>${(cfg.shortcuts || []).length ? `<h3 style="margin:20px 0 4px">${NS.esc(cfg.name)}</h3><div class="ns-keys">${cfg.shortcuts.map((k) => `<div>${NS.esc(k.label)}<span>${k.keys.map((x) => `<kbd>${NS.esc(x)}</kbd>`).join('')}</span></div>`).join('')}</div>` : ''}` });
+    NS.shortcuts = shortcuts;
+    root.querySelector('#nsHelp').onclick = (e) => NS.dropdown(e.currentTarget, { items: [{ head: 'Help' }, { label: `About ${cfg.name}`, icon: 'info', onClick: () => NS.about() }, { label: 'Keyboard shortcuts', icon: 'command', onClick: shortcuts }, { label: 'Product tour', icon: 'compass', onClick: () => { location.href = cfg.suiteUrl || '../index.html'; } }, { sep: true }, { label: 'Reset demo data', icon: 'refresh', onClick: () => NS.resetDemo() }] });
+
+    /* tenant */
+    root.querySelector('#nsTenant').onclick = (e) => NS.dropdown(e.currentTarget, { items: [{ head: 'Workspace' }, { label: cfg.tenant || 'Northstar Labs', sub: 'Demo tenant · fictional data', icon: 'building', checked: true }, ...SUITE.filter((a) => a.tenant).map((a) => ({ label: a.tenant, sub: `${a.name} · demo tenant`, icon: 'building', onClick: () => { location.href = a.href; } })), { sep: true }, { label: 'Back to portfolio', icon: 'arrow-left', onClick: () => { location.href = cfg.portfolioUrl || '../../#work'; } }] });
 
     /* notifications */
     root.querySelector('#nsBell').onclick = (e) => {
@@ -813,12 +874,15 @@
       NS.dropdown(btn, { cls: 'ns-notif', html: `<div class="ns-notif-head"><b>Notifications</b><button class="ns-btn xs ghost" data-readall>Mark all read</button></div><div class="ns-notif-list">${list}</div>`, mounted: (el, d) => { const b = el.querySelector('[data-readall]'); if (b) b.onclick = () => { notifs.forEach((n) => n.read = true); const dot = btn.querySelector('.dot'); if (dot) dot.remove(); d.close(); NS.toast('All notifications marked as read'); }; el.querySelectorAll('.ns-notif-item').forEach((it, i) => { it.style.cursor = 'pointer'; it.onclick = () => { const n = notifs[i]; n.read = true; d.close(); if (n.route) NS.go(n.route); }; }); } });
     };
 
-    /* persona menu */
-    const setPersona = (p, silent) => { persona = p; NS.persona = p; store.set('persona', p.id); renderUser(); root.querySelector('#nsNav').innerHTML = navHtml(); root.querySelector('#nsFoot').innerHTML = promoHtml() + root.querySelector('#nsCollapse').outerHTML; root.querySelector('#nsCollapse').onclick = () => { collapsed = !collapsed; root.dataset.collapsed = collapsed ? 1 : 0; store.set('collapsed', collapsed); }; cfg.onPersona && cfg.onPersona(p); if (!silent) NS.toast(`Now viewing as ${p.name}`, { desc: p.label, type: 'info' }); render(); };
+    /* persona + account */
+    const setPersona = (p, silent) => { persona = p; NS.persona = p; store.set('persona', p.id); renderUser(); root.querySelector('#nsNav').innerHTML = navHtml(); root.querySelector('#nsFoot').innerHTML = footHtml(); bindFoot(); cfg.onPersona && cfg.onPersona(p); if (!silent) NS.toast(`Now viewing as ${p.name}`, { desc: p.label, type: 'info' }); render(); };
     NS.setPersona = (id) => { const p = personas.find((x) => x.id === id); if (p) setPersona(p); };
+    const personaItems = () => [{ head: 'View as' }, ...personas.map((p) => ({ label: p.name, sub: `${p.label}${p.title ? ' · ' + p.title : ''}`, avatar: NS.avatar(p, { size: 'sm' }), checked: p.id === persona.id, onClick: () => setPersona(p) }))];
+    personaChip.onclick = (e) => NS.dropdown(e.currentTarget, { align: 'left', items: personaItems() });
     userBtn.onclick = (e) => {
-      NS.dropdown(e.currentTarget, { items: [{ head: 'View as' }, ...personas.map((p) => ({ label: p.name, sub: `${p.label}${p.title ? ' · ' + p.title : ''}`, avatar: NS.avatar(p, { size: 'sm' }), checked: p.id === persona.id, onClick: () => setPersona(p) })), { sep: true }, { label: 'About this prototype', icon: 'info', onClick: () => NS.about() }, { label: 'Reset demo data', icon: 'refresh', onClick: () => NS.resetDemo() }, { label: 'Back to portfolio', icon: 'arrow-left', onClick: () => { location.href = cfg.portfolioUrl || '../../#work'; } }] });
+      NS.dropdown(e.currentTarget, { items: [...personaItems(), { sep: true }, { label: `Switch to ${NS.theme.get() === 'dark' ? 'light' : 'dark'} mode`, icon: NS.theme.get() === 'dark' ? 'sun' : 'moon', onClick: () => NS.theme.toggle() }, { label: 'Keyboard shortcuts', icon: 'command', onClick: shortcuts }, { label: 'Back to portfolio', icon: 'log-out', onClick: () => { location.href = cfg.portfolioUrl || '../../#work'; } }] });
     };
+    doc.addEventListener('keydown', (e) => { if (e.key === '?' && !/input|textarea|select/i.test(e.target.tagName) && !e.target.isContentEditable) { e.preventDefault(); shortcuts(); } });
 
     /* about + reset */
     NS.about = () => NS.modal({
